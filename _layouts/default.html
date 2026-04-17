@@ -13,40 +13,50 @@
     <script src="{{ "/assets/js/sitemap-highlight.js" | relative_url }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
+      // Initialiser Mermaid med rett tema
       function updateMermaidTheme() {
         const theme = document.documentElement.getAttribute('data-theme');
         const isDark = theme === 'dark' ||
                       (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
         mermaid.initialize({
-          startOnLoad: false,
+          startOnLoad: false, // Endra til false for å handtera oppteikning sjølv
           theme: isDark ? 'dark' : 'default',
           darkMode: isDark
         });
 
+        // Finn alle pre-element med mermaid klasse og teikn diagramma
         document.querySelectorAll('pre > code.language-mermaid').forEach(el => {
+          // Fjern Prism-formatering
           el.parentElement.classList.remove('language-mermaid');
           el.className = '';
 
+          // Lag ny div for Mermaid-diagram
           const div = document.createElement('div');
           div.className = 'mermaid';
           div.textContent = el.textContent;
 
+          // Byt ut pre-elementet med den nye div-en
           el.parentElement.parentNode.replaceChild(div, el.parentElement);
         });
 
+        // Teikn alle Mermaid-diagram på nytt
         mermaid.init();
       }
 
+      // Køyr før Prism for å unngå konfliktar
       document.addEventListener('DOMContentLoaded', () => {
         updateMermaidTheme();
 
+        // Automatisk fokus på hovudinnhald for tastaturnavigasjon
         const mainContent = document.getElementById('main-content');
         if (mainContent) {
+          // Set ein liten forseinking for å sikre at alt er lasta
           setTimeout(() => { mainContent.focus(); }, 100);
         }
       }, { once: true });
 
+      // Oppdater ved tema-endringar
       document.addEventListener('themeChanged', updateMermaidTheme);
       window.matchMedia('(prefers-color-scheme: dark)').addListener(updateMermaidTheme);
     </script>
@@ -120,6 +130,7 @@
     <script src="{{ "/assets/js/geography-support-clean.js" | relative_url }}"></script>
     <script src="{{ "/assets/js/theme-toggle.js" | relative_url }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <!-- Last språk manuelt i staden for autoloader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
@@ -132,6 +143,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
     <script>
+      // Automatisk oppdatering av tema basert på systeminnstillingar
       function updatePrismTheme() {
         const theme = document.documentElement.getAttribute('data-theme');
         const isDark = theme === 'dark' ||
@@ -144,13 +156,19 @@
           themeLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
         }
 
+        // Oppdater Prism
         if (typeof Prism !== 'undefined') {
           Prism.highlightAll();
         }
       }
 
+      // Køyr ved oppstart
       updatePrismTheme();
+
+      // Lytt etter system tema-endringar
       window.matchMedia('(prefers-color-scheme: dark)').addListener(updatePrismTheme);
+
+      // Lytt etter lokale tema-endringar
       document.addEventListener('themeChanged', updatePrismTheme);
     </script>
     {% if site.google_analytics %}
