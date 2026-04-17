@@ -1,0 +1,18 @@
+---
+layout: default
+---
+{{ content }}
+<script>
+  // Resize keyboard iframes in response to postMessage from the embedded layout preview.
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'giellalt-keyboard-resize') {
+      const iframes = document.querySelectorAll('iframe');
+      for (const iframe of iframes) {
+        if (iframe.contentWindow === event.source) {
+          iframe.style.height = event.data.height + 'px';
+          break;
+        }
+      }
+    }
+  });
+</script>

@@ -1,0 +1,7 @@
+title: jekyll-theme-giellalt
+description: Shared Jekyll theme for GiellaLT documentation sites.
+
+plugins:
+  - jekyll-seo-tag
+  - jemoji
+  - jekyll-include-cache
