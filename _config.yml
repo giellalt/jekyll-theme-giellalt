@@ -3,5 +3,6 @@ description: Shared Jekyll theme for GiellaLT documentation sites.
 
 plugins:
   - jekyll-seo-tag
-  - jemoji
+  - jekyll-github-metadata
   - jekyll-include-cache
+  - jemoji
