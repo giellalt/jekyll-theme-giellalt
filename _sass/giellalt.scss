@@ -6,7 +6,7 @@ iframe {
 :root {
   --left-menu-width: 250px;
 
-  /* Light mode defaults */
+  /* Standardfargar for ljos modus */
   --bg-color: #fff;
   --text-color: #222;
   --header-bg: #fff;
@@ -24,7 +24,7 @@ iframe {
   --gradient-shadow: rgba(0,0,0,0.08);
 }
 
-/* Dark mode — system preference, unless user has explicitly chosen light */
+/* Mørkt tema - identisk for både system og eksplisitt val */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --bg-color: #0a0a0a;
@@ -56,7 +56,7 @@ iframe {
   }
 }
 
-/* Dark mode — user explicitly chose dark */
+/* Eksplisitt mørkt tema - identisk med systemmyrk */
 :root[data-theme='dark'] {
   --bg-color: #0a0a0a;
   --text-color: #e0e0e0;
@@ -86,6 +86,7 @@ iframe {
   --kbd-color: #e6edf3;
 }
 
+/* Farge-overstyring */
 html, body {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -104,12 +105,14 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--heading-color);
 }
 
+/* Kodeblokkar */
 pre, pre.highlight {
   background-color: var(--code-bg);
   border: 1px solid var(--code-border);
   color: var(--code-text);
 }
 
+/* Inline kode */
 code {
   background-color: var(--code-inline-bg);
   border-radius: 3px;
@@ -117,10 +120,12 @@ code {
   padding: 0.2em 0.4em;
 }
 
+/* Kode med lenkjer */
 code a {
   color: var(--code-link-color);
 }
 
+/* Tabellar */
 table {
   border-color: var(--border-color);
 }
@@ -143,6 +148,7 @@ table td {
   border-color: var(--border-color);
 }
 
+/* Tastatur-kommandoar */
 kbd {
   background-color: var(--kbd-bg);
   border: 1px solid var(--kbd-border);
