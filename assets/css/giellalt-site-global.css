@@ -136,6 +136,7 @@ body {
   color: var(--text-color);
   background-color: var(--bg-color);
   margin: 0;
+  padding: 50px;
 }
 
 /* New grid container */
