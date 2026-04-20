@@ -27,7 +27,7 @@
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
         {% if site.github.is_project_page %}
-        <p class="view"><a href="{{ site.github.repository_url }}">View the project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
+        {% include header-view-project.html %}
         {% endif %}
 
         {% if site.github.is_user_page %}
@@ -49,8 +49,7 @@
       </section>
       <footer>
         {% if site.github.is_project_page %}
-        <p>This project is maintained by <a href="{{ site.github.owner_url }}">GiellaLT</a>.
-        More information on the <a href="https://giellalt.github.io/">GiellaLT site</a>.</p>
+        {% include footer-maintained.html %}
         {% endif %}
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
