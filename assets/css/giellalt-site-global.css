@@ -29,51 +29,87 @@ kbd {
 }
 
 :root {
+  color-scheme: light dark;
   --menu-width: 270px;
-  
+
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
   --active-sitem-bg-color: rgba(0, 0, 0, 0.1);
   --text-color: #222;
-  --bold-color: #222; /* Ny variabel for halvfeit tekst */
+  --bold-color: #222;
   --mermaid-bg: #fff;
-  --mermaid-node-bg: #eee;
-  --mermaid-node-border: #999;
-  --header-bg: #fff;
   --link-color: #0066cc;
   --link-hover-bg: #efefef;
   --link-hover-color: #06c;
   --border-color: #e0e0e0;
   --heading-color: #222;
   --code-bg: #eee;
+  --code-border: #d0d7de;
+  --code-text: #24292f;
+  --code-link-color: #0066cc;
   --menu-bg: #fff;
   --menu-text: #222;
   --menu-hover-bg: #f0f0f0;
   --menu-hover-text: #000;
-  --menu-shadow: rgba(0,0,0,0.05);
   --gradient-shadow: rgba(0,0,0,0.08);
-  --content-bg: #fff;
-  --content-text: #222;
-  --content-border: #e0e0e0;
+  --search-bg: #fff;
   --table-header-bg: #f8f8f8;
+  --table-row-odd: #fff;
   --table-row-even: #fafafa;
   --table-border: #ddd;
   --blockquote-border: #e5e5e5;
   --blockquote-text: #666;
   --hr-border: #ccc;
+  --kbd-bg: #fafbfc;
+  --kbd-border: #c6cbd1;
+  --kbd-color: #444d56;
 }
 
-/* Mørkt tema - identisk for både system og eksplisitt val */
+/* Dark theme — canonical palette below is applied when EITHER:
+     - the user has explicitly opted into dark via [data-theme='dark'], OR
+     - the OS prefers dark and no explicit light override is set.
+   Pure CSS can't DRY across an @media boundary, so the same values are
+   duplicated in two blocks. Keep them in sync. */
+:root[data-theme='dark'] {
+  --bg-color: #0d1117;
+  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
+  --text-color: #e6edf3;
+  --bold-color: #e6edf3;
+  --mermaid-bg: #0d1117;
+  --link-color: #58a6ff;
+  --link-hover-bg: rgba(56, 139, 253, 0.1);
+  --link-hover-color: #58a6ff;
+  --border-color: #30363d;
+  --heading-color: #e6edf3;
+  --code-bg: #161b22;
+  --code-text: #e6edf3;
+  --code-border: #30363d;
+  --code-link-color: #96d0ff;
+  --menu-bg: #010409;
+  --menu-text: #e6edf3;
+  --menu-hover-bg: rgba(56, 139, 253, 0.1);
+  --menu-hover-text: #58a6ff;
+  --gradient-shadow: rgba(0,0,0,0.2);
+  --search-bg: #0d1117;
+  --table-header-bg: #161b22;
+  --table-row-odd: #161b22;
+  --table-row-even: #0d1117;
+  --table-border: #30363d;
+  --blockquote-border: #3b434b;
+  --blockquote-text: #8b949e;
+  --hr-border: #30363d;
+  --kbd-bg: #161b22;
+  --kbd-border: #30363d;
+  --kbd-color: #e6edf3;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --bg-color: #0d1117;
     --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
     --text-color: #e6edf3;
-    --bold-color: #e6edf3; /* Ny variabel for halvfeit tekst */
+    --bold-color: #e6edf3;
     --mermaid-bg: #0d1117;
-    --mermaid-node-bg: #2a2a2a;
-    --mermaid-node-border: #555;
-    --header-bg: #010409;
     --link-color: #58a6ff;
     --link-hover-bg: rgba(56, 139, 253, 0.1);
     --link-hover-color: #58a6ff;
@@ -82,17 +118,13 @@ kbd {
     --code-bg: #161b22;
     --code-text: #e6edf3;
     --code-border: #30363d;
-    --code-inline-bg: rgba(110,118,129,0.4);
     --code-link-color: #96d0ff;
     --menu-bg: #010409;
     --menu-text: #e6edf3;
     --menu-hover-bg: rgba(56, 139, 253, 0.1);
     --menu-hover-text: #58a6ff;
-    --menu-shadow: rgba(0,0,0,0.3);
     --gradient-shadow: rgba(0,0,0,0.2);
-    --content-bg: #0d1117;
-    --content-text: #e6edf3;
-    --content-border: #30363d;
+    --search-bg: #0d1117;
     --table-header-bg: #161b22;
     --table-row-odd: #161b22;
     --table-row-even: #0d1117;
@@ -100,28 +132,10 @@ kbd {
     --blockquote-border: #3b434b;
     --blockquote-text: #8b949e;
     --hr-border: #30363d;
+    --kbd-bg: #161b22;
+    --kbd-border: #30363d;
+    --kbd-color: #e6edf3;
   }
-}
-
-/* Eksplisitt mørkt tema */
-:root[data-theme='dark'] {
-  --bg-color: #0a0a0a;
-  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
-  --text-color: #e0e0e0;
-  --bold-color: #e0e0e0; /* Ny variabel for halvfeit tekst */
-  --header-bg: #000;
-  --link-color: #66b3ff;
-  --link-hover-bg: #1a1a1a;
-  --link-hover-color: #fff;
-  --border-color: #333;
-  --heading-color: #fff;
-  --code-bg: #1a1a1a;
-  --menu-bg: #000;
-  --menu-text: #e0e0e0;
-  --menu-hover-bg: #1a1a1a;
-  --menu-hover-text: #fff;
-  --menu-shadow: rgba(0,0,0,0.3);
-  --gradient-shadow: rgba(0,0,0,0.2);
 }
 
 div.twocolumn {
@@ -131,7 +145,7 @@ div.twocolumn {
 }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   color: var(--text-color);
   background-color: var(--bg-color);
@@ -163,7 +177,6 @@ header {
   border-right: 1px solid var(--border-color);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
-  /*  width: var(--left-menu-width); */
   height: calc(100vh - 8em - 50px - 50px); /* Høgd minus footer - body padding */
 }
 
@@ -175,8 +188,17 @@ section {
   background-color: var(--bg-color);
   overflow-y: auto;
   width: 550px;
-  /* Make section focusable for keyboard navigation */
+}
+
+/* Section is auto-focused on load for keyboard scrolling. Suppress the
+   outline for that programmatic focus but show it for real keyboard focus. */
+section:focus {
   outline: none;
+}
+
+section:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: -2px;
 }
 
 /* Sitemap in column 3, spanning both rows */
@@ -512,13 +534,6 @@ header #left_toc li > ul > li {
   margin-left: 1em;
 }
 
-a:hover {
-  text-decoration: underline;
-  background-color: var(--link-hover-bg);
-  font-weight: normal;
-}
-
-
 #left_toc_shadow {
   width: var(--menu-width);
   height: 2em;
@@ -537,14 +552,6 @@ a:hover {
 
 div.repolist ul li p {
   margin: 0;
-}
-
-#maintainers-developers-teams-and-partners ~ table th + th {
-    width: 80%;
-}
-
-details {
-   display: none;
 }
 
 #sitemap:hover, #sitemap:active, #sitemap:focus {
@@ -758,48 +765,47 @@ details {
   }
   
   /* Normale sitemap-fargar for hamburgermodus */
-  @media screen and (max-width: 1270px) {
-    #sitemap {
-      background: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
-    }
-    
-    #sitemap h1 {
-      color: var(--heading-color);
-      margin-top: 0;
-      font-size: 16px;
-      word-wrap: break-word;
-    }
-    
-    #sitemap a {
-      color: var(--text-color);
-      opacity: 0.7;
-      font-size: 11px;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      hyphens: auto;
-    }
-    
-    #sitemap a:hover {
-      opacity: 1;
-      background-color: var(--link-hover-bg);
-      color: var(--link-hover-color);
-    }
-    
-    #sitemap ul {
-      background: transparent;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-    
-    #sitemap li {
-      background: transparent;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
+  #sitemap {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
   }
-  
+
+  #sitemap h1 {
+    color: var(--heading-color);
+    margin-top: 0;
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  #sitemap a {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 11px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  #sitemap a:hover {
+    opacity: 1;
+    background-color: var(--link-hover-bg);
+    color: var(--link-hover-color);
+  }
+
+  #sitemap ul {
+    background: transparent;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  #sitemap li {
+    background: transparent;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+
   /* Enkel display-basert hover-funksjonalitet */
   .hamburger-menu:hover + #sitemap,
   #sitemap:hover {
