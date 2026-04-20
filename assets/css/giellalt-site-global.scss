@@ -1,3 +1,40 @@
+---
+---
+
+/* Dark palette — defined once, applied under both selectors below. */
+@mixin dark-palette {
+  --bg-color: #0d1117;
+  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
+  --text-color: #e6edf3;
+  --bold-color: #e6edf3;
+  --mermaid-bg: #0d1117;
+  --link-color: #58a6ff;
+  --link-hover-bg: rgba(56, 139, 253, 0.1);
+  --link-hover-color: #58a6ff;
+  --border-color: #30363d;
+  --heading-color: #e6edf3;
+  --code-bg: #161b22;
+  --code-text: #e6edf3;
+  --code-border: #30363d;
+  --code-link-color: #96d0ff;
+  --menu-bg: #010409;
+  --menu-text: #e6edf3;
+  --menu-hover-bg: rgba(56, 139, 253, 0.1);
+  --menu-hover-text: #58a6ff;
+  --gradient-shadow: rgba(0,0,0,0.2);
+  --search-bg: #0d1117;
+  --table-header-bg: #161b22;
+  --table-row-odd: #161b22;
+  --table-row-even: #0d1117;
+  --table-border: #30363d;
+  --blockquote-border: #3b434b;
+  --blockquote-text: #8b949e;
+  --hr-border: #30363d;
+  --kbd-bg: #161b22;
+  --kbd-border: #30363d;
+  --kbd-color: #e6edf3;
+}
+
 html, body {
   min-height: 100%;
   margin: 0;
@@ -65,76 +102,15 @@ kbd {
   --kbd-color: #444d56;
 }
 
-/* Dark theme — canonical palette below is applied when EITHER:
-     - the user has explicitly opted into dark via [data-theme='dark'], OR
-     - the OS prefers dark and no explicit light override is set.
-   Pure CSS can't DRY across an @media boundary, so the same values are
-   duplicated in two blocks. Keep them in sync. */
+/* Dark theme applies when the user explicitly opts in via [data-theme='dark'],
+   OR when the OS prefers dark and no explicit light override is set. */
 :root[data-theme='dark'] {
-  --bg-color: #0d1117;
-  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
-  --text-color: #e6edf3;
-  --bold-color: #e6edf3;
-  --mermaid-bg: #0d1117;
-  --link-color: #58a6ff;
-  --link-hover-bg: rgba(56, 139, 253, 0.1);
-  --link-hover-color: #58a6ff;
-  --border-color: #30363d;
-  --heading-color: #e6edf3;
-  --code-bg: #161b22;
-  --code-text: #e6edf3;
-  --code-border: #30363d;
-  --code-link-color: #96d0ff;
-  --menu-bg: #010409;
-  --menu-text: #e6edf3;
-  --menu-hover-bg: rgba(56, 139, 253, 0.1);
-  --menu-hover-text: #58a6ff;
-  --gradient-shadow: rgba(0,0,0,0.2);
-  --search-bg: #0d1117;
-  --table-header-bg: #161b22;
-  --table-row-odd: #161b22;
-  --table-row-even: #0d1117;
-  --table-border: #30363d;
-  --blockquote-border: #3b434b;
-  --blockquote-text: #8b949e;
-  --hr-border: #30363d;
-  --kbd-bg: #161b22;
-  --kbd-border: #30363d;
-  --kbd-color: #e6edf3;
+  @include dark-palette;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg-color: #0d1117;
-    --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
-    --text-color: #e6edf3;
-    --bold-color: #e6edf3;
-    --mermaid-bg: #0d1117;
-    --link-color: #58a6ff;
-    --link-hover-bg: rgba(56, 139, 253, 0.1);
-    --link-hover-color: #58a6ff;
-    --border-color: #30363d;
-    --heading-color: #e6edf3;
-    --code-bg: #161b22;
-    --code-text: #e6edf3;
-    --code-border: #30363d;
-    --code-link-color: #96d0ff;
-    --menu-bg: #010409;
-    --menu-text: #e6edf3;
-    --menu-hover-bg: rgba(56, 139, 253, 0.1);
-    --menu-hover-text: #58a6ff;
-    --gradient-shadow: rgba(0,0,0,0.2);
-    --search-bg: #0d1117;
-    --table-header-bg: #161b22;
-    --table-row-odd: #161b22;
-    --table-row-even: #0d1117;
-    --table-border: #30363d;
-    --blockquote-border: #3b434b;
-    --blockquote-text: #8b949e;
-    --hr-border: #30363d;
-    --kbd-bg: #161b22;
-    --kbd-border: #30363d;
-    --kbd-color: #e6edf3;
+    @include dark-palette;
   }
 }
 
