@@ -199,21 +199,30 @@ footer {
   z-index: 100;
 }
 
-/* Add heavy shadow to the dark theme toggle */
-footer .theme-toggle #theme-dark {
-  text-shadow:
-    0 0 20px #000,
-    0 0 20px #111,
-    0 0 20px #222,
-    0 0 20px #000,
-    0 0 20px #000,
-    0 0 20px #000,
-    0 0 20px #000,
-    0 0 20px #000,
-    0 0 20px #111;
-  font-weight: bold;
-  overflow: hidden;
+/* Theme toggle button — single icon, swaps sun/moon based on active theme. */
+footer #theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--menu-bg);
+  color: var(--menu-text);
+  cursor: pointer;
 }
+
+footer #theme-toggle-btn:hover {
+  background-color: var(--menu-hover-bg);
+}
+
+footer #theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
+
 
 /* Innhaldselement */
 section table {
@@ -380,7 +389,6 @@ header .view-project {
 
 header .view-project:hover {
   background-color: var(--menu-hover-bg);
-  color: var(--menu-hover-text);
   text-decoration: none;
 }
 
@@ -484,8 +492,9 @@ footer p {
 }
 
 footer .theme-toggle {
+  display: flex;
+  justify-content: center;
   margin: auto;
-  text-align: center;
 }
 
 header #left_toc li::before, #sitemap > ul li::before {

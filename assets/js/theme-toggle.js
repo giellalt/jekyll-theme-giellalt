@@ -1,59 +1,47 @@
-// Enkel JS for tema-brytar
-function setTheme(mode) {
-  if (mode === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
-  } else if (mode === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('theme', 'system');
+(function () {
+  var dm = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function sysTheme() {
+    return dm.matches ? 'dark' : 'light';
   }
-  updateActiveButton(mode);
-  // Send ei tilpassa hending når temaet blir endra
-  document.dispatchEvent(new CustomEvent('themeChanged'));
-}
-function updateActiveButton(mode) {
-  document.getElementById('theme-light').classList.remove('active');
-  document.getElementById('theme-dark').classList.remove('active');
-  document.getElementById('theme-system').classList.remove('active');
-  if (mode === 'light') {
-    document.getElementById('theme-light').classList.add('active');
-  } else if (mode === 'dark') {
-    document.getElementById('theme-dark').classList.add('active');
-  } else {
-    document.getElementById('theme-system').classList.add('active');
-  }
-}
-function getSystemTheme() {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-function applyTheme() {
-  var theme = localStorage.getItem('theme') || 'system';
-  if (theme === 'system') {
-    // For system-tema, sett data-theme basert på system-innstillingar
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
+
+  function applyStored() {
+    var stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') {
+      document.documentElement.setAttribute('data-theme', stored);
     } else {
-      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.removeAttribute('data-theme');
     }
-    updateActiveButton('system');
-  } else {
-    document.documentElement.setAttribute('data-theme', theme);
-    updateActiveButton(theme);
+    document.dispatchEvent(new CustomEvent('themeChanged'));
   }
-}
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('theme-light').onclick = function() { setTheme('light'); };
-  document.getElementById('theme-dark').onclick = function() { setTheme('dark'); };
-  document.getElementById('theme-system').onclick = function() { setTheme('system'); };
-  applyTheme();
-  // Send ut themeChanged-hending ved oppstart for å oppdatera Prism og Mermaid
-  document.dispatchEvent(new CustomEvent('themeChanged'));
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
-    if ((localStorage.getItem('theme') || 'system') === 'system') {
-      applyTheme();
+
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') || sysTheme();
+  }
+
+  function toggle() {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    if (next === sysTheme()) {
+      // User's pick already matches system — don't persist, fall back to system.
+      localStorage.removeItem('theme');
+    } else {
+      localStorage.setItem('theme', next);
     }
+    applyStored();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.addEventListener('click', toggle);
+    applyStored();
   });
-});
+
+  // If the OS catches up to our stored override, throw the override away
+  // so future OS changes propagate (the "smart rejoin" rule).
+  dm.addEventListener('change', function () {
+    if (localStorage.getItem('theme') === sysTheme()) {
+      localStorage.removeItem('theme');
+    }
+    applyStored();
+  });
+})();
