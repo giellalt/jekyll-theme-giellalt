@@ -122,7 +122,7 @@ div.twocolumn {
 
 body {
   font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-color);
   background-color: var(--bg-color);
   margin: 0;
@@ -271,6 +271,11 @@ a:hover {
 /* Overskrifter og halvfeit tekst */
 h1, h2, h3, h4, h5, h6 {
   color: var(--heading-color);
+}
+
+section h2 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Overskrifter som lenke når peikaren flyt over */
