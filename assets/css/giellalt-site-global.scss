@@ -9,7 +9,7 @@
   --bold-color: #e6edf3;
   --mermaid-bg: #0d1117;
   --link-color: #58a6ff;
-  --link-hover-color: #58a6ff;
+  --link-hover-color: #79b8ff;
   --border-color: #30363d;
   --heading-color: #e6edf3;
   --code-bg: #161b22;
@@ -75,7 +75,7 @@ kbd {
   --bold-color: #1f2328;
   --mermaid-bg: #fff;
   --link-color: #0066cc;
-  --link-hover-color: #06c;
+  --link-hover-color: #004499;
   --border-color: #e0e0e0;
   --heading-color: #222;
   --code-bg: #eee;
@@ -273,13 +273,11 @@ section h2 {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Overskrifter som lenke når peikaren flyt over.
-   Drop the bg tint inherited from base a:hover — on multi-line headings
-   (line-height 1.1), the next line's tint overlaps the previous line's
-   underline and clips descenders. Underline alone is enough feedback. */
+/* Heading-as-link hover: drop the underline only — inherit color shift
+   from base a:hover. On a wrapped multi-line title, an underline at
+   line-height 1.1 collides with the next line's text. */
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
-  color: var(--heading-color);
-  background-color: transparent;
+  text-decoration: none;
 }
 
 strong, b, strong em {
