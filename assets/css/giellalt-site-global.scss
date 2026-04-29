@@ -276,9 +276,13 @@ section h2 {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Overskrifter som lenke når peikaren flyt over */
+/* Overskrifter som lenke når peikaren flyt over.
+   Drop the bg tint inherited from base a:hover — on multi-line headings
+   (line-height 1.1), the next line's tint overlaps the previous line's
+   underline and clips descenders. Underline alone is enough feedback. */
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   color: var(--heading-color);
+  background-color: transparent;
 }
 
 strong, b, strong em {
