@@ -307,6 +307,14 @@ pre code, p code, li code {
   border: none;
 }
 
+code {
+  padding: 0.15em 0.4em;
+}
+
+pre code {
+  padding: 0;
+}
+
 code a {
   color: var(--code-link-color);
 }
