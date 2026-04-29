@@ -363,6 +363,31 @@ header > #toc:not(:has(:nth-child(2))) {
     display: none;
 }
 
+header .view-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.4em 0.75em;
+  margin: 0.5em 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--menu-text);
+  background-color: var(--menu-bg);
+  text-decoration: none;
+  font-size: 0.875em;
+  width: fit-content;
+}
+
+header .view-project:hover {
+  background-color: var(--menu-hover-bg);
+  color: var(--menu-hover-text);
+  text-decoration: none;
+}
+
+header .view-project svg {
+  flex-shrink: 0;
+}
+
 header h2.tocheader {
   margin: 0;
   font-size: 0.8em;
