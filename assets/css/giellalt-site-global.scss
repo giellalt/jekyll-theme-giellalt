@@ -366,11 +366,13 @@ header > #toc:not(:has(:nth-child(2))) {
 
 header h2.tocheader {
   margin: 0;
-  font-size: 1em;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   border-top: 1px solid var(--border-color);
   padding-top: 0.4em;
   padding-bottom: 0.4em;
-  text-decoration: underline;
   color: var(--heading-color);
   flex-shrink: 0;
 }
