@@ -166,15 +166,13 @@ section {
   width: 550px;
 }
 
-/* Section is auto-focused on load for keyboard scrolling. Suppress the
-   outline for that programmatic focus but show it for real keyboard focus. */
+/* The section has tabindex=0 so keyboard users can scroll its overflow, and
+   it's auto-focused on page load. Suppress all focus outlines on the
+   container itself — interactive children carry their own focus rings.
+   (Firefox would otherwise apply :focus-visible on click-focus of tabindex
+   elements, drawing a large outline around the whole reading column.) */
 section:focus {
   outline: none;
-}
-
-section:focus-visible {
-  outline: 2px solid var(--link-color);
-  outline-offset: -2px;
 }
 
 /* Sitemap in column 3, spanning both rows */
