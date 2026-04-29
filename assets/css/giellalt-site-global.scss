@@ -281,7 +281,6 @@ section h2 {
 /* Overskrifter som lenke når peikaren flyt over */
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   color: var(--heading-color);
-  font-weight: bold;
 }
 
 strong, b, strong em {
@@ -408,7 +407,6 @@ header #left_toc {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   text-decoration: none;
-  font-weight: bold;
 }
 
 /* Menystruktur */
