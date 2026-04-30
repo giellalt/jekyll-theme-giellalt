@@ -717,6 +717,8 @@ div.repolist ul li p {
     left: auto; /* Sikra at han er til høgre */
     width: 40px;
     height: 40px;
+    padding: 0;
+    font: inherit;
     background: var(--menu-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -729,9 +731,14 @@ div.repolist ul li p {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: background-color 0.2s;
   }
-  
+
   .hamburger-menu:hover {
     background: var(--menu-hover-bg);
+  }
+
+  .hamburger-menu:focus-visible {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
   }
   
   /* Hamburgerlinjene */
@@ -826,13 +833,9 @@ div.repolist ul li p {
   }
 
 
-  /* Enkel display-basert hover-funksjonalitet */
-  .hamburger-menu:hover + #sitemap,
-  #sitemap:hover {
-    display: block;
-  }
-  
-  /* Touch-funksjonalitet for mobile einingar */
+  /* Click-only toggle. Hover is intentionally not supported — it breaks
+     on touch (tap-then-stick), has no keyboard equivalent, and the
+     hamburger pattern is universally click-driven. */
   .hamburger-menu.active + #sitemap,
   #sitemap.show {
     display: block;
@@ -932,11 +935,11 @@ https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-over
     border: none;
   }
 
-  /* Gøym sitemap på desse skjermane. !important is needed to beat the
-     higher-specificity `.hamburger-menu:hover + #sitemap` rule from the
-     1270px block, which would otherwise show the sitemap on hover here too. */
+  /* Sitemap hidden by default at this width; the hamburger's `.active +`
+     and `.show` rules from the 1270px block (higher specificity) override
+     to show the drawer when the user toggles it. */
   #sitemap {
-    display: none !important;
+    display: none;
   }
 
   /* Reset grid positioning for footer */
