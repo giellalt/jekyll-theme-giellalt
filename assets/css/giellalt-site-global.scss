@@ -67,6 +67,7 @@ kbd {
 :root {
   color-scheme: light dark;
   --menu-width: 270px;
+  --reading-width: 72ch;
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -130,12 +131,13 @@ body {
 /* New grid container */
 body div.wrapper {
   display: grid;
-  grid-template-columns: var(--menu-width) 550px var(--menu-width);
+  grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) var(--menu-width);
   grid-template-rows: 1fr 100px;
   gap: 40px;
-  width: calc(var(--menu-width) + 550px + var(--menu-width) + 80px); /* Total width including gaps */
+  width: 100%;
+  max-width: calc(var(--menu-width) * 2 + var(--reading-width) + 80px);
   height: calc(100vh - 50px - 50px); /* Full height minus body padding */
-  margin: 0 auto; /* Center on page */
+  margin: 0 auto; /* Center on page — stays centered as window widens */
   position: relative;
 }
 
@@ -172,7 +174,6 @@ section {
   grid-row: 1 / span 2;
   background-color: var(--bg-color);
   overflow-y: auto;
-  width: 550px;
 }
 
 /* The section has tabindex=0 so keyboard users can scroll its overflow, and
@@ -718,8 +719,8 @@ div.repolist ul li p {
 @media screen and (max-width: 1270px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
-    grid-template-columns: var(--menu-width) 550px;
-    width: calc(var(--menu-width) + 550px + 40px); /* Justert breidd utan kolonne 3 */
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    max-width: calc(var(--menu-width) + var(--reading-width) + 40px);
   }
   
   /* Hamburgerknapp */
