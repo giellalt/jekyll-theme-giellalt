@@ -384,7 +384,12 @@ header .view-project {
   background-color: var(--menu-bg);
   text-decoration: none;
   font-size: 0.875em;
-  width: fit-content;
+  align-self: flex-start;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 header .view-project:hover {
