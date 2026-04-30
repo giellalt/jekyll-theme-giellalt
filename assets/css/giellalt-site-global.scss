@@ -137,8 +137,20 @@ body div.wrapper {
   height: calc(100vh - 50px - 50px); /* Full height minus body padding */
   margin: 0 auto; /* Center on page */
   position: relative;
-  color: var(--text-color);
-  background-color: var(--bg-color);
+}
+
+/* Continuous vertical divider at column 1 / column 2 boundary.
+   Replaces individual border-right declarations on header + footer,
+   which left a gap in the row-gap between them. */
+body div.wrapper::before {
+  content: '';
+  position: absolute;
+  left: var(--menu-width);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-color);
+  pointer-events: none;
 }
 
 /* Header in column 1, row 1 */
@@ -148,7 +160,6 @@ header {
   display: flex;
   flex-direction: column;
   background: var(--menu-bg);
-  border-right: 1px solid var(--border-color);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
   height: calc(100vh - 8em - 50px - 50px); /* Høgd minus footer - body padding */
@@ -180,7 +191,6 @@ section:focus {
   border-left: 1px solid var(--border-color);
   padding-left: 10px;
   background: var(--bg-color);
-  opacity: 0.2;
   width: 100%; /* Bruk full grid-breidd */
   max-width: var(--menu-width); /* Men ikkje meir enn definert breidd */
   overflow: hidden; /* Hindra overflow */
@@ -194,7 +204,6 @@ footer {
   height: auto; /* Let grid control height */
   background: var(--menu-bg);
   border-top: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
   padding: 0.5em 0;
   z-index: 100;
 }
@@ -579,7 +588,13 @@ div.repolist ul li p {
   margin: 0;
 }
 
-#sitemap:hover, #sitemap:active, #sitemap:focus {
+/* Dim the sitemap contents but keep the container's border at full alpha.
+   Hover/focus restores full opacity. */
+#sitemap > * {
+  opacity: 0.2;
+  transition: opacity 0.2s;
+}
+#sitemap:hover > *, #sitemap:focus-within > * {
   opacity: 1;
 }
 
@@ -791,8 +806,12 @@ div.repolist ul li p {
     overflow-x: hidden; /* Hindra horisontal scroll */
     overflow-y: auto;
     color: var(--text-color);
-    opacity: 1; /* Ikkje gjennomsiktig */
     display: none; /* Gøymd som standard */
+  }
+  /* In hamburger mode the dimming behavior doesn't apply — content is shown
+     full-strength when the drawer is open. */
+  #sitemap > * {
+    opacity: 1;
   }
   
   /* Normale sitemap-fargar for hamburgermodus */
