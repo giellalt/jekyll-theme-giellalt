@@ -369,13 +369,6 @@ div.code-toolbar {
   padding-top: 1em;
 }
 
-/* Hovudlayout for sideinnhald */
-body {
-  display: flex;
-  flex-direction: row;
-  min-height: 100%;
-}
-
 /* Hide TOC if empty: */
 header > #toc:not(:has(:nth-child(2))) {
     display: none;
@@ -927,9 +920,9 @@ https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-over
   body div.wrapper {
     display: block; /* Ikkje grid */
     width: auto;
-    max-width: 100%; /* Hindra at wrapper blir for brei */
+    max-width: 860px; /* Fluid up to prod's wrapper width; centered via margin auto */
     height: auto;
-    margin: 0;
+    margin: 0 auto;
     grid-template-columns: none;
     grid-template-rows: none;
     gap: 0;
@@ -948,8 +941,9 @@ https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-over
     position: relative;
     min-height: 100px;
     display: block;
-    width: 550px;
+    width: 100%;
     height: auto;
+    margin-bottom: 2.5em;
     overflow: visible;
     padding-right: 0;
     border-right: none;
