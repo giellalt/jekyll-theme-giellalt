@@ -935,6 +935,12 @@ https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-over
     gap: 0;
   }
 
+  /* Stacked layout has no col-1/col-2 boundary; hide the divider that
+     would otherwise slice through the content. */
+  body div.wrapper::before {
+    display: none;
+  }
+
   /* Reset grid positioning for header */
   body .wrapper header {
     grid-column: auto;
