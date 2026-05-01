@@ -68,6 +68,9 @@ kbd {
   color-scheme: light dark;
   --menu-width: 270px;
   --reading-width: 72ch;
+  --page-padding: 50px;       /* outer body padding */
+  --gutter: 40px;             /* layout breathing room: section side-padding + header/footer row-gap */
+  --footer-height: 100px;     /* col-1 footer row track */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -125,18 +128,18 @@ body {
   color: var(--text-color);
   background-color: var(--bg-color);
   margin: 0;
-  padding: 50px;
+  padding: var(--page-padding);
 }
 
 /* New grid container */
 body div.wrapper {
   display: grid;
   grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) var(--menu-width);
-  grid-template-rows: 1fr 100px;
-  gap: 40px 0;
+  grid-template-rows: 1fr var(--footer-height);
+  gap: var(--gutter) 0;
   width: 100%;
   max-width: calc(var(--menu-width) * 2 + var(--reading-width));
-  height: calc(100vh - 50px - 50px); /* Full height minus body padding */
+  height: calc(100vh - var(--page-padding) * 2);
   margin: 0 auto; /* Center on page — stays centered as window widens */
   position: relative;
 }
@@ -164,7 +167,7 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
-  height: calc(100vh - 8em - 50px - 50px); /* Høgd minus footer - body padding */
+  height: calc(100vh - 8em - var(--page-padding) * 2); /* Høgd minus footer - body padding */
 }
 
 /* Hovudinnhald */
@@ -174,7 +177,7 @@ section {
   grid-row: 1 / span 2;
   background-color: var(--bg-color);
   overflow-y: auto;
-  padding: 0 40px; /* Recreate inter-column spacing so scrollbar sits at column edge */
+  padding: 0 var(--gutter); /* Recreate inter-column spacing so scrollbar sits at column edge */
 }
 
 /* The section has tabindex=0 so keyboard users can scroll its overflow, and
