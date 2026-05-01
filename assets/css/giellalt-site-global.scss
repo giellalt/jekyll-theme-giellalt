@@ -69,7 +69,7 @@ kbd {
   --menu-width: 270px;
   --reading-width: 72ch;
   --page-padding: 50px;       /* outer body padding */
-  --gutter: 40px;             /* layout breathing room: section side-padding + header/footer row-gap */
+  --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
   --footer-height: 100px;     /* col-1 footer row track */
 
   /* Standardfargar for ljos modus */
@@ -136,7 +136,7 @@ body div.wrapper {
   display: grid;
   grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) var(--menu-width);
   grid-template-rows: 1fr var(--footer-height);
-  gap: var(--gutter) 0;
+  gap: 0;
   width: 100%;
   max-width: calc(var(--menu-width) * 2 + var(--reading-width));
   height: calc(100vh - var(--page-padding) * 2);
@@ -167,7 +167,6 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
-  height: calc(100vh - 8em - var(--page-padding) * 2); /* Høgd minus footer - body padding */
 }
 
 /* Hovudinnhald */
@@ -887,28 +886,6 @@ div.repolist ul li p {
   }
 }
 
-/* The following is taken from:
-https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-overflowing */
-
-@media screen and (min-width: 961px) {
-  #left_toc {
-    background:
-      /* Shadow covers */
-      linear-gradient(var(--menu-bg) 30%, rgba(0,0,0,0)),
-      linear-gradient(rgba(0,0,0,0), var(--menu-bg) 70%) 0 100%,
-      
-      /* Shadows */
-      radial-gradient(farthest-side at 50% 0, var(--gradient-shadow), rgba(0,0,0,0)),
-      radial-gradient(farthest-side at 50% 100%, var(--gradient-shadow), rgba(0,0,0,0)) 0 100%;
-    background-repeat: no-repeat;
-    background-color: var(--menu-bg);
-    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-    
-    /* Opera doesn't support this in the shorthand */
-    background-attachment: local, local, scroll, scroll;
-  }
-}
-
 /* --- iPad and other Tablet screen widths: --- */
 
 @media print, screen and (max-width: 960px) {
@@ -1085,18 +1062,6 @@ https://stackoverflow.com/questions/9333379/check-if-an-elements-content-is-over
 
   body .wrapper section {
     border: none
-  }
-
-  /* Overstyring av fast breidd for section-elementet */
-  body div.wrapper, section {
-    width: auto;
-    max-width: 550px;
-  }
-
-  /* Overstyring av fast breidd for header-elementet frå tablet-CSS */
-  body .wrapper header {
-    width: auto;
-    max-width: 550px;
   }
 
   /* Aggressiv overstyring av Jekyll-tema og alle containrar */
