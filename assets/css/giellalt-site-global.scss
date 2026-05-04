@@ -378,6 +378,15 @@ header > #toc:not(:has(:nth-child(2))) {
     display: none;
 }
 
+/* Mobile TOC disclosure — hidden on desktop, shown on mobile via the ≤720px block.
+   :not(:has(ul)) hides it on pages with no headings (toc include emits nothing). */
+#mobile-toc {
+  display: none;
+}
+#mobile-toc:not(:has(ul)) {
+  display: none !important;
+}
+
 header .view-project {
   display: inline-flex;
   align-items: center;
@@ -443,7 +452,7 @@ header #left_toc {
 
 
 /* Menylenker */
-#left_toc a, #sitemap a {
+#left_toc a, #sitemap a, #mobile_toc_list a {
   color: var(--menu-text);
   padding: 0;
   display: inline;
@@ -454,14 +463,14 @@ header #left_toc {
   overflow-wrap: break-word; /* Moderne versjon av word-wrap */
 }
 
-#left_toc a:hover, #sitemap a:hover {
+#left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   text-decoration: none;
 }
 
 /* Menystruktur */
-#left_toc ul {
+#left_toc ul, #mobile_toc_list ul {
   list-style: none;
   padding-left: 1em;
   margin: 0;
@@ -471,12 +480,12 @@ header #left_toc {
   word-wrap: break-word; /* Bryt lange ord */
 }
 
-#left_toc > ul {
+#left_toc > ul, #mobile_toc_list {
   padding-left: 0;
   width: 100%;
 }
 
-#left_toc ul ul, #sitemap ul ul {
+#left_toc ul ul, #sitemap ul ul, #mobile_toc_list ul ul {
   width: calc(100% - 1em); /* Justerer for innrykk */
 }
 
@@ -508,11 +517,11 @@ footer .theme-toggle {
   margin: auto;
 }
 
-header #left_toc li::before, #sitemap > ul li::before {
+header #left_toc li::before, #sitemap > ul li::before, #mobile_toc_list li::before {
   content: "- ";
 }
 
-header #left_toc > li, #sitemap > li {
+header #left_toc > li, #sitemap > li, #mobile_toc_list > li {
   width: auto;
   float: none;
   text-align: left;
@@ -526,7 +535,7 @@ header #left_toc > li, #sitemap > li {
   padding-left: 0.7em;
 }
 
-header #left_toc li > ul, #sitemap li > ul {
+header #left_toc li > ul, #sitemap li > ul, #mobile_toc_list li > ul {
   float: none;
   text-align: left;
   height: auto;
@@ -537,7 +546,7 @@ header #left_toc li > ul, #sitemap li > ul {
   padding-left: 0;
 }
 
-header #left_toc li > ul {
+header #left_toc li > ul, #mobile_toc_list li > ul {
   padding-left: 0;
 }
 
@@ -556,7 +565,7 @@ header #left_toc li > ul {
   width: calc(var(--menu-width) - 4em);
 }
 
-header #left_toc li > ul > li {
+header #left_toc li > ul > li, #mobile_toc_list li > ul > li {
   width: auto;
   float: none;
   border-style: none;
@@ -1123,5 +1132,43 @@ div.repolist ul li p {
 
   body .wrapper footer {
     border-right: none;
+  }
+
+  #mobile-toc {
+    display: block;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    background: var(--menu-bg);
+    color: var(--menu-text);
+  }
+
+  #mobile-toc summary {
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  #mobile-toc summary::-webkit-details-marker { display: none; }
+
+  #mobile-toc summary::before {
+    content: '▶';
+    font-size: 0.65em;
+    transition: transform 0.15s;
+  }
+
+  #mobile-toc[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  #mobile-toc #mobile_toc_list {
+    margin: 0.5rem 0 0;
   }
 }
