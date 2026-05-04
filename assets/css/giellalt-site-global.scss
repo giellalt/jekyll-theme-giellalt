@@ -394,8 +394,9 @@ pagefind-modal {
   --pf-background: var(--bg-color);
   --pf-border: var(--border-color);
   --pf-border-focus: var(--link-color);
-  --pf-hover: var(--menu-hover-bg);
-  --pf-mark: #ff0;
+  --pf-hover: var(--table-header-bg);
+  --pf-skeleton: var(--table-header-bg);
+  --pf-mark: var(--text-color);
 }
 
 /* Hide TOC if empty: */
