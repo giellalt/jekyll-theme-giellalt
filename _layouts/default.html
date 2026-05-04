@@ -80,7 +80,7 @@
   </head>
   <body>
     <div class="wrapper">
-      <header>
+      <header data-pagefind-ignore>
         <h1><a href="{{ "/" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
         {% if site.logo %}
@@ -89,10 +89,12 @@
 
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-        <p><form method="get" action="https://www.google.com/search">
-            <input type="hidden" name="sitesearch" value="{{ "/" | absolute_url }}" />
-            <input type="text" name="q" maxlength="255" placeholder="Search site with Google" />
-        </form></p>
+        <button id="search-trigger" type="button" aria-label="Search this site">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Search
+        </button>
 
         {% if site.github.is_project_page %}
         {% include header-view-project.html %}
@@ -114,8 +116,9 @@
           {% include toc.html html=content sanitize=true class="left_toc" id="left_toc" h_min=2 h_max=6 %}
         </div>
       </header>
-      <section tabindex="0" id="main-content">
-        <details id="mobile-toc">
+      <section tabindex="0" id="main-content" data-pagefind-body>
+        {% if page.title %}<span data-pagefind-meta="title" aria-hidden="true" style="display:none">{{ page.title }}</span>{% endif %}
+        <details id="mobile-toc" data-pagefind-ignore>
           <summary>On this page</summary>
           {% include toc.html html=content sanitize=true id="mobile_toc_list" h_min=2 h_max=6 %}
         </details>
@@ -125,7 +128,7 @@
         <span></span>
       </button>
 
-      <div id="sitemap">
+      <div id="sitemap" data-pagefind-ignore>
         <h1>Sitemap</h1>
         {% include_cached sitemap.html %}
       </div>
@@ -200,5 +203,65 @@
     {% endif %}
     <script src="{{ "/assets/js/hamburger-menu.js" | relative_url }}"></script>
     <script src="{{ "/assets/js/toc-overflow.js" | relative_url }}"></script>
+
+    <div id="search-modal" role="dialog" aria-modal="true" aria-label="Search this site" hidden>
+      <div id="search-modal-backdrop"></div>
+      <div id="search-modal-panel">
+        <div id="search-ui"></div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var trigger = document.getElementById('search-trigger');
+        var modal = document.getElementById('search-modal');
+        var backdrop = document.getElementById('search-modal-backdrop');
+        var uiMounted = false;
+
+        function openSearch() {
+          modal.hidden = false;
+          document.body.style.overflow = 'hidden';
+          if (!uiMounted) {
+            // Pagefind UI bundle only exists after CI build; skip gracefully in dev.
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '{{ "/pagefind/pagefind-ui.css" | relative_url }}';
+            document.head.appendChild(link);
+            var script = document.createElement('script');
+            script.src = '{{ "/pagefind/pagefind-ui.js" | relative_url }}';
+            script.onload = function () {
+              new PagefindUI({ element: '#search-ui', showImages: false });
+              uiMounted = true;
+              // Auto-focus the input after mount
+              var input = document.querySelector('#search-ui input');
+              if (input) input.focus();
+            };
+            script.onerror = function () {
+              document.getElementById('search-ui').textContent = 'Search index not available in local preview.';
+            };
+            document.head.appendChild(script);
+          } else {
+            var input = document.querySelector('#search-ui input');
+            if (input) { input.value = ''; input.focus(); }
+          }
+        }
+
+        function closeSearch() {
+          modal.hidden = true;
+          document.body.style.overflow = '';
+          trigger.focus();
+        }
+
+        trigger.addEventListener('click', openSearch);
+        backdrop.addEventListener('click', closeSearch);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && !modal.hidden) closeSearch();
+          if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) && modal.hidden) {
+            e.preventDefault();
+            openSearch();
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
