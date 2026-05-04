@@ -116,7 +116,6 @@
       </header>
       <section tabindex="0" id="main-content">
         {{ content }}
-        <div id="left_toc_shadow"></div>
       </section>
       <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
         <span></span>
@@ -196,5 +195,6 @@
     </script>
     {% endif %}
     <script src="{{ "/assets/js/hamburger-menu.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/toc-overflow.js" | relative_url }}"></script>
   </body>
 </html>

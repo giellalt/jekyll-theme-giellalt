@@ -565,19 +565,23 @@ header #left_toc li > ul > li {
   margin-left: 1em;
 }
 
-#left_toc_shadow {
-  width: var(--menu-width);
-  height: 2em;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
-  opacity: 0;
-  transition: opacity 0.2s;
-  position: absolute;
-  left: 0;
+/* Scroll-overflow shadow at the bottom of the TOC viewport. The sticky
+   pseudo pins to the bottom of #left_toc's scroll container; its upward
+   box-shadow signals "more content below". Visibility is driven by
+   .is-overflowing, toggled in toc-overflow.js when scroll position
+   indicates content extends past the viewport. */
+#left_toc { position: relative; }
+#left_toc::after {
+  content: '';
+  display: block;
+  position: sticky;
   bottom: 0;
-  z-index: 10;
+  height: 0;
+  box-shadow: 0 -1px 12px 4px var(--gradient-shadow);
+  opacity: 0;
+  transition: opacity 0.15s;
 }
-#left_toc_shadow.show-shadow {
+#left_toc.is-overflowing::after {
   opacity: 1;
 }
 
