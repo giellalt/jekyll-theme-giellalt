@@ -503,6 +503,11 @@ header #left_toc {
   text-decoration: none;
 }
 
+#left_toc li.toc-active > a {
+  color: var(--link-color);
+  font-weight: 600;
+}
+
 /* Menystruktur */
 #left_toc ul, #mobile_toc_list ul {
   list-style: none;
