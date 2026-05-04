@@ -193,7 +193,7 @@ section:focus {
   grid-column: 3;
   grid-row: 1 / span 2;
   border-left: 1px solid var(--border-color);
-  padding-left: 10px;
+  padding-left: 12px;
   background: var(--bg-color);
   width: 100%; /* Bruk full grid-breidd */
   max-width: var(--menu-width); /* Men ikkje meir enn definert breidd */
@@ -413,6 +413,10 @@ header > #toc:not(:has(:nth-child(2))) {
   display: none !important;
 }
 
+header > :not(#toc) {
+  padding-right: 12px;
+}
+
 header .view-project {
   display: inline-flex;
   align-items: center;
@@ -443,13 +447,13 @@ header .view-project svg {
 }
 
 header h2.tocheader {
-  margin: 0;
+  margin: 0 -12px 0 0;
   font-size: 0.8em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-top: 1px solid var(--border-color);
-  padding-top: 0.4em;
+  padding-top: 0.75em;
   padding-bottom: 0.4em;
   color: var(--heading-color);
   flex-shrink: 0;
@@ -460,6 +464,7 @@ header #toc {
   flex-direction: column;
   flex: 1;
   min-height: 0; /* Viktig for at flex-shrink skal fungere */
+  padding-right: 12px;
 }
 
 header #left_toc {
@@ -1002,7 +1007,7 @@ div.repolist ul li p {
     top: 0;
     right: 0;
     width: calc(50% - 10px);
-    padding-left: 15px;
+    padding: 12px 12px 12px 0;
     margin: 0;
     z-index: 1;
     display: flex;
@@ -1015,6 +1020,7 @@ div.repolist ul li p {
   header > :not(#toc) {
     width: calc(50% - 10px);
     margin-bottom: 10px;
+    padding-right: 12px;
   }
 
   /* Specific styling for the left_toc list */
