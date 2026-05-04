@@ -435,6 +435,13 @@ div.code-toolbar {
   --pf-border-focus: var(--link-color);
   --pf-hover: var(--menu-hover-bg);
   --pf-mark: #ff0;
+
+  pagefind-summary,
+  pagefind-results,
+  pagefind-keyboard-hints {
+    display: block;
+    margin-top: 0.5rem;
+  }
 }
 
 /* Hide TOC if empty: */
