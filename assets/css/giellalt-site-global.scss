@@ -417,7 +417,7 @@ div.code-toolbar {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Pagefind UI vars alongside panel layout so both live in one place */
+/* Component UI vars alongside panel layout so both live in one place */
 #search-modal-panel {
   position: relative;
   background: var(--bg-color);
@@ -428,15 +428,13 @@ div.code-toolbar {
   overflow-y: auto;
   padding: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --pagefind-ui-scale: 0.9;
-  --pagefind-ui-primary: var(--link-color);
-  --pagefind-ui-text: var(--text-color);
-  --pagefind-ui-background: var(--bg-color);
-  --pagefind-ui-border: var(--border-color);
-  --pagefind-ui-tag: var(--menu-bg);
-  --pagefind-ui-border-width: 1px;
-  --pagefind-ui-border-radius: 4px;
-  --pagefind-ui-font: inherit;
+  --pf-font: inherit;
+  --pf-text: var(--text-color);
+  --pf-background: var(--bg-color);
+  --pf-border: var(--border-color);
+  --pf-border-focus: var(--link-color);
+  --pf-hover: var(--menu-hover-bg);
+  --pf-mark: #ff0;
 }
 
 /* Hide TOC if empty: */

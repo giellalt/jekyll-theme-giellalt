@@ -207,7 +207,8 @@
     <div id="search-modal" role="dialog" aria-modal="true" aria-label="Search this site" hidden>
       <div id="search-modal-backdrop"></div>
       <div id="search-modal-panel">
-        <div id="search-ui"></div>
+        <pagefind-input></pagefind-input>
+        <pagefind-results></pagefind-results>
       </div>
     </div>
 
@@ -218,31 +219,35 @@
         var backdrop = document.getElementById('search-modal-backdrop');
         var uiMounted = false;
 
+        function focusInput() {
+          var pfInput = document.querySelector('pagefind-input');
+          if (pfInput) { pfInput.focus(); }
+        }
+
         function openSearch() {
           modal.hidden = false;
           document.body.style.overflow = 'hidden';
           if (!uiMounted) {
-            // Pagefind UI bundle only exists after CI build; skip gracefully in dev.
+            // Component UI bundle only exists after CI build; skip gracefully in dev.
             var link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = '{{ "/pagefind/pagefind-ui.css" | relative_url }}';
+            link.href = '{{ "/pagefind/pagefind-component-ui.css" | relative_url }}';
             document.head.appendChild(link);
             var script = document.createElement('script');
-            script.src = '{{ "/pagefind/pagefind-ui.js" | relative_url }}';
+            script.type = 'module';
+            script.src = '{{ "/pagefind/pagefind-component-ui.js" | relative_url }}';
             script.onload = function () {
-              new PagefindUI({ element: '#search-ui', showImages: false });
               uiMounted = true;
-              // Auto-focus the input after mount
-              var input = document.querySelector('#search-ui input');
-              if (input) input.focus();
+              customElements.whenDefined('pagefind-input').then(function () {
+                requestAnimationFrame(focusInput);
+              });
             };
             script.onerror = function () {
-              document.getElementById('search-ui').textContent = 'Search index not available in local preview.';
+              document.getElementById('search-modal-panel').insertAdjacentText('afterbegin', 'Search index not available in local preview.');
             };
             document.head.appendChild(script);
           } else {
-            var input = document.querySelector('#search-ui input');
-            if (input) { input.value = ''; input.focus(); }
+            requestAnimationFrame(focusInput);
           }
         }
 
