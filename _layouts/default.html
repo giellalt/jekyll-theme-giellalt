@@ -22,6 +22,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap">
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ "/pagefind/pagefind-component-ui.css" | relative_url }}">
+    <script type="module" src="{{ "/pagefind/pagefind-component-ui.js" | relative_url }}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
     <script src="{{ "/assets/js/sitemap-highlight.js" | relative_url }}"></script>
@@ -89,12 +91,8 @@
 
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-        <button id="search-trigger" type="button" aria-label="Search this site">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          Search
-        </button>
+        <pagefind-modal-trigger shortcut="mod+k"></pagefind-modal-trigger>
+        <pagefind-modal reset-on-close></pagefind-modal>
 
         {% if site.github.is_project_page %}
         {% include header-view-project.html %}
@@ -204,71 +202,5 @@
     <script src="{{ "/assets/js/hamburger-menu.js" | relative_url }}"></script>
     <script src="{{ "/assets/js/toc-overflow.js" | relative_url }}"></script>
 
-    <div id="search-modal" role="dialog" aria-modal="true" aria-label="Search this site" hidden>
-      <div id="search-modal-backdrop"></div>
-      <div id="search-modal-panel">
-        <pagefind-input></pagefind-input>
-        <pagefind-summary></pagefind-summary>
-        <pagefind-results></pagefind-results>
-        <pagefind-keyboard-hints></pagefind-keyboard-hints>
-      </div>
-    </div>
-
-    <script>
-      (function () {
-        var trigger = document.getElementById('search-trigger');
-        var modal = document.getElementById('search-modal');
-        var backdrop = document.getElementById('search-modal-backdrop');
-        var uiMounted = false;
-
-        function focusInput() {
-          var pfInput = document.querySelector('pagefind-input');
-          if (pfInput) { pfInput.focus(); }
-        }
-
-        function openSearch() {
-          modal.hidden = false;
-          document.body.style.overflow = 'hidden';
-          if (!uiMounted) {
-            // Component UI bundle only exists after CI build; skip gracefully in dev.
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = '{{ "/pagefind/pagefind-component-ui.css" | relative_url }}';
-            document.head.appendChild(link);
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = '{{ "/pagefind/pagefind-component-ui.js" | relative_url }}';
-            script.onload = function () {
-              uiMounted = true;
-              customElements.whenDefined('pagefind-input').then(function () {
-                requestAnimationFrame(focusInput);
-              });
-            };
-            script.onerror = function () {
-              document.getElementById('search-modal-panel').insertAdjacentText('afterbegin', 'Search index not available in local preview.');
-            };
-            document.head.appendChild(script);
-          } else {
-            requestAnimationFrame(focusInput);
-          }
-        }
-
-        function closeSearch() {
-          modal.hidden = true;
-          document.body.style.overflow = '';
-          trigger.focus();
-        }
-
-        trigger.addEventListener('click', openSearch);
-        backdrop.addEventListener('click', closeSearch);
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && !modal.hidden) closeSearch();
-          if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) && modal.hidden) {
-            e.preventDefault();
-            openSearch();
-          }
-        });
-      })();
-    </script>
   </body>
 </html>
