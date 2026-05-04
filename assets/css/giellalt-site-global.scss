@@ -210,24 +210,6 @@ footer {
   border-top: 1px solid var(--border-color);
   padding: 0.5em 0;
   z-index: 100;
-  position: relative;
-}
-
-/* Soft elevation shadow pinned above the footer's border-top, hinting at
-   the boundary between the col-1 nav area and the maintainer footer.
-   Stays in col-1 only; no horizontal bleed into the reading column. The
-   mask-image feathers the left/right edges so the shadow doesn't end in
-   a hard vertical line. */
-footer::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  height: 12px;
-  background: linear-gradient(to top, var(--gradient-shadow), transparent);
-  mask-image: linear-gradient(to right, transparent 0, #000 1rem, #000 calc(100% - 1rem), transparent 100%);
-  pointer-events: none;
 }
 
 /* Theme toggle button — single icon, swaps sun/moon based on active theme. */
@@ -583,6 +565,25 @@ header #left_toc li > ul > li {
   margin-left: 1em;
 }
 
+/* Scroll-overflow shadow at the bottom of the TOC viewport. The sticky
+   pseudo pins to the bottom of #left_toc's scroll container; its upward
+   box-shadow signals "more content below". Visibility is driven by
+   .is-overflowing, toggled in toc-overflow.js when scroll position
+   indicates content extends past the viewport. */
+#left_toc { position: relative; }
+#left_toc::after {
+  content: '';
+  display: block;
+  position: sticky;
+  bottom: 0;
+  height: 0;
+  box-shadow: 0 -1px 12px 4px var(--gradient-shadow);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+#left_toc.is-overflowing::after {
+  opacity: 1;
+}
 
 div.repolist ul li p {
   margin: 0;
