@@ -167,6 +167,7 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
+  padding-right: 12px;
 }
 
 /* Hovudinnhald */
@@ -208,7 +209,7 @@ footer {
   height: auto; /* Let grid control height */
   background: var(--menu-bg);
   border-top: 1px solid var(--border-color);
-  padding: 0.5em 0;
+  padding: 12px 12px 8px 0;
   z-index: 100;
 }
 
@@ -413,10 +414,6 @@ header > #toc:not(:has(:nth-child(2))) {
   display: none !important;
 }
 
-header > :not(#toc) {
-  padding-right: 12px;
-}
-
 header .view-project {
   display: inline-flex;
   align-items: center;
@@ -447,14 +444,14 @@ header .view-project svg {
 }
 
 header h2.tocheader {
-  margin: 0 -12px 0 0;
+  margin: 0;
   font-size: 0.8em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-top: 1px solid var(--border-color);
-  padding-top: 0.75em;
-  padding-bottom: 0.4em;
+  padding-top: 12px;
+  padding-bottom: 6px;
   color: var(--heading-color);
   flex-shrink: 0;
 }
@@ -464,7 +461,6 @@ header #toc {
   flex-direction: column;
   flex: 1;
   min-height: 0; /* Viktig for at flex-shrink skal fungere */
-  padding-right: 12px;
 }
 
 header #left_toc {
@@ -1007,7 +1003,7 @@ div.repolist ul li p {
     top: 0;
     right: 0;
     width: calc(50% - 10px);
-    padding: 12px 12px 12px 0;
+    padding: 12px 0 12px 12px;
     margin: 0;
     z-index: 1;
     display: flex;
@@ -1020,7 +1016,6 @@ div.repolist ul li p {
   header > :not(#toc) {
     width: calc(50% - 10px);
     margin-bottom: 10px;
-    padding-right: 12px;
   }
 
   /* Specific styling for the left_toc list */
