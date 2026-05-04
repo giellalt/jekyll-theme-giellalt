@@ -296,6 +296,13 @@ section h2 {
   border-bottom: 1px solid var(--border-color);
 }
 
+/* First heading in the reading column shouldn't push away from the top */
+section > h1:first-child,
+section > h2:first-child,
+section > h3:first-child {
+  margin-top: 0;
+}
+
 /* Heading-as-link hover: drop the underline only — inherit color shift
    from base a:hover. On a wrapped multi-line title, an underline at
    line-height 1.1 collides with the next line's text. */
