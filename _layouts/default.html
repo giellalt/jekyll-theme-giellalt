@@ -121,6 +121,7 @@
           <summary>On this page</summary>
           {% include toc.html html=content sanitize=true id="mobile_toc_list" h_min=2 h_max=6 %}
         </details>
+        {% include breadcrumbs.html %}
         {{ content }}
       </section>
       <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">

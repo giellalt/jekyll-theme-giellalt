@@ -421,6 +421,52 @@ header > #toc:not(:has(:nth-child(2))) {
   display: none !important;
 }
 
+.breadcrumbs {
+  font-size: 0.8em;
+  color: var(--text-secondary, #6e7781);
+  margin-bottom: 1.25em;
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+
+    &::before {
+      display: none;
+    }
+
+    &:not(:first-child)::before {
+      display: inline;
+      content: '/';
+      margin: 0 0.4em;
+      color: var(--text-secondary, #6e7781);
+      opacity: 0.5;
+    }
+  }
+
+  a {
+    color: var(--text-secondary, #6e7781);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--link-color);
+      text-decoration: underline;
+    }
+  }
+
+  li[aria-current="page"] {
+    color: var(--text-color);
+  }
+}
+
 header .view-project {
   display: inline-flex;
   align-items: center;

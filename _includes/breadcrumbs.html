@@ -1,0 +1,24 @@
+{% assign crumbs = page.url | split: '/' %}
+{% assign meaningful = '' %}
+{% for crumb in crumbs %}{% unless crumb == '' or crumb == 'index.html' %}{% assign meaningful = meaningful | append: '1' %}{% endunless %}{% endfor %}
+{% assign meaningful_count = meaningful | size %}
+{% if meaningful_count > 0 %}
+<nav class="breadcrumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+  <ol>
+    <li><a href="{{ '/' | relative_url }}">Home</a></li>
+    {% assign path = '' %}
+    {% assign filtered = '' %}
+    {% for crumb in crumbs %}{% unless crumb == '' or crumb == 'index.html' %}{% assign filtered = filtered | append: crumb | append: '|' %}{% endunless %}{% endfor %}
+    {% assign filtered_arr = filtered | split: '|' %}
+    {% for crumb in filtered_arr %}
+      {% assign path = path | append: '/' | append: crumb %}
+      {% assign display = crumb | replace: '.html', '' | replace: '-', ' ' | replace: '_', ' ' | capitalize %}
+      {% if forloop.last %}
+        <li aria-current="page">{{ display }}</li>
+      {% else %}
+        <li><a href="{{ path | relative_url }}">{{ display }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}
