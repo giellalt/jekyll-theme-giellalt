@@ -68,7 +68,7 @@ kbd {
   color-scheme: light dark;
   --menu-width: 270px;
   --reading-width: 72ch;
-  --page-padding: 50px;       /* outer body padding */
+  --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
   --footer-height: 100px;     /* col-1 footer row track */
 
@@ -1062,6 +1062,7 @@ div.repolist ul li p {
     max-width: 860px; /* Fluid up to prod's wrapper width; centered via margin auto */
     height: auto;
     margin: 0 auto;
+    padding: 0 16px;
     grid-template-columns: none;
     grid-template-rows: none;
     gap: 0;
