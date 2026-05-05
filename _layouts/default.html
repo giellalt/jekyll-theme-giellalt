@@ -123,6 +123,10 @@
         </details>
         {% include breadcrumbs.html %}
         {{ content }}
+        {% assign last_mod = site.data.last_modified[page.path] %}
+        {% if last_mod %}
+        <p class="last-modified" data-pagefind-ignore>Last updated: <time datetime="{{ last_mod }}">{{ last_mod | date: "%B %-d, %Y" }}</time></p>
+        {% endif %}
       </section>
       <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
         <span></span>
