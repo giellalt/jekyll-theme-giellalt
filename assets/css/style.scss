@@ -232,6 +232,19 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
+}
+
+/* Inset header text from the col1/col2 divider. Padding lives on the
+   text-bearing elements rather than the <header> itself, so structural
+   elements (h2.tocheader's border-top, #left_toc's scrollbar and ::after
+   shadow) reach the column edge. */
+header > h1,
+header > img,
+header > p,
+header > pagefind-modal-trigger,
+header > .header-actions,
+header > .downloads,
+header #left_toc > ul {
   padding-right: 12px;
 }
 
