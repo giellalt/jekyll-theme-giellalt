@@ -16,6 +16,23 @@
 
   let activeId = null;
 
+  // ID of the last heading explicitly navigated to via hash (link click,
+  // keyboard, or URL bar). Cleared when the user scrolls away from the
+  // bottom, at which point normal scroll-spy logic resumes.
+  let clickedId = null;
+
+  // Honour a hash already in the URL on first load.
+  const initialHash = location.hash.slice(1);
+  if (initialHash && linkMap.has(initialHash)) clickedId = initialHash;
+
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.slice(1);
+    if (linkMap.has(id)) {
+      clickedId = id;
+      update(); // scroll may not fire if the page is already at the bottom
+    }
+  });
+
   function activate(id) {
     if (id === activeId) return;
     if (activeId) {
@@ -36,13 +53,30 @@
   }
 
   function update() {
-    // At the bottom of the page, always activate the last heading.
     const atBottom = section.scrollHeight - section.scrollTop - section.clientHeight < 4;
+
     if (atBottom) {
+      // If the user explicitly navigated to a heading that is still visible
+      // in the viewport, honour that choice over the last-heading fallback.
+      if (clickedId) {
+        const el = document.getElementById(clickedId);
+        if (el) {
+          const sectionRect = section.getBoundingClientRect();
+          const elTop = el.getBoundingClientRect().top;
+          if (elTop >= sectionRect.top && elTop < sectionRect.bottom) {
+            activate(clickedId);
+            return;
+          }
+        }
+      }
       const last = headings[headings.length - 1];
       if (last && linkMap.has(last.id)) activate(last.id);
       return;
     }
+
+    // Not at bottom: release the explicit-navigation override so normal
+    // scroll-spy takes over if the user scrolls back down.
+    clickedId = null;
 
     const sectionTop = section.getBoundingClientRect().top;
     // The active heading is the last one whose top edge is at or above a
