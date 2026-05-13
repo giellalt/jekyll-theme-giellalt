@@ -774,13 +774,7 @@ div.repolist ul li p {
   margin: 0;
 }
 
-/* Dim the sitemap contents but keep the container's border at full alpha.
-   Hover/focus restores full opacity. */
 #sitemap > * {
-  opacity: 0.2;
-  transition: opacity 0.2s;
-}
-#sitemap:hover > *, #sitemap:focus-within > * {
   opacity: 1;
 }
 
@@ -1005,12 +999,6 @@ div.repolist ul li p {
     color: var(--text-color);
     display: none; /* Gøymd som standard */
   }
-  /* In hamburger mode the dimming behavior doesn't apply — content is shown
-     full-strength when the drawer is open. */
-  #sitemap > * {
-    opacity: 1;
-  }
-  
   /* Normale sitemap-fargar for hamburgermodus */
   #sitemap {
     background: var(--menu-bg);
