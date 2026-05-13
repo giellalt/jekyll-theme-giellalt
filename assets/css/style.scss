@@ -585,7 +585,7 @@ header h2.tocheader {
   border-top: 1px solid var(--border-color);
   padding-top: 12px;
   padding-bottom: 6px;
-  color: var(--heading-color);
+  color: var(--blockquote-text);
   flex-shrink: 0;
 }
 
@@ -611,16 +611,15 @@ header #left_toc {
 }
 
 
-/* Menylenker */
-#left_toc a, #sitemap a, #mobile_toc_list a {
+/* TOC nav links: block for full-row hover target */
+#left_toc a, #mobile_toc_list a {
   color: var(--menu-text);
-  padding: 0;
-  display: inline;
+  display: block;
+  padding: 0.2em 0.5em;
+  border-radius: 4px;
   text-align: left;
-  border-style: none;
-  height: auto;
-  word-wrap: break-word; /* Bryt lange ord i lenker */
-  overflow-wrap: break-word; /* Moderne versjon av word-wrap */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 #left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
@@ -634,24 +633,28 @@ header #left_toc {
   font-weight: 600;
 }
 
-/* Menystruktur */
+/* Nested TOC lists: indent with left-rail border */
 #left_toc ul, #mobile_toc_list ul {
   list-style: none;
-  padding-left: 1em;
-  margin: 0;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden; /* Hindra horisontal scroll */
-  word-wrap: break-word; /* Bryt lange ord */
+  padding-left: 0.75em;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 0.5em;
+  border-left: 1px solid var(--border-color);
+  overflow-x: hidden;
+  word-wrap: break-word;
 }
 
+/* Root list: no indent, no border */
 #left_toc > ul, #mobile_toc_list {
   padding-left: 0;
+  margin-left: 0;
+  border-left: none;
   width: 100%;
 }
 
-#left_toc ul ul, #sitemap ul ul, #mobile_toc_list ul ul {
-  width: calc(100% - 1em); /* Justerer for innrykk */
+#sitemap ul ul {
+  width: calc(100% - 1em);
 }
 
 /* Tilpass rullefeltet for mørk modus */
@@ -677,62 +680,45 @@ footer p {
 }
 
 
-header #left_toc li::before, #sitemap > ul li::before, #mobile_toc_list li::before {
+#sitemap > ul li::before {
   content: "- ";
 }
 
-header #left_toc > li, #sitemap > li, #mobile_toc_list > li {
-  width: auto;
-  float: none;
-  text-align: left;
-  border-style: none;
-  height: auto;
+/* TOC list items (all levels) */
+#left_toc li, #mobile_toc_list li {
   display: block;
-  font-weight: bold;
-  font-size: 12px;
-  background: var(--menu-bg);
-  text-indent: -0.7em;
-  padding-left: 0.7em;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
-header #left_toc li > ul, #sitemap li > ul, #mobile_toc_list li > ul {
+/* Top-level items (H2) — slightly bolder; same specificity, later rule wins */
+#left_toc > li, #mobile_toc_list > li {
+  font-weight: 500;
+}
+
+#sitemap li > ul {
   float: none;
   text-align: left;
   height: auto;
-  /* top | left and right | bottom */
   border-style: none;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   background: var(--menu-bg);
   padding-left: 0;
 }
 
-header #left_toc li > ul, #mobile_toc_list li > ul {
-  padding-left: 0;
-}
-
-#left_toc     > li > ul > li > ul,
 #sitemap > ul > li > ul > li > ul {
   width: calc(var(--menu-width) - 2em);
 }
 
-#left_toc     > li > ul > li > ul > li > ul,
 #sitemap > ul > li > ul > li > ul > li > ul {
   width: calc(var(--menu-width) - 3em);
 }
 
-#left_toc     > li > ul > li > ul > li > ul > li > ul,
 #sitemap > ul > li > ul > li > ul > li > ul > li > ul {
   width: calc(var(--menu-width) - 4em);
 }
 
-header #left_toc li > ul > li, #mobile_toc_list li > ul > li {
-  width: auto;
-  float: none;
-  border-style: none;
-  height: auto;
-  display: block;
-  margin-left: 1em;
-}
 
 /* Scroll-overflow shadow at the bottom of the TOC viewport. The sticky
    pseudo pins to the bottom of #left_toc's scroll container; its upward
@@ -819,6 +805,8 @@ div.repolist ul li p {
   color: var(--text-color);
   text-decoration: none;
   opacity: 0.7;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Aktiv sitemap-lenke */
@@ -1170,8 +1158,8 @@ div.repolist ul li p {
     height: auto;
     max-height: 100%;
     overflow-y: auto;
-    margin: 0;
-    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
     list-style: none;
     box-sizing: border-box;
     position: static;
