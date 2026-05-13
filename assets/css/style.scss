@@ -533,12 +533,30 @@ header > #toc:not(:has(:nth-child(2))) {
   }
 }
 
-.last-modified {
-  font-size: 0.8em;
-  color: var(--text-secondary, #6e7781);
+.page-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   margin-top: 2.5em;
   padding-top: 1em;
+  padding-bottom: 3em;
   border-top: 1px solid var(--border-color, #d0d7de);
+  font-size: 0.8em;
+  color: var(--blockquote-text);
+}
+
+.page-meta .last-modified {
+  color: var(--blockquote-text);
+}
+
+.page-meta .edit-on-github {
+  color: var(--blockquote-text);
+  text-decoration: none;
+}
+
+.page-meta .edit-on-github:hover {
+  color: var(--link-color);
+  text-decoration: underline;
 }
 
 header .header-actions {

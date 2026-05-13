@@ -132,8 +132,16 @@
         {% include breadcrumbs.html %}
         {{ content }}
         {% assign last_mod = site.data.last_modified[page.path] %}
-        {% if last_mod %}
-        <p class="last-modified" data-pagefind-ignore>Last updated: <time datetime="{{ last_mod }}">{{ last_mod | date: "%B %-d, %Y" }}</time></p>
+        {% if site.github.is_project_page %}
+          {% assign edit_branch = site.github.default_branch | default: 'main' %}
+          {% capture edit_url %}{{ site.github.repository_url }}/edit/{{ edit_branch }}/docs/{{ page.path }}{% endcapture %}
+        {% endif %}
+        {% unless site.data.last_modified %}{% assign lmd_absent = true %}{% endunless %}
+        {% if last_mod or edit_url %}
+        <div class="page-meta" data-pagefind-ignore>
+          {% if last_mod %}<span class="last-modified">Last updated: <time datetime="{{ last_mod }}">{{ last_mod | date: "%B %-d, %Y" }}</time></span>{% endif %}
+          {% if edit_url %}{% if last_mod or lmd_absent %}<a class="edit-on-github" href="{{ edit_url }}">Edit on GitHub</a>{% endif %}{% endif %}
+        </div>
         {% endif %}
       </section>
       <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
