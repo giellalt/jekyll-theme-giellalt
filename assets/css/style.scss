@@ -489,6 +489,7 @@ header > #toc:not(:has(:nth-child(2))) {
 .breadcrumbs {
   font-size: 0.8em;
   color: var(--text-secondary, #6e7781);
+  margin-top: 1.5rem;
   margin-bottom: 1.25em;
 
   ol {
@@ -679,9 +680,6 @@ header #left_toc {
   width: 100%;
 }
 
-#sitemap ul ul {
-  width: calc(100% - 1em);
-}
 
 /* Tilpass rullefeltet for mørk modus */
 #left_toc::-webkit-scrollbar, #sitemap ul::-webkit-scrollbar  {
@@ -706,8 +704,9 @@ footer p {
 }
 
 
-#sitemap > ul li::before {
-  content: "- ";
+#sitemap > ul li::before,
+#sitemap > ul li:last-child::before {
+  content: none;
 }
 
 /* TOC list items (all levels) */
@@ -724,27 +723,14 @@ footer p {
 }
 
 #sitemap li > ul {
-  float: none;
-  text-align: left;
-  height: auto;
-  border-style: none;
+  list-style: none;
+  padding-left: 0.6em;
+  margin-top: 0;
   margin-bottom: 0;
+  margin-left: 0.4em;
+  border-left: 1px solid var(--border-color);
   background: var(--menu-bg);
-  padding-left: 0;
 }
-
-#sitemap > ul > li > ul > li > ul {
-  width: calc(var(--menu-width) - 2em);
-}
-
-#sitemap > ul > li > ul > li > ul > li > ul {
-  width: calc(var(--menu-width) - 3em);
-}
-
-#sitemap > ul > li > ul > li > ul > li > ul > li > ul {
-  width: calc(var(--menu-width) - 4em);
-}
-
 
 /* Scroll-overflow shadow at the bottom of the TOC viewport. The sticky
    pseudo pins to the bottom of #left_toc's scroll container; its upward
@@ -786,10 +772,10 @@ div.repolist ul li p {
 
 #sitemap > ul {
   margin: 0;
-  padding: 0;
+  padding: 0.5rem 0 0;
   list-style: none;
   position: absolute;
-  top: 3.7em;
+  top: 3.7rem;
   bottom: 0; /* Strekk heilt ned til botnen av div#sitemap */
   background: var(--menu-bg);
   overflow-y: auto;
@@ -797,30 +783,38 @@ div.repolist ul li p {
 }
 
 #sitemap li {
-  text-indent: -0.7em;
-  padding-left: 0.7em;
-  line-height: 1.3em;
+  display: block;
+  position: relative;
+  line-height: 1.5;
 }
 
-#sitemap li li {
-  border-left: 1px solid var(--border-color);
+#sitemap li > a,
+#sitemap li > strong {
+  display: block;
+  padding: 0.25em 0.4em;
+  border-radius: 3px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 #sitemap ul a {
-  line-height: 1;
+  line-height: 1.5;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 #sitemap ul strong {
-  line-height: 1;
+  line-height: 1.5;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 #sitemap ul {
   list-style: none;
-  padding-left: 1em;
+  padding-left: 0;
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  font-size: 11px;
 }
 
 #sitemap > ul {
@@ -837,8 +831,10 @@ div.repolist ul li p {
 
 /* Aktiv sitemap-lenke */
 .active-sitemap-item > a {
-  background-color: var(--active-sitem-bg-color);
-  font-weight: bold;
+  color: var(--link-color);
+  background-color: var(--menu-hover-bg);
+  font-weight: 600;
+  opacity: 1;
 }
 
 /* Høgre padding for sitemap */
