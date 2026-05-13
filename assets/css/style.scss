@@ -620,6 +620,7 @@ header #left_toc {
   text-align: left;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 #left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
@@ -633,6 +634,29 @@ header #left_toc {
   font-weight: 600;
 }
 
+/* Rail highlight: each nested li carries an ::after positioned at its
+   parent ul's border-left. On hover/active it covers the gray rail with
+   the accent colour for just that item's height. */
+#left_toc ul li, #mobile_toc_list ul li {
+  position: relative;
+}
+#left_toc ul li::after, #mobile_toc_list ul li::after {
+  content: '';
+  position: absolute;
+  left: calc(-0.75em - 1px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background-color 0.15s;
+}
+#left_toc ul li:hover::after, #mobile_toc_list ul li:hover::after {
+  background: var(--menu-hover-text);
+}
+#left_toc ul li.toc-active::after, #mobile_toc_list ul li.toc-active::after {
+  background: var(--link-color);
+}
+
 /* Nested TOC lists: indent with left-rail border */
 #left_toc ul, #mobile_toc_list ul {
   list-style: none;
@@ -641,7 +665,8 @@ header #left_toc {
   margin-bottom: 0;
   margin-left: 0.5em;
   border-left: 1px solid var(--border-color);
-  overflow-x: hidden;
+  /* overflow-x must stay visible so the ::after rail highlight on each li
+     can extend leftward into the ul's border area */
   word-wrap: break-word;
 }
 
