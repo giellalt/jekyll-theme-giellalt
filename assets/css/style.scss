@@ -16,9 +16,9 @@
   --code-text: #e6edf3;
   --code-border: #30363d;
   --code-link-color: #96d0ff;
-  --menu-bg: #0d1117;
+  --menu-bg: #161b22;
   --menu-text: #e6edf3;
-  --menu-hover-bg: rgba(56, 139, 253, 0.1);
+  --menu-hover-bg: rgba(56, 139, 253, 0.15);
   --menu-hover-text: #58a6ff;
   --gradient-shadow: rgba(0,0,0,0.2);
   --search-bg: #0d1117;
@@ -85,9 +85,9 @@ kbd {
   --code-border: #d0d7de;
   --code-text: #24292f;
   --code-link-color: #0066cc;
-  --menu-bg: #fff;
+  --menu-bg: #f6f8fa;
   --menu-text: #222;
-  --menu-hover-bg: #f0f0f0;
+  --menu-hover-bg: #e8ecf0;
   --menu-hover-text: #000;
   --gradient-shadow: rgba(0,0,0,0.08);
   --search-bg: #fff;
@@ -126,7 +126,7 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: var(--text-color);
-  background-color: var(--bg-color);
+  background-color: var(--menu-bg);
   margin: 0;
   padding: var(--page-padding);
 }
@@ -272,7 +272,7 @@ section:focus {
   grid-row: 1 / span 2;
   border-left: 1px solid var(--border-color);
   padding-left: 12px;
-  background: var(--bg-color);
+  background: var(--menu-bg);
   width: 100%; /* Bruk full grid-breidd */
   max-width: var(--menu-width); /* Men ikkje meir enn definert breidd */
   overflow: hidden; /* Hindra overflow */
@@ -993,7 +993,7 @@ div.repolist ul li p {
     bottom: 0; /* Gå heilt ned til botnen */
     width: 280px; /* Redusert breidd for å unngå scroll */
     max-width: 90vw; /* Aldri breiare enn 90% av viewport */
-    background: var(--bg-color);
+    background: var(--menu-bg);
     border: 1px solid var(--border-color);
     border-right: none;
     box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
@@ -1013,7 +1013,7 @@ div.repolist ul li p {
   
   /* Normale sitemap-fargar for hamburgermodus */
   #sitemap {
-    background: var(--bg-color);
+    background: var(--menu-bg);
     color: var(--text-color);
     border: 1px solid var(--border-color);
   }
