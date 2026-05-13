@@ -919,6 +919,22 @@ div.repolist ul li p {
 }
 
 /* Gøym høgremenyen på små skjermar */
+@media screen and (min-width: 961px) and (max-width: 1270px) {
+  /* Fill the right gutter (where the sitemap column was) with content bg.
+     Body stays --menu-bg so the left sidebar extends to the viewport edge;
+     ::after covers only the area to the right of the wrapper. */
+  body div.wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: 50vw;
+    background: var(--bg-color);
+    pointer-events: none;
+  }
+}
+
 @media screen and (max-width: 1270px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
