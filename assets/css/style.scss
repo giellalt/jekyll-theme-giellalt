@@ -70,7 +70,6 @@ kbd {
   --reading-width: 72ch;
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
-  --footer-height: 100px;     /* col-1 footer row track */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -200,7 +199,7 @@ hr {
 body div.wrapper {
   display: grid;
   grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) var(--menu-width);
-  grid-template-rows: 1fr var(--footer-height);
+  grid-template-rows: 1fr auto;
   gap: 0;
   width: 100%;
   max-width: calc(var(--menu-width) * 2 + var(--reading-width));
@@ -289,6 +288,8 @@ footer {
   border-top: 1px solid var(--border-color);
   padding: 12px 12px 8px 0;
   z-index: 100;
+  font-size: 0.8em;
+  color: var(--blockquote-text);
 }
 
 /* Theme toggle button — single icon, swaps sun/moon based on active theme. */
