@@ -611,8 +611,9 @@ header h2.tocheader {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-top: 1px solid var(--border-color);
-  padding-top: 12px;
-  padding-bottom: 6px;
+  margin-top: 16px;
+  padding-top: 16px;
+  padding-bottom: 8px;
   color: var(--blockquote-text);
   flex-shrink: 0;
 }
