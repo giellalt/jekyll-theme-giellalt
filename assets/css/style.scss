@@ -117,8 +117,13 @@ kbd {
 
 div.twocolumn {
   column-count: 2;
-  column-rule: 2px solid lightblue;
+  column-gap: 2.5em;
+  column-rule: 1px solid var(--border-color);
   margin-bottom: 1.5em;
+}
+
+div.twocolumn > *:last-child {
+  margin-bottom: 0;
 }
 
 body {
