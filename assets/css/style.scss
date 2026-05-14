@@ -1109,6 +1109,9 @@ div.repolist ul li p {
     min-height: 100%;
     height: auto;
     overflow: auto;
+    /* Single-surface look at this width: body, header, and TOC all share the
+       content background so there are no gray/white seams to manage. */
+    background-color: var(--bg-color);
   }
 
   body div.wrapper {
@@ -1142,6 +1145,8 @@ div.repolist ul li p {
     overflow: visible;
     padding-right: 0;
     border-right: none;
+    /* Match the rest of the page — no gray panel at this width. */
+    background: var(--bg-color);
   }
 
   /* Reset grid positioning for section */
@@ -1168,6 +1173,7 @@ div.repolist ul li p {
     grid-row: auto;
     position: static;
     width: auto;
+    background: var(--bg-color);
   }
 
   /* Two-column header layout */
@@ -1230,7 +1236,7 @@ div.repolist ul li p {
 
   header > #toc {
     border-color: var(--border-color);
-    background: var(--menu-bg);
+    background: var(--bg-color);
   }
 
   div.highlight {
