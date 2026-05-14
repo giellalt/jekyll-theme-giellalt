@@ -276,7 +276,7 @@ section:focus {
   grid-column: 3;
   grid-row: 1 / span 2;
   border-left: 1px solid var(--border-color);
-  padding-left: 12px;
+  padding-left: 1rem;
   padding-top: 1.5rem; /* align heading with section's first h1 */
   background: var(--menu-bg);
   width: 100%; /* Bruk full grid-breidd */
