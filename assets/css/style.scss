@@ -1342,10 +1342,12 @@ div.repolist ul li p {
 
   #mobile-toc {
     display: block;
+    margin-top: 5px;
     margin-bottom: 1.5rem;
+    margin-right: 56px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 0.5rem 0.75rem;
+    padding: 10px 0.75rem;
     background: var(--menu-bg);
     color: var(--menu-text);
   }
