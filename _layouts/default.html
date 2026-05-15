@@ -5,12 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="{{ '/assets/favicon.png' | relative_url }}">
+    <script>
+      // FOUC prevention: apply stored theme before first paint.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
 
 {% seo %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap">
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ "/pagefind/pagefind-component-ui.css" | relative_url }}">
+    <script type="module" src="{{ "/pagefind/pagefind-component-ui.js" | relative_url }}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
     <script src="{{ "/assets/js/sitemap-highlight.js" | relative_url }}"></script>
@@ -69,7 +82,7 @@
   </head>
   <body>
     <div class="wrapper">
-      <header>
+      <header data-pagefind-ignore>
         <h1><a href="{{ "/" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
         {% if site.logo %}
@@ -78,18 +91,26 @@
 
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-        <p><form method="get" action="https://www.google.com/search">
-            <input type="hidden" name="sitesearch" value="{{ "/" | absolute_url }}" />
-            <input type="text" name="q" maxlength="255" placeholder="Search site with Google" />
-        </form></p>
+        <pagefind-config bundle-path="{{ "/pagefind/" | relative_url }}"></pagefind-config>
+        <pagefind-modal reset-on-close></pagefind-modal>
 
-        {% if site.github.is_project_page %}
-        {% include header-view-project.html %}
-        {% endif %}
+        <div class="header-actions">
+          {% if site.github.is_project_page %}
+          {% include header-view-project.html %}
+          {% endif %}
 
-        {% if site.github.is_user_page %}
-        <p class="view"><a href="{{ site.github.owner_url }}">View GiellaLT on GitHub</a></p>
-        {% endif %}
+          {% if site.github.is_user_page %}
+          <a class="view-project" href="{{ site.github.owner_url }}" aria-label="View GiellaLT on GitHub">View GiellaLT on GitHub</a>
+          {% endif %}
+
+          <button id="theme-toggle-btn" type="button" aria-label="Toggle theme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z"/>
+            </svg>
+          </button>
+        </div>
+
+        <pagefind-modal-trigger shortcut="mod+k"></pagefind-modal-trigger>
 
         {% if site.show_downloads %}
         <ul class="downloads">
@@ -103,15 +124,32 @@
           {% include toc.html html=content sanitize=true class="left_toc" id="left_toc" h_min=2 h_max=6 %}
         </div>
       </header>
-      <section tabindex="0" id="main-content">
+      <section tabindex="0" id="main-content" data-pagefind-body>
+        {% if page.title %}<span data-pagefind-meta="title" aria-hidden="true" style="display:none">{{ page.title }}</span>{% endif %}
+        <details id="mobile-toc" data-pagefind-ignore>
+          <summary>On this page</summary>
+          {% include toc.html html=content sanitize=true id="mobile_toc_list" h_min=2 h_max=6 %}
+        </details>
+        {% include breadcrumbs.html %}
         {{ content }}
-        <div id="left_toc_shadow"></div>
+        {% assign last_mod = site.data.last_modified[page.path] %}
+        {% if site.github.is_project_page %}
+          {% assign edit_branch = site.github.default_branch | default: 'main' %}
+          {% capture edit_url %}{{ site.github.repository_url }}/edit/{{ edit_branch }}/docs/{{ page.path }}{% endcapture %}
+        {% endif %}
+        {% unless site.data.last_modified %}{% assign lmd_absent = true %}{% endunless %}
+        {% if last_mod or edit_url %}
+        <div class="page-meta" data-pagefind-ignore>
+          {% if last_mod %}<span class="last-modified">Last updated: <time datetime="{{ last_mod }}">{{ last_mod | date: "%B %-d, %Y" }}</time></span>{% endif %}
+          {% if edit_url %}{% if last_mod or lmd_absent %}<a class="edit-on-github" href="{{ edit_url }}">Edit on GitHub</a>{% endif %}{% endif %}
+        </div>
+        {% endif %}
       </section>
-      <div class="hamburger-menu" aria-label="Vis sitemap">
+      <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
         <span></span>
-      </div>
+      </button>
 
-      <div id="sitemap">
+      <div id="sitemap" data-pagefind-ignore>
         <h1>Sitemap</h1>
         {% include_cached sitemap.html %}
       </div>
@@ -120,12 +158,6 @@
         {% if site.github.is_project_page %}
         {% include footer-maintained.html %}
         {% endif %}
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-        <div class="theme-toggle">
-          <button id="theme-light" title="Ljos modus" aria-label="Ljos modus">☀️</button>
-          <button id="theme-dark" title="Myrk modus" aria-label="Myrk modus">🌙</button>
-          <button id="theme-system" title="System" aria-label="System">🖥️</button>
-        </div>
       </footer>
 
     </div>
@@ -184,5 +216,8 @@
     </script>
     {% endif %}
     <script src="{{ "/assets/js/hamburger-menu.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/toc-overflow.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/toc-spy.js" | relative_url }}"></script>
+
   </body>
 </html>
