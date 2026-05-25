@@ -236,6 +236,7 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
+  padding-left: 4px; /* Uniform left inset for all sidebar content */
 }
 
 /* Inset header text from the col1/col2 divider. Padding lives on the
