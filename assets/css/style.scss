@@ -924,23 +924,6 @@ div.repolist ul li p {
   display: none;
 }
 
-/* Gøym høgremenyen på små skjermar */
-@media screen and (min-width: 961px) and (max-width: 1270px) {
-  /* Fill the right gutter (where the sitemap column was) with content bg.
-     Body stays --menu-bg so the left sidebar extends to the viewport edge;
-     ::after covers only the area to the right of the wrapper. */
-  body div.wrapper::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 100%;
-    width: 50vw;
-    background: var(--bg-color);
-    pointer-events: none;
-  }
-}
-
 @media screen and (max-width: 1270px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
@@ -1104,6 +1087,27 @@ div.repolist ul li p {
   }
 }
 
+/* At this width the sitemap is hidden. Extend the section to the right viewport
+   edge so the scrollbar sits there and no gray gutter appears. Comes after the
+   ≤1270px block so it overrides the grid/max-width set there. Dynamic
+   padding-right keeps the reading column at --reading-width regardless of how
+   wide the section grows. */
+@media screen and (min-width: 961px) and (max-width: 1270px) {
+  body div.wrapper {
+    grid-template-columns: var(--menu-width) 1fr;
+    /* Reproduce the left offset that margin:auto centering gave the sidebar,
+       while letting the wrapper extend to the right viewport edge.
+       margin-left (not padding-left) keeps ::before's left:menu-width correct. */
+    margin-left: max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2));
+    margin-right: 0;
+    width: calc(100% - max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2)));
+    max-width: 100%;
+  }
+  section {
+    padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
+  }
+}
+
 /* --- iPad and other Tablet screen widths: --- */
 
 @media print, screen and (max-width: 960px) {
@@ -1114,7 +1118,7 @@ div.repolist ul li p {
     align-items: center; /* Midtstill wrapper horisontalt */
     min-height: 100%;
     height: auto;
-    overflow: auto;
+    overflow-y: auto;
     /* Single-surface look at this width: body, header, and TOC all share the
        content background so there are no gray/white seams to manage. */
     background-color: var(--bg-color);
