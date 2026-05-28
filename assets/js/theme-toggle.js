@@ -31,8 +31,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.getElementById('theme-toggle-btn');
-    if (btn) btn.addEventListener('click', toggle);
+    document.querySelectorAll('#theme-toggle-btn, .theme-toggle-btn').forEach(function (btn) {
+      btn.addEventListener('click', toggle);
+    });
     applyStored();
   });
 

@@ -495,6 +495,11 @@ header > #toc:not(:has(:nth-child(2))) {
   display: none !important;
 }
 
+/* Mobile controls bar (theme toggle + search) — hidden on desktop, shown on mobile. */
+.mobile-controls-bar {
+  display: none;
+}
+
 .breadcrumbs {
   font-size: 0.8em;
   color: var(--text-secondary, #6e7781);
@@ -1295,7 +1300,7 @@ div.repolist ul li p {
   }
 
   /* Aggressiv overstyring av Jekyll-tema og alle containrar */
-  html, body, body div.wrapper, 
+  html, body, body div.wrapper,
   body .wrapper section, section,
   body .wrapper header, header,
   .container, .main-content {
@@ -1389,5 +1394,35 @@ div.repolist ul li p {
 
   #mobile-toc #mobile_toc_list {
     margin: 0.5rem 0 0;
+  }
+
+  .mobile-controls-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    margin-right: 56px;
+  }
+
+  .mobile-controls-bar .theme-toggle-btn {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--menu-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .mobile-controls-bar pagefind-modal-trigger {
+    flex: 1;
+    min-width: 0;
+    --pf-input-height: 42px;
   }
 }
