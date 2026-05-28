@@ -765,25 +765,6 @@ footer p {
   background: var(--menu-bg);
 }
 
-/* Scroll-overflow shadow at the bottom of the TOC viewport. The sticky
-   pseudo pins to the bottom of #left_toc's scroll container; its upward
-   box-shadow signals "more content below". Visibility is driven by
-   .is-overflowing, toggled in toc-overflow.js when scroll position
-   indicates content extends past the viewport. */
-#left_toc { position: relative; }
-#left_toc::after {
-  content: '';
-  display: block;
-  position: sticky;
-  bottom: 0;
-  height: 0;
-  box-shadow: 0 -1px 12px 4px var(--gradient-shadow);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-#left_toc.is-overflowing::after {
-  opacity: 1;
-}
 
 div.repolist ul li p {
   margin: 0;
