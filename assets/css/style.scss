@@ -336,12 +336,12 @@ section table th {
   background-color: var(--table-header-bg);
   border-color: var(--table-border);
   color: var(--heading-color);
-  padding: 0.1em;
+  padding: 0.25em 0.1em;
 }
 
 section table td {
   border-color: var(--table-border);
-  padding: 0.1em;
+  padding: 0.25em 0.1em;
   line-height: 1.0em;
 }
 
