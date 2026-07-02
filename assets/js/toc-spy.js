@@ -1,7 +1,8 @@
 /* Scroll-spy: highlight the TOC link for the heading currently at the top of
-   the reading column. Works across every .left_toc container (the in-header
-   TOC used at ≤1270px and the desktop #toc-desktop copy used >1270px); only one
-   is visible at a time, but highlighting both is harmless. */
+   the reading column. Iterates every .left_toc container (currently just the
+   >1270px #toc-desktop rail; the query is left plural so any future copy is
+   picked up automatically). The ≤1270px "On this page" disclosure is not
+   scroll-spied — it is collapsed by default. */
 (function () {
   const tocs = Array.from(document.querySelectorAll('.left_toc'));
   const section = document.querySelector('section');

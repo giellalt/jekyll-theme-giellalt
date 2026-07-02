@@ -240,16 +240,14 @@ header {
 }
 
 /* Inset header text from the col1/col2 divider. Padding lives on the
-   text-bearing elements rather than the <header> itself, so structural
-   elements (h2.tocheader's border-top, #left_toc's scrollbar and ::after
-   shadow) reach the column edge. */
+   text-bearing elements rather than the <header> itself so the left inset
+   (padding-left: 4px on the header) reaches the column edge uniformly. */
 header > h1,
 header > img,
 header > p,
 header > pagefind-modal-trigger,
 header > .header-actions,
-header > .downloads,
-header #left_toc > ul {
+header > .downloads {
   padding-right: 12px;
 }
 
@@ -481,12 +479,7 @@ pagefind-modal {
   --pf-mark: var(--text-color);
 }
 
-/* Hide TOC if empty: */
-header > #toc:not(:has(:nth-child(2))) {
-    display: none;
-}
-
-/* Mobile TOC disclosure — hidden on desktop, shown on mobile via the ≤720px block.
+/* Page-TOC disclosure — hidden by default; shown at ≤1270px (see that block).
    :not(:has(ul)) hides it on pages with no headings (toc include emits nothing). */
 #mobile-toc {
   display: none;
@@ -623,28 +616,6 @@ header h2.tocheader {
   color: var(--blockquote-text);
   flex-shrink: 0;
 }
-
-header #toc {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0; /* Viktig for at flex-shrink skal fungere */
-}
-
-header #left_toc {
-  flex: 1 1 0; /* Tillat krymping og veksing */
-  text-align: left;
-  color: var(--menu-text);
-  width: 100%; /* Bruk full breidd i header */
-  overflow-y: auto; /* Rullefelt når innhaldet er for langt */
-  overflow-x: hidden; /* Hindra horisontal scroll */
-  padding: 0;
-  margin-bottom: 0;
-  min-height: 0; /* Kritisk for flexbox-krymping */
-  border: none;
-  box-sizing: border-box;
-}
-
 
 /* TOC nav links: block for full-row hover target */
 .left_toc a, #mobile_toc_list a {
@@ -1071,10 +1042,6 @@ div.repolist ul li p {
   .main-container {
     margin-right: 0;
   }
-  
-  header div#toc ul {
-    background: none;
-  }
 }
 
 /* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
@@ -1107,24 +1074,15 @@ div.repolist ul li p {
     padding-top: 1rem;
     min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
   }
-
-  /* Page TOC is the disclosure here, not the in-header list. */
-  header > #toc {
-    display: none;
-  }
-
-  /* Show the "On this page" disclosure (collapsed) at the top of content. */
-  #mobile-toc {
-    display: block;
-  }
 }
 
 /* "On this page" disclosure — the page-TOC representation below the 3-column
-   desktop width. Appearance is shared across every ≤1270px band; each band
-   controls its own `display` (base is `display: none`) and hamburger clearance.
-   The base `#mobile-toc:not(:has(ul))` guard hides it on heading-less pages. */
+   desktop width, shown at the top of the content column across the whole
+   ≤1270px range. The ≤720px block adds hamburger clearance; the base
+   `#mobile-toc:not(:has(ul))` guard hides it on heading-less pages. */
 @media screen and (max-width: 1270px) {
   #mobile-toc {
+    display: block;
     margin-top: 5px;
     margin-bottom: 1.5rem;
     border: 1px solid var(--border-color);
@@ -1241,67 +1199,16 @@ div.repolist ul li p {
     background: var(--bg-color);
   }
 
-  /* Two-column header layout */
-  header #toc {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: calc(50% - 10px);
-    padding: 12px 0 12px 12px;
-    margin: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border-left: 1px solid var(--border-color);
-  }
-
-  /* Left side content */
-  header > :not(#toc) {
-    width: calc(50% - 10px);
+  /* Branding stacks full-width at the top; the page TOC is the "On this page"
+     disclosure in the content column, not a second header column. The header
+     children are block-level (or already width:100%), so they fill the width
+     on their own — only inter-item spacing is needed here. */
+  header > * {
     margin-bottom: 10px;
-  }
-
-  /* Specific styling for the left_toc list */
-  header #toc #left_toc {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    right: 0;
-    position: initial;
-  }
-
-  header #toc ul {
-    width: 100%;
-    height: auto;
-    max-height: 100%;
-    overflow-y: auto;
-    margin-top: 0;
-    margin-bottom: 0;
-    list-style: none;
-    box-sizing: border-box;
-    position: static;
-  }
-  /* Make sure TOC header stays compact */
-  header #toc h2.tocheader {
-    margin-top: 0;
-    margin-bottom: 1em;
-    width: 100%;
-    border-top: none
   }
 
   header a small {
     display: inline;
-  }
-
-  header > #toc {
-    border-color: var(--border-color);
-    background: var(--bg-color);
   }
 
   div.highlight {
@@ -1405,10 +1312,9 @@ div.repolist ul li p {
     border-right: none;
   }
 
-  /* Disclosure appearance is shared in the ≤1270px block; here it just becomes
-     visible and clears the fixed hamburger button. */
+  /* Disclosure is shown + styled in the ≤1270px block; here it just clears the
+     fixed hamburger button. */
   #mobile-toc {
-    display: block;
     margin-right: 56px;
   }
 
@@ -1446,14 +1352,10 @@ div.repolist ul li p {
 /* ─────────────────────────────────────────────────────────────────────────
    Desktop (>1270px) column swap — issue #5.
 
-   The base/narrow layout (≤1270px) is unchanged: the page TOC lives inside the
-   <header> (left column / hamburger band) and the sitemap is the right column /
-   hamburger drawer. Only the 3-column desktop view swaps to the issue's
-   hierarchy: sitemap + search (left) → content → page TOC (right).
-
-   To place the page TOC in the right column without disturbing the in-header
-   TOC that the narrow layouts rely on, a separate #toc-desktop element carries
-   the TOC here; the in-header #toc is hidden at this width.
+   The 3-column desktop view uses the issue's hierarchy: sitemap + search (left)
+   → content → page TOC (right). The page TOC is carried by the #toc-desktop
+   element (the right column here); at ≤1270px it is instead the "On this page"
+   disclosure at the top of the content column.
    ───────────────────────────────────────────────────────────────────────── */
 
 /* #toc-desktop exists only in the 3-column view; hidden everywhere else. */
@@ -1485,12 +1387,7 @@ div.repolist ul li p {
     min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
   }
 
-  /* Hide the in-header TOC; the desktop copy takes the right column. */
-  header > #toc {
-    display: none;
-  }
-
-  /* Page TOC — right column. Mirrors the in-header TOC's container styling. */
+  /* Page TOC — right column. */
   #toc-desktop {
     grid-area: toc;
     display: flex;
