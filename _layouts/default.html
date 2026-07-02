@@ -68,7 +68,12 @@
         const mainContent = document.getElementById('main-content');
         if (mainContent) {
           // Set ein liten forseinking for å sikre at alt er lasta
-          setTimeout(() => { mainContent.focus(); }, 100);
+          // preventScroll: focus() alone can trigger a browser scroll-into-view
+          // (thresholds differ per engine — e.g. a few px on mobile Chrome/Safari,
+          // none on Firefox), shifting in-flow content relative to fixed elements
+          // like the hamburger button. The section is already in view; suppress
+          // the scroll side-effect so layout doesn't shift on load in any browser.
+          setTimeout(() => { mainContent.focus({ preventScroll: true }); }, 100);
         }
       }, { once: true });
 

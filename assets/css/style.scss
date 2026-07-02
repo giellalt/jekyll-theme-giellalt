@@ -879,8 +879,8 @@ div.repolist ul li p {
     top: 10px;
     right: 20px;
     left: auto; /* Sikra at han er til høgre */
-    width: 40px;
-    height: 40px;
+    width: 42px;  /* match the mobile controls-bar buttons (theme + search) */
+    height: 42px;
     padding: 0;
     font: inherit;
     background: var(--menu-bg);
@@ -1293,8 +1293,19 @@ div.repolist ul li p {
     flex-direction: row;
     align-items: stretch;
     gap: 8px;
+    /* Align the row's top with the fixed hamburger (top:10px, viewport-relative).
+       <body> has padding:5px at this width (see `html body` below) and <section>
+       establishes a BFC (overflow-y:auto), so this margin doesn't collapse through
+       it — the row lands at 5 (body padding) + margin-top, so 5px here reaches the
+       same 10px the hamburger sits at. (Not 10px: that double-counted the body
+       padding and left the row 5px too low in every browser.) This is the whole
+       fix for the row's resting position; the separate scroll-on-focus issue that
+       showed up afterward as "too high" in Chrome/Safari is unrelated and fixed
+       where main-content is focused, not here — see mainContent.focus() in
+       _layouts/default.html. */
+    margin-top: 5px;
     margin-bottom: 1.5rem;
-    margin-right: 56px;
+    margin-right: 56px;  /* clear the fixed hamburger button */
   }
 
   .mobile-controls-bar .theme-toggle-btn {
@@ -1312,7 +1323,25 @@ div.repolist ul li p {
     padding: 0;
   }
 
+  /* pagefind's own stylesheet (loaded after ours) sets a bare `pagefind-modal-trigger
+     { display: inline-block }` rule that ties in specificity with our base
+     `display: block` rule, leaving the winner to load order and each engine's
+     handling of an ambiguous auto-sized flex item — Chrome tolerates it, Firefox/
+     Safari don't, and the search box drops below the hamburger. Pin the box
+     explicitly here instead: this selector (0,1,1) outranks every rule it's
+     competing with (all 0,0,1), so display/height are deterministic everywhere.
+     Kept as a plain block (not flex) — pagefind's own inner .pf-trigger-btn is
+     already width:100%/height:var(--pf-input-height), so a block parent is all
+     it needs; making this a *second* flex container nested around their
+     inline-flex button risked its own cross-engine intrinsic-sizing quirks
+     (Firefox's <button>-in-flex sizing in particular), which is what still
+     broke after the first attempt. */
   .mobile-controls-bar pagefind-modal-trigger {
+    display: block;
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;   /* defensive: clip rather than push the row if inner
+                           content ever exceeds the pinned height */
     flex: 1;
     min-width: 0;
     --pf-input-height: 42px;
