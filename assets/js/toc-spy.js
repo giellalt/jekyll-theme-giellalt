@@ -10,13 +10,14 @@
   const headings = Array.from(section.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]'));
   if (!headings.length) return;
 
-  // id -> array of TOC links (one per container) pointing at that heading.
+  // id -> array of {link, container} pairs (one per TOC container) pointing
+  // at that heading.
   const linkMap = new Map();
   tocs.forEach(toc => {
     toc.querySelectorAll('a[href^="#"]').forEach(link => {
       const id = link.getAttribute('href').slice(1);
       if (!linkMap.has(id)) linkMap.set(id, []);
-      linkMap.get(id).push(link);
+      linkMap.get(id).push({ link, container: toc });
     });
   });
   if (!linkMap.size) return;
@@ -40,23 +41,22 @@
     }
   });
 
-  function setActive(id, on) {
-    const links = linkMap.get(id);
-    if (!links) return;
-    links.forEach(link => link.parentElement.classList.toggle('toc-active', on));
+  function toggleEntries(entries, on) {
+    entries.forEach(({ link }) => link.parentElement.classList.toggle('toc-active', on));
   }
 
   function activate(id) {
     if (id === activeId) return;
-    if (activeId) setActive(activeId, false);
+    if (activeId) toggleEntries(linkMap.get(activeId) || [], false);
     activeId = id;
     if (!id) return;
-    setActive(id, true);
+    const entries = linkMap.get(id);
+    if (!entries) return;
+    toggleEntries(entries, true);
     // Keep the active item visible within whichever TOC is actually on screen.
-    (linkMap.get(id) || []).forEach(link => {
-      const toc = link.closest('.left_toc');
-      if (!toc || toc.offsetParent === null) return; // skip hidden containers
-      const tocRect = toc.getBoundingClientRect();
+    entries.forEach(({ link, container }) => {
+      if (container.offsetParent === null) return; // skip hidden containers
+      const tocRect = container.getBoundingClientRect();
       const itemRect = link.getBoundingClientRect();
       if (itemRect.top < tocRect.top || itemRect.bottom > tocRect.bottom) {
         link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
