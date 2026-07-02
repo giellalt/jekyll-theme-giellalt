@@ -70,6 +70,7 @@ kbd {
   --reading-width: 72ch;
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
+  --sidebar-inset: 4px;       /* uniform left inset shared by header and sitemap content */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -236,12 +237,13 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
-  padding-left: 4px; /* Uniform left inset for all sidebar content */
+  padding-left: var(--sidebar-inset);
 }
 
 /* Inset header text from the col1/col2 divider. Padding lives on the
    text-bearing elements rather than the <header> itself so the left inset
-   (padding-left: 4px on the header) reaches the column edge uniformly. */
+   (header's padding-left: var(--sidebar-inset)) reaches the column edge
+   uniformly. */
 header > h1,
 header > img,
 header > p,
@@ -1023,6 +1025,45 @@ div.repolist ul li p {
   }
 }
 
+/* Shared helpers for the 961–1270px and >1270px column layouts: both bleed
+   their last column to the viewport edge while keeping the rest of the group
+   centered, and both fall back to the same 2-column shape once there's no TOC
+   rail (961–1270px normally, >1270px when the TOC is empty).
+   Each block sets --reserved-width (the actual per-breakpoint math — the part
+   that previously risked drifting between margin-left's and width's separate
+   copies) as a plain custom property, then the margin-left/width/max-width
+   trio below just reads it back; those three lines are boilerplate that never
+   changes per-breakpoint, so they're left as a short literal repeat rather
+   than a mixin: the Ruby Sass gem this theme's Jekyll build uses tries to
+   evaluate max()/min() as Sass math whenever any part of their arguments
+   came from SCSS string interpolation (as a mixin argument would require),
+   and errors because the calc() result isn't a Sass number. This gem also
+   doesn't support @extend-ing a placeholder from within @media, which rules
+   out that route too. */
+
+@mixin grid-areas-2col {
+  grid-template-areas:
+    "header  content"
+    "sitemap content"
+    "footer  content";
+}
+
+/* Sitemap fills the left column under the branding whenever the sidebar is
+   docked into the grid (961px+ — both the 2-column and 3-column shapes use
+   the same "sitemap" grid-area). The left nav column keeps its gray
+   (--menu-bg) background and the col1/col2 divider; only the content/rail
+   bleeds to the edge. */
+@media screen and (min-width: 961px) {
+  #sitemap {
+    grid-area: sitemap;
+    border-left: none;
+    padding-left: var(--sidebar-inset);
+    padding-right: 12px; /* inset from the col1/col2 divider */
+    padding-top: 1rem;
+    min-height: 0; /* let the inner <ul> scroll within the grid row */
+  }
+}
+
 /* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
    rail. Sitemap + branding fill the left column, content takes the right. There
    is no in-page TOC at this width. Same grid as the >1271 empty-TOC collapse
@@ -1035,15 +1076,13 @@ div.repolist ul li p {
      and the scrollbar is still at the edge. Text is held at --reading-width by
      the section's dynamic right padding below. */
   body div.wrapper {
+    --reserved-width: calc(var(--menu-width) + var(--reading-width));
     grid-template-columns: var(--menu-width) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
-    grid-template-areas:
-      "header  content"
-      "sitemap content"
-      "footer  content";
-    margin-left: max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2));
+    @include grid-areas-2col;
+    margin-left: max(0px, calc((100% - var(--reserved-width)) / 2));
     margin-right: 0;
-    width: calc(100% - max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2)));
+    width: calc(100% - max(0px, calc((100% - var(--reserved-width)) / 2)));
     max-width: 100%;
   }
 
@@ -1055,19 +1094,6 @@ div.repolist ul li p {
     /* Extra width past the reading column becomes right padding, so the text
        stays at --reading-width while the scrollbar sits at the window edge. */
     padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
-  }
-
-  /* Sitemap fills the left column under the branding. The left nav column keeps
-     its gray (--menu-bg) background and the col1/col2 divider; only the content
-     bleeds to the edge, so the white spans the full content width with no gray
-     gutter on the right. */
-  #sitemap {
-    grid-area: sitemap;
-    border-left: none;
-    padding-left: 4px;   /* align with the header's left inset */
-    padding-right: 12px;
-    padding-top: 1rem;
-    min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
   }
 }
 
@@ -1312,32 +1338,22 @@ div.repolist ul li p {
      the left margin reproduces margin:auto centering and equals the rail's own
      right padding. (Mirrors the 961–1270 content bleed, one column over.) */
   body div.wrapper {
+    --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width));
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content toc"
       "sitemap content toc"
       "footer  content toc";
-    margin-left: max(0px, calc((100% - (var(--menu-width) * 2 + var(--reading-width))) / 2));
+    margin-left: max(0px, calc((100% - var(--reserved-width)) / 2));
     margin-right: 0;
-    width: calc(100% - max(0px, calc((100% - (var(--menu-width) * 2 + var(--reading-width))) / 2)));
+    width: calc(100% - max(0px, calc((100% - var(--reserved-width)) / 2)));
     max-width: 100%;
   }
 
   header  { grid-area: header; }
   section { grid-area: content; }
   footer  { grid-area: footer; }
-
-  /* Sitemap moves to fill the left column under the branding/search. No right
-     border — the wrapper ::before divider draws the col1/col2 line. */
-  #sitemap {
-    grid-area: sitemap;
-    border-left: none;
-    padding-left: 4px;   /* align with the header's left inset */
-    padding-right: 12px; /* inset from the col1/col2 divider */
-    padding-top: 1rem;
-    min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
-  }
 
   /* Page TOC — right column. Fills the bled column to the window edge; the list
      text is held at ~menu-width by the scroll container's right padding below. */
@@ -1385,10 +1401,7 @@ div.repolist ul li p {
      normal centered 2-column layout (undo the rail bleed's margin/width). */
   body div.wrapper:has(#toc-desktop:not(:has(li))) {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
-    grid-template-areas:
-      "header  content"
-      "sitemap content"
-      "footer  content";
+    @include grid-areas-2col;
     margin: 0 auto;
     width: 100%;
     max-width: calc(var(--menu-width) + var(--reading-width));
