@@ -1123,6 +1123,15 @@ div.repolist ul li p {
   }
 }
 
+/* Cap the disclosure to the rail width at the wider bands (721–1270px) so it
+   reads as a left-flush widget echoing the >1270px rail, not a full-column bar.
+   At ≤720px it stays full-width (the content column is narrow there). */
+@media screen and (min-width: 721px) and (max-width: 1270px) {
+  #mobile-toc {
+    max-width: var(--menu-width);
+  }
+}
+
 /* --- iPad and other Tablet screen widths: --- */
 
 @media print, screen and (max-width: 960px) {
