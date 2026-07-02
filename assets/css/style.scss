@@ -1042,28 +1042,49 @@ div.repolist ul li p {
    the page TOC drops to the "On this page" disclosure at the top of content.
    Same grid as the >1271 empty-TOC collapse rule, one width band down. */
 @media screen and (min-width: 961px) and (max-width: 1270px) {
+  /* Content column bleeds to the right viewport edge so the section's scrollbar
+     rides the window edge (no inset gutter), while the sidebar + reading column
+     stay centered: the left margin reproduces what margin:auto centering would
+     give, and it equals the section's right padding — so the group is centered
+     and the scrollbar is still at the edge. Text is held at --reading-width by
+     the section's dynamic right padding below. */
   body div.wrapper {
-    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    grid-template-columns: var(--menu-width) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content"
       "sitemap content"
       "footer  content";
-    max-width: calc(var(--menu-width) + var(--reading-width));
-    margin: 0 auto;
+    margin-left: max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2));
+    margin-right: 0;
+    width: calc(100% - max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2)));
+    max-width: 100%;
   }
 
   header  { grid-area: header; }
-  section { grid-area: content; }
   footer  { grid-area: footer; }
 
-  /* Sitemap fills the left column under the branding — mirrors the >1271 view.
-     No border-left; the wrapper ::before draws the col1/col2 divider. */
+  section {
+    grid-area: content;
+    /* Extra width past the reading column becomes right padding, so the text
+       stays at --reading-width while the scrollbar sits at the window edge. */
+    padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
+  }
+
+  /* Single-surface look below the 3-column width: the left column shares the
+     content background, so the sidebar reads as part of the page rather than a
+     distinct gray panel. The framed gray-sidebar look is reserved for >1270px. */
+  body { background-color: var(--bg-color); }
+  body div.wrapper::before { display: none; }
+  header, footer { background: var(--bg-color); }
+
+  /* Sitemap fills the left column under the branding. */
   #sitemap {
     grid-area: sitemap;
+    background: var(--bg-color);
     border-left: none;
     padding-left: 4px;   /* align with the header's left inset */
-    padding-right: 12px; /* inset from the col1/col2 divider */
+    padding-right: 12px;
     padding-top: 1rem;
     min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
   }
