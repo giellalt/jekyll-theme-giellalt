@@ -479,15 +479,6 @@ pagefind-modal {
   --pf-mark: var(--text-color);
 }
 
-/* Page-TOC disclosure — hidden by default; shown at ≤1270px (see that block).
-   :not(:has(ul)) hides it on pages with no headings (toc include emits nothing). */
-#mobile-toc {
-  display: none;
-}
-#mobile-toc:not(:has(ul)) {
-  display: none !important;
-}
-
 /* Mobile controls bar (theme toggle + search) — hidden on desktop, shown on mobile. */
 .mobile-controls-bar {
   display: none;
@@ -618,7 +609,7 @@ header h2.tocheader {
 }
 
 /* TOC nav links: block for full-row hover target */
-.left_toc a, #mobile_toc_list a {
+.left_toc a {
   color: var(--menu-text);
   display: block;
   padding: 0.2em 0.5em;
@@ -629,7 +620,7 @@ header h2.tocheader {
   transition: background-color 0.15s, color 0.15s;
 }
 
-.left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
+.left_toc a:hover, #sitemap a:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   text-decoration: none;
@@ -643,10 +634,10 @@ header h2.tocheader {
 /* Rail highlight: each nested li carries an ::after positioned at its
    parent ul's border-left. On hover/active it covers the gray rail with
    the accent colour for just that item's height. */
-.left_toc ul li, #mobile_toc_list ul li {
+.left_toc ul li {
   position: relative;
 }
-.left_toc ul li::after, #mobile_toc_list ul li::after {
+.left_toc ul li::after {
   content: '';
   position: absolute;
   left: calc(-0.75em - 1px);
@@ -656,15 +647,15 @@ header h2.tocheader {
   background: transparent;
   transition: background-color 0.15s;
 }
-.left_toc ul li:hover::after, #mobile_toc_list ul li:hover::after {
+.left_toc ul li:hover::after {
   background: var(--menu-hover-text);
 }
-.left_toc ul li.toc-active::after, #mobile_toc_list ul li.toc-active::after {
+.left_toc ul li.toc-active::after {
   background: var(--link-color);
 }
 
 /* Nested TOC lists: indent with left-rail border */
-.left_toc ul, #mobile_toc_list ul {
+.left_toc ul {
   list-style: none;
   padding-left: 0.75em;
   margin-top: 0;
@@ -679,7 +670,7 @@ header h2.tocheader {
 /* Root list: no indent, no border. `.left_toc` is the root <ul>; without this
    its default ~40px padding-inline-start pushes entries past the rail's right
    edge, where #toc-desktop's overflow:hidden clips them. */
-.left_toc, .left_toc > ul, #mobile_toc_list {
+.left_toc, .left_toc > ul {
   padding-left: 0;
   margin-left: 0;
   border-left: none;
@@ -716,7 +707,7 @@ footer p {
 }
 
 /* TOC list items (all levels) */
-.left_toc li, #mobile_toc_list li {
+.left_toc li {
   display: block;
   font-size: 14px;
   font-weight: 400;
@@ -724,7 +715,7 @@ footer p {
 }
 
 /* Top-level items (H2) — slightly bolder; same specificity, later rule wins */
-.left_toc > li, #mobile_toc_list > li {
+.left_toc > li {
   font-weight: 500;
 }
 
@@ -1078,60 +1069,6 @@ div.repolist ul li p {
   }
 }
 
-/* "On this page" disclosure — the page-TOC representation below the 3-column
-   desktop width, shown at the top of the content column across the whole
-   ≤1270px range. The ≤720px block adds hamburger clearance; the base
-   `#mobile-toc:not(:has(ul))` guard hides it on heading-less pages. */
-@media screen and (max-width: 1270px) {
-  #mobile-toc {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 10px 0.75rem;
-    background: var(--menu-bg);
-    color: var(--menu-text);
-  }
-
-  #mobile-toc summary {
-    cursor: pointer;
-    font-size: 0.85em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-  }
-
-  #mobile-toc summary::-webkit-details-marker { display: none; }
-
-  #mobile-toc summary::before {
-    content: '▶';
-    font-size: 0.65em;
-    transition: transform 0.15s;
-  }
-
-  #mobile-toc[open] summary::before {
-    transform: rotate(90deg);
-  }
-
-  #mobile-toc #mobile_toc_list {
-    margin: 0.5rem 0 0;
-  }
-}
-
-/* Cap the disclosure to the rail width at the wider bands (721–1270px) so it
-   reads as a left-flush widget echoing the >1270px rail, not a full-column bar.
-   At ≤720px it stays full-width (the content column is narrow there). */
-@media screen and (min-width: 721px) and (max-width: 1270px) {
-  #mobile-toc {
-    max-width: var(--menu-width);
-  }
-}
-
 /* --- iPad and other Tablet screen widths: --- */
 
 @media print, screen and (max-width: 960px) {
@@ -1321,12 +1258,6 @@ div.repolist ul li p {
 
   body .wrapper footer {
     border-right: none;
-  }
-
-  /* Disclosure is shown + styled in the ≤1270px block; here it just clears the
-     fixed hamburger button. */
-  #mobile-toc {
-    margin-right: 56px;
   }
 
   .mobile-controls-bar {
