@@ -9,13 +9,22 @@ The **Responsive breakpoint plan** below is the remaining work: revising the
 narrower breakpoints so the whole site feels cohesive at every width. The
 **Open items** further down are smaller follow-ups.
 
-## Responsive breakpoint plan (Alternative A — approved)
+## Responsive breakpoint plan
 
-**Principle:** every nav element gets at most two states as the viewport
-narrows, so nothing shuffles around unpredictably.
+**Final direction:** the in-page TOC lives **only** in the >1270px right sidebar
+rail (`#toc-desktop`). Below 1270px there is **no in-page TOC** at all.
 
-- **Page TOC** → right rail when wide; otherwise a **collapsed "On this page"
-  disclosure** at the top of the content column.
+> **History / direction change.** An earlier approach (Alternative A) also showed
+> the page TOC as a collapsed "On this page" disclosure at the top of the content
+> column below 1270px. That disclosure was built (961–1270, 721–960, ≤720) and
+> then **removed** (commit `b08c9a9`) by decision — it sat awkwardly above the
+> page title and added complexity for little value on narrow screens. The
+> breakpoint *restructure* work below still stands (sitemap placement, header
+> stacking, in-header-TOC removal); only the disclosure was dropped.
+
+**Principle:** each nav element has at most two states as the viewport narrows.
+
+- **Page TOC** → right rail at >1270px; **absent** below (rail only).
 - **Sitemap** → left column when wide; otherwise a **hamburger drawer**.
 - **Branding/overview** → left column when there's a sidebar; otherwise
   **full-width at the top**.
@@ -25,9 +34,9 @@ narrows, so nothing shuffles around unpredictably.
 | Width | Branding | Sitemap | Page TOC | Content |
 |---|---|---|---|---|
 | **≥1271** | left (top) | left (under branding) | right rail (`#toc-desktop`) | center |
-| **961–1270** | left (top) | left (under branding) | "On this page" disclosure (collapsed) | right |
-| **721–960** | full-width top | hamburger drawer | "On this page" disclosure (collapsed) | full width |
-| **≤720** | hidden (controls bar only) | hamburger drawer | "On this page" disclosure (collapsed) | full width |
+| **961–1270** | left (top) | left (under branding) | — none | right |
+| **721–960** | full-width top | hamburger drawer | — none | full width |
+| **≤720** | hidden (controls bar only) | hamburger drawer | — none | full width |
 
 ### Breakpoint-by-breakpoint
 
@@ -44,15 +53,10 @@ left, content center, page TOC as the right rail (`#toc-desktop`).
   >1271 view. The hamburger + drawer-sitemap rules were **retagged from ≤1270 to
   ≤960**, so the hamburger reverts to its base `display:none` at 961–1270 and
   ≤960 is unchanged.
-- **Page TOC:** in-header `#toc` hidden; `#mobile-toc` "On this page" disclosure
-  shown (collapsed). Its appearance was extracted into a shared `≤1270px` block;
-  ≤720 now only sets `display` + hamburger clearance.
+- **Page TOC:** none here. The in-header `#toc` was hidden, and the "On this
+  page" disclosure that briefly lived here was later **removed** (see direction
+  change above).
 - Reverted the old right-edge bleed to a centered 2-column wrapper.
-- **Deferred polish:** the disclosure spans the full reading-width content column
-  here; may want a `max-width` cap. Confirmed working in-browser at this width.
-- **Note — temporary state at 721–960:** still uses the old header-split TOC
-  until the next step; no conflict because `#mobile-toc` is only shown at
-  961–1270 and ≤720 for now (not the full ≤1270 yet).
 
 **721–960px — simplify. ✅ DONE** (commit `a3495f1`)
 
@@ -60,13 +64,11 @@ left, content center, page TOC as the right rail (`#toc-desktop`).
   (`header #toc` absolute-right + `header > :not(#toc)` at 50%) is gone,
   replaced by `header > * { margin-bottom: 10px }`. No forced `width: 100%` —
   the children already fill the width, and forcing it ballooned the inline logo.
-- `#mobile-toc` now shows across the whole ≤1270px range, so 721–960 gets the
-  disclosure. Sitemap stays in the hamburger; content is full width. Confirmed
-  in-browser.
+- No in-page TOC (the disclosure that briefly appeared here was removed).
+  Sitemap stays in the hamburger; content is full width. Confirmed in-browser.
 
 **≤720px — essentially unchanged. ✅** Header hidden; mobile-controls-bar (theme +
-search) + "On this page" disclosure + content; sitemap in the hamburger.
-Confirmed still holds.
+search) + content; sitemap in the hamburger. No in-page TOC.
 
 ### Structural cleanup — ✅ DONE (commit `a3495f1`)
 
@@ -75,15 +77,11 @@ Confirmed still holds.
   with all its CSS (`header #toc`, `header #left_toc`, `header #left_toc > ul`,
   `header > #toc:not(:has(:nth-child(2)))`, the ≤1200 `header div#toc ul` rule,
   the ≤960 header-split block, and the dead `header > #toc` hides in the
-  961–1270 and >1271 blocks). Page TOC now has two homes only, split at 1270px:
-  `#toc-desktop` (rail, >1270) and `#mobile_toc_list` (disclosure, ≤1270).
-- `.left_toc` now resolves to just `#toc-desktop`; scroll-spy works unchanged.
-  *(Still open, low priority: give `#mobile_toc_list` the `.left_toc` class so
-  the disclosure also highlights the active heading when opened.)*
-- **Empty-TOC guard:** the base `#mobile-toc:not(:has(ul))` rule already hides
-  the disclosure on heading-less pages, and the in-header `:nth-child(2)`
-  heuristic is gone — so open item #1 is effectively resolved (one heuristic:
-  `:has(li)`/`:has(ul)` for the rail and the disclosure respectively).
+  961–1270 and >1271 blocks). With the disclosure since removed too, the page TOC
+  now has a **single home**: `#toc-desktop` (the >1270px rail).
+- `.left_toc` resolves to just `#toc-desktop`; scroll-spy works unchanged.
+- **Empty-TOC guard:** the rail collapses on heading-less pages via
+  `#toc-desktop:not(:has(li))` plus the wrapper collapse rule.
 
 ### Remaining polish
 
@@ -91,17 +89,16 @@ Confirmed still holds.
   the browser-default ~40px `padding-inline-start`, pushing entries past the
   rail's right edge into `#toc-desktop`'s `overflow:hidden`. Added `.left_toc` to
   the root-list reset. Verified in-browser: entries sit flush and wrap.
-- **Disclosure width cap — ✅ FIXED** (commit `df8a53a`). Capped `#mobile-toc` to
-  `var(--menu-width)` at 721–1270px so it reads as a left-flush card echoing the
-  rail; ≤720px stays full-width. Verified in-browser at 1120/850/600px.
-- **Optional:** scroll-spy the disclosure when open (see `.left_toc` note above).
+- **Disclosure width cap** (commits `df8a53a`, then removed in `b08c9a9`). Was
+  capped to `var(--menu-width)`; now moot — the disclosure is gone entirely.
+- ~~Scroll-spy the disclosure when open~~ — moot; no disclosure.
 
 ### Verification checklist
 
 - Resize sweep across the 1271/1270, 961/960, 721/720 boundaries: no element
-  should flash or jump, and the disclosure should appear/collapse cleanly.
-- Heading-less page at each width: right rail collapses (≥1271), disclosure
-  hidden (≤1270).
+  should flash or jump.
+- Heading-less page: right rail collapses (≥1271); nothing to check below 1270
+  (no in-page TOC there).
 - Long sitemap: left-column scroll at 961–1270; drawer scroll ≤960.
 - Mind the ≤960 screenshot gotchas (pagefind-modal gap, section auto-focus
   scroll) from prior notes — they make narrow screenshots *look* broken when
@@ -109,35 +106,25 @@ Confirmed still holds.
 
 ## Open items
 
-### 1. Unify the two empty-TOC heuristics — ✅ RESOLVED (commit `a3495f1`)
+### 1. Empty-TOC heuristic — ✅ RESOLVED
 
-The in-header `#toc` and its `:nth-child(2)` heuristic are gone. The two
-remaining page-TOC homes each have a single clean empty-guard:
+With the in-header `#toc` and the disclosure both removed, there's a single
+page-TOC home and a single guard: the rail collapses via
+`#toc-desktop:not(:has(li))` plus the wrapper collapse rule. No way for an empty
+box to render.
 
-- Rail: `#toc-desktop:not(:has(li))` (plus the wrapper collapse rule).
-- Disclosure: base `#mobile-toc:not(:has(ul))`.
+### 2. TOC duplicated in the DOM — ✅ RESOLVED
 
-Both key off the presence of TOC content, so there's no longer a way for an
-empty box to render.
-
-### 2. TOC duplicated in the DOM — ✅ RESOLVED (commit `a3495f1`)
-
-The in-header copy is removed. The page TOC now has exactly two homes, each the
-*sole* representation at its width (no redundantly-hidden copy):
-
-- `#toc-desktop` (rail, >1270px) — carries `data-pagefind-ignore`.
-- `#mobile_toc_list` inside `#mobile-toc` (disclosure, ≤1270px).
-
-Two `toc.html` includes still render per page (rail + disclosure); that's the
-minimum for the split and is accepted. Accessibility is fine — exactly one is
-displayed at any width.
+No duplication left. The page TOC has a **single home**, `#toc-desktop` (the
+>1270px rail, `data-pagefind-ignore`). Only one `toc.html` include renders per
+page now.
 
 ### 3. Header row is `auto` at desktop
 
 In the swapped desktop grid, the header occupies row 1 at `auto` height (it was
-effectively `1fr`, filling the column, in the base layout). Since the in-header
-`#toc` is hidden at >1270px, header height is just branding + search +
-downloads, and the sitemap takes the flexible `1fr` row below it.
+effectively `1fr`, filling the column, in the base layout). With the in-header
+`#toc` gone, header height is just branding + search + downloads, and the
+sitemap takes the flexible `1fr` row below it.
 
 `header` has `overflow: hidden`, so if the branding/search/downloads block ever
 grows very tall it will clip rather than overflow. Edge case, fine in practice.
