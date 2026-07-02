@@ -54,37 +54,43 @@ left, content center, page TOC as the right rail (`#toc-desktop`).
   until the next step; no conflict because `#mobile-toc` is only shown at
   961–1270 and ≤720 for now (not the full ≤1270 yet).
 
-**721–960px — simplify. ← NEXT**
+**721–960px — simplify. ✅ DONE** (commit `a3495f1`)
 
-- Keep the existing stacked single-column (flex-column) layout.
-- **Branding:** let the header sit full-width at the top. Remove the current
-  two-column internal header split (`header #toc` absolute-right +
-  `header > :not(#toc)` at 50%) — it only existed to park the TOC on the right.
-- **Sitemap:** hamburger drawer (unchanged).
-- **Page TOC:** the same collapsed "On this page" disclosure atop content
-  (already visible here once the disclosure shows at ≤1270).
-- **Content:** full width below the header.
+- Header stacks full-width at the top; the two-column internal split
+  (`header #toc` absolute-right + `header > :not(#toc)` at 50%) is gone,
+  replaced by `header > * { margin-bottom: 10px }`. No forced `width: 100%` —
+  the children already fill the width, and forcing it ballooned the inline logo.
+- `#mobile-toc` now shows across the whole ≤1270px range, so 721–960 gets the
+  disclosure. Sitemap stays in the hamburger; content is full width. Confirmed
+  in-browser.
 
-**≤720px — essentially unchanged.** Header hidden; mobile-controls-bar (theme +
-search) + "On this page" disclosure + content; sitemap in the hamburger. Already
-matches the target — no work expected beyond confirming it still holds.
+**≤720px — essentially unchanged. ✅** Header hidden; mobile-controls-bar (theme +
+search) + "On this page" disclosure + content; sitemap in the hamburger.
+Confirmed still holds.
 
-### Structural cleanup this unlocks
+### Structural cleanup — ✅ DONE (commit `a3495f1`)
 
-- The in-header `#toc` / `#left_toc` include becomes **unused at every width**.
-  Remove it from `_layouts/default.html` and delete its header-scoped CSS
-  (`header #toc`, `header #left_toc`, `header #left_toc > ul`,
-  `header > #toc:not(:has(:nth-child(2)))`, and the ≤960 `header #toc` block).
-  Page TOC drops from three DOM copies to two, cleanly split at 1270px:
-  `#toc-desktop` (rail, ≥1271) and `#mobile_toc_list` (disclosure, ≤1270).
-- `.left_toc` then resolves to just `#toc-desktop`; scroll-spy keeps working
-  as-is. *(Optional, low priority: give `#mobile_toc_list` the `.left_toc` class
-  so the disclosure also highlights the active heading when opened.)*
-- Show `#mobile-toc` at ≤1270px (currently ≤720px).
-- **Empty-TOC guard:** now that the disclosure appears at ≤1270, hide
-  `#mobile-toc` when `#mobile_toc_list` has no `li` (same `:has(li)` test used
-  for the rail). This resolves open item #1 by landing on one consistent
-  heuristic everywhere.
+- The in-header `#toc` / `#left_toc` include was **unused at every width** once
+  the swap was complete, so it was removed from `_layouts/default.html` along
+  with all its CSS (`header #toc`, `header #left_toc`, `header #left_toc > ul`,
+  `header > #toc:not(:has(:nth-child(2)))`, the ≤1200 `header div#toc ul` rule,
+  the ≤960 header-split block, and the dead `header > #toc` hides in the
+  961–1270 and >1271 blocks). Page TOC now has two homes only, split at 1270px:
+  `#toc-desktop` (rail, >1270) and `#mobile_toc_list` (disclosure, ≤1270).
+- `.left_toc` now resolves to just `#toc-desktop`; scroll-spy works unchanged.
+  *(Still open, low priority: give `#mobile_toc_list` the `.left_toc` class so
+  the disclosure also highlights the active heading when opened.)*
+- **Empty-TOC guard:** the base `#mobile-toc:not(:has(ul))` rule already hides
+  the disclosure on heading-less pages, and the in-header `:nth-child(2)`
+  heuristic is gone — so open item #1 is effectively resolved (one heuristic:
+  `:has(li)`/`:has(ul)` for the rail and the disclosure respectively).
+
+### Remaining polish
+
+- **Disclosure width at 961–1270:** it spans the full reading-width content
+  column. Consider a `max-width` cap so it reads as an intentional widget rather
+  than a full-width bar. (Deferred from the 961–1270 step.)
+- **Optional:** scroll-spy the disclosure when open (see `.left_toc` note above).
 
 ### Verification checklist
 
@@ -99,44 +105,28 @@ matches the target — no work expected beyond confirming it still holds.
 
 ## Open items
 
-### 1. Unify the two empty-TOC heuristics
+### 1. Unify the two empty-TOC heuristics — ✅ RESOLVED (commit `a3495f1`)
 
-Two different selectors decide when to hide an empty TOC:
+The in-header `#toc` and its `:nth-child(2)` heuristic are gone. The two
+remaining page-TOC homes each have a single clean empty-guard:
 
-- In-header copy: `header > #toc:not(:has(:nth-child(2)))` (`assets/css/style.scss:485`)
-- Desktop copy: `#toc-desktop:not(:has(li))` (new block, plus the wrapper
-  collapse rule `body div.wrapper:has(#toc-desktop:not(:has(li)))`)
+- Rail: `#toc-desktop:not(:has(li))` (plus the wrapper collapse rule).
+- Disclosure: base `#mobile-toc:not(:has(ul))`.
 
-They agree today **only** because `toc.html` emits no `<ul>` at all when there
-are no h2–h6 headings. If that ever changes to an empty `<ul></ul>`, the
-child-count version would show an empty box while the `:has(li)` version would
-still hide correctly.
+Both key off the presence of TOC content, so there's no longer a way for an
+empty box to render.
 
-**Action:** unify both on `:has(li)` for robustness. Low priority — the
-responsive plan above resolves this by deleting the in-header `#toc` (and its
-`:nth-child(2)` heuristic) and adding a `:has(li)` guard to `#mobile-toc`.
+### 2. TOC duplicated in the DOM — ✅ RESOLVED (commit `a3495f1`)
 
-### 2. TOC is duplicated in the DOM
+The in-header copy is removed. The page TOC now has exactly two homes, each the
+*sole* representation at its width (no redundantly-hidden copy):
 
-Every page now renders two copies of the page TOC: the in-header `#left_toc`
-(used ≤1270px) and `#toc-desktop` / `#left_toc_desktop` (used >1270px). This is
-a deliberate tradeoff — keeping a separate desktop element avoids moving the
-in-header node and disturbing the narrow layouts.
+- `#toc-desktop` (rail, >1270px) — carries `data-pagefind-ignore`.
+- `#mobile_toc_list` inside `#mobile-toc` (disclosure, ≤1270px).
 
-Consequences to keep in mind:
-
-- **Page weight:** two anchor-link subtrees pointing at the same heading IDs
-  (valid HTML, but real bytes on every page).
-- **Accessibility is fine:** exactly one copy is `display:none` at any width, so
-  only one is ever in the accessibility tree — no duplicate-nav announcement.
-- `#toc-desktop` carries `data-pagefind-ignore`, so it is not double-indexed by
-  search.
-
-**Action:** none required — just a conscious "yes" to the duplication. Note the
-responsive plan above changes the picture: once the in-header `#toc` is removed,
-the two remaining copies (`#toc-desktop` rail + `#mobile_toc_list` disclosure)
-are each the *sole* page TOC at their width rather than one being redundantly
-hidden. Revisit only if page weight becomes a concern.
+Two `toc.html` includes still render per page (rail + disclosure); that's the
+minimum for the split and is accepted. Accessibility is fine — exactly one is
+displayed at any width.
 
 ### 3. Header row is `auto` at desktop
 
