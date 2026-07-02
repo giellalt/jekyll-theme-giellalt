@@ -87,6 +87,10 @@ Confirmed still holds.
 
 ### Remaining polish
 
+- **Rail clipping — ✅ FIXED** (commit `387f65c`). The root `.left_toc <ul>` kept
+  the browser-default ~40px `padding-inline-start`, pushing entries past the
+  rail's right edge into `#toc-desktop`'s `overflow:hidden`. Added `.left_toc` to
+  the root-list reset. Verified in-browser: entries sit flush and wrap.
 - **Disclosure width at 961–1270:** it spans the full reading-width content
   column. Consider a `max-width` cap so it reads as an intentional widget rather
   than a full-width bar. (Deferred from the 961–1270 step.)
