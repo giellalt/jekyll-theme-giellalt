@@ -911,13 +911,16 @@ div.repolist ul li p {
   display: none;
 }
 
-@media screen and (max-width: 1270px) {
+/* Hamburger + sitemap drawer belong to the stacked layout (≤960px). At
+   961–1270px the sitemap stays in the left column (see the dedicated block
+   below), so the hamburger reverts to its base `display: none`. */
+@media screen and (max-width: 960px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
-  
+
   /* Hamburgerknapp */
   .hamburger-menu {
     position: fixed;
@@ -1074,24 +1077,89 @@ div.repolist ul li p {
   }
 }
 
-/* At this width the sitemap is hidden. Extend the section to the right viewport
-   edge so the scrollbar sits there and no gray gutter appears. Comes after the
-   ≤1270px block so it overrides the grid/max-width set there. Dynamic
-   padding-right keeps the reading column at --reading-width regardless of how
-   wide the section grows. */
+/* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
+   rail. Sitemap + branding fill the left column, content takes the right, and
+   the page TOC drops to the "On this page" disclosure at the top of content.
+   Same grid as the >1271 empty-TOC collapse rule, one width band down. */
 @media screen and (min-width: 961px) and (max-width: 1270px) {
   body div.wrapper {
-    grid-template-columns: var(--menu-width) 1fr;
-    /* Reproduce the left offset that margin:auto centering gave the sidebar,
-       while letting the wrapper extend to the right viewport edge.
-       margin-left (not padding-left) keeps ::before's left:menu-width correct. */
-    margin-left: max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2));
-    margin-right: 0;
-    width: calc(100% - max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2)));
-    max-width: 100%;
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header  content"
+      "sitemap content"
+      "footer  content";
+    max-width: calc(var(--menu-width) + var(--reading-width));
+    margin: 0 auto;
   }
-  section {
-    padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
+
+  header  { grid-area: header; }
+  section { grid-area: content; }
+  footer  { grid-area: footer; }
+
+  /* Sitemap fills the left column under the branding — mirrors the >1271 view.
+     No border-left; the wrapper ::before draws the col1/col2 divider. */
+  #sitemap {
+    grid-area: sitemap;
+    border-left: none;
+    padding-left: 4px;   /* align with the header's left inset */
+    padding-right: 12px; /* inset from the col1/col2 divider */
+    padding-top: 1rem;
+    min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
+  }
+
+  /* Page TOC is the disclosure here, not the in-header list. */
+  header > #toc {
+    display: none;
+  }
+
+  /* Show the "On this page" disclosure (collapsed) at the top of content. */
+  #mobile-toc {
+    display: block;
+  }
+}
+
+/* "On this page" disclosure — the page-TOC representation below the 3-column
+   desktop width. Appearance is shared across every ≤1270px band; each band
+   controls its own `display` (base is `display: none`) and hamburger clearance.
+   The base `#mobile-toc:not(:has(ul))` guard hides it on heading-less pages. */
+@media screen and (max-width: 1270px) {
+  #mobile-toc {
+    margin-top: 5px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px 0.75rem;
+    background: var(--menu-bg);
+    color: var(--menu-text);
+  }
+
+  #mobile-toc summary {
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  #mobile-toc summary::-webkit-details-marker { display: none; }
+
+  #mobile-toc summary::before {
+    content: '▶';
+    font-size: 0.65em;
+    transition: transform 0.15s;
+  }
+
+  #mobile-toc[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  #mobile-toc #mobile_toc_list {
+    margin: 0.5rem 0 0;
   }
 }
 
@@ -1337,44 +1405,11 @@ div.repolist ul li p {
     border-right: none;
   }
 
+  /* Disclosure appearance is shared in the ≤1270px block; here it just becomes
+     visible and clears the fixed hamburger button. */
   #mobile-toc {
     display: block;
-    margin-top: 5px;
-    margin-bottom: 1.5rem;
     margin-right: 56px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 10px 0.75rem;
-    background: var(--menu-bg);
-    color: var(--menu-text);
-  }
-
-  #mobile-toc summary {
-    cursor: pointer;
-    font-size: 0.85em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-  }
-
-  #mobile-toc summary::-webkit-details-marker { display: none; }
-
-  #mobile-toc summary::before {
-    content: '▶';
-    font-size: 0.65em;
-    transition: transform 0.15s;
-  }
-
-  #mobile-toc[open] summary::before {
-    transform: rotate(90deg);
-  }
-
-  #mobile-toc #mobile_toc_list {
-    margin: 0.5rem 0 0;
   }
 
   .mobile-controls-bar {
