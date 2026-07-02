@@ -40,8 +40,12 @@ rail (`#toc-desktop`). Below 1270px there is **no in-page TOC** at all.
 
 ### Breakpoint-by-breakpoint
 
-**≥1271px — done, unchanged.** The shipped 3-column swap: branding + sitemap
-left, content center, page TOC as the right rail (`#toc-desktop`).
+**≥1271px — 3-column swap.** Branding + sitemap left, content center, page TOC as
+the right rail (`#toc-desktop`); the rail heading reads "On this page" (renamed
+from "Page Content", `910c806`). The rail bleeds to the right viewport edge so
+its scrollbar rides the window edge, while the 3-column group stays centered via
+a left margin; the TOC text is held at ~menu-width by the scroll container's
+right padding (`box-sizing:border-box`). (rail edge-bleed: `83a1750`.)
 
 **961–1270px — restructure (the main work). ✅ DONE** (commit `1ecd8e0`)
 
@@ -56,7 +60,16 @@ left, content center, page TOC as the right rail (`#toc-desktop`).
 - **Page TOC:** none here. The in-header `#toc` was hidden, and the "On this
   page" disclosure that briefly lived here was later **removed** (see direction
   change above).
-- Reverted the old right-edge bleed to a centered 2-column wrapper.
+- **Content edge-bleed (centered).** The content column bleeds to the right
+  viewport edge so the section's scrollbar rides the window edge; the reading
+  text is held at `--reading-width` by the section's dynamic right padding, and a
+  left margin keeps the sidebar + reading group centered. (`24de537` — restores
+  the theme's original edge-bleed, which the initial restructure had temporarily
+  reverted to a centered-capped wrapper.)
+- **Colors:** the left nav column keeps its gray (`--menu-bg`) background and the
+  col1/col2 divider. (A brief "single-surface" experiment made the whole left
+  column white in `24de537`; reverted in `71651b0` — only the content needed to
+  read white, which the edge-bleed already provides.)
 
 **721–960px — simplify. ✅ DONE** (commit `a3495f1`)
 
@@ -83,26 +96,39 @@ search) + content; sitemap in the hamburger. No in-page TOC.
 - **Empty-TOC guard:** the rail collapses on heading-less pages via
   `#toc-desktop:not(:has(li))` plus the wrapper collapse rule.
 
-### Remaining polish
+### Polish — all ✅ DONE
 
-- **Rail clipping — ✅ FIXED** (commit `387f65c`). The root `.left_toc <ul>` kept
-  the browser-default ~40px `padding-inline-start`, pushing entries past the
-  rail's right edge into `#toc-desktop`'s `overflow:hidden`. Added `.left_toc` to
-  the root-list reset. Verified in-browser: entries sit flush and wrap.
-- **Disclosure width cap** (commits `df8a53a`, then removed in `b08c9a9`). Was
-  capped to `var(--menu-width)`; now moot — the disclosure is gone entirely.
-- ~~Scroll-spy the disclosure when open~~ — moot; no disclosure.
+- **Edge scrollbars + single-surface colors.** Both outer scroll regions bleed to
+  the right viewport edge so their scrollbars ride the window edge instead of
+  sitting inset (961–1270 content: `24de537`; >1270 rail: `83a1750`), with
+  content/TOC text held at their target widths and the group centered. The
+  961–1270 left nav keeps its gray after a brief white experiment (`71651b0`).
+- **Rail clipping** (`387f65c`). The root `.left_toc <ul>` kept the browser
+  default ~40px `padding-inline-start`, pushing entries past the rail's right
+  edge into `#toc-desktop`'s `overflow:hidden`. Added `.left_toc` to the root-list
+  reset — entries now sit flush and wrap.
+- **Heading label** (`910c806`). Rail heading renamed "Page Content" → "On this
+  page".
+- ~~Disclosure width cap~~ / ~~scroll-spy the disclosure~~ — moot; the disclosure
+  was removed (`b08c9a9`).
 
 ### Verification checklist
 
 - Resize sweep across the 1271/1270, 961/960, 721/720 boundaries: no element
   should flash or jump.
-- Heading-less page: right rail collapses (≥1271); nothing to check below 1270
-  (no in-page TOC there).
+- **Edge scrollbars:** at >1270 the rail scrollbar and at 961–1270 the content
+  scrollbar sit at the window's right edge; TOC/reading text stay at their target
+  widths; the group stays centered.
+- Heading-less page: right rail collapses to a centered 2-column layout (≥1271);
+  nothing to check below 1270 (no in-page TOC there).
 - Long sitemap: left-column scroll at 961–1270; drawer scroll ≤960.
 - Mind the ≤960 screenshot gotchas (pagefind-modal gap, section auto-focus
   scroll) from prior notes — they make narrow screenshots *look* broken when
   they aren't.
+- **Re-confirm on a fresh build.** Much of the recent visual work was verified by
+  injecting the compiled CSS against a stale dev server; re-check after a real
+  `jekyll serve` rebuild — especially the >1270 heading-less collapse, whose
+  runtime `:has()` grid-recalc test was inconclusive.
 
 ## Open items
 
