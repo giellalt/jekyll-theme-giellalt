@@ -647,7 +647,7 @@ header #left_toc {
 
 
 /* TOC nav links: block for full-row hover target */
-#left_toc a, #mobile_toc_list a {
+.left_toc a, #mobile_toc_list a {
   color: var(--menu-text);
   display: block;
   padding: 0.2em 0.5em;
@@ -658,13 +658,13 @@ header #left_toc {
   transition: background-color 0.15s, color 0.15s;
 }
 
-#left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
+.left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   text-decoration: none;
 }
 
-#left_toc li.toc-active > a {
+.left_toc li.toc-active > a {
   color: var(--link-color);
   font-weight: 600;
 }
@@ -672,10 +672,10 @@ header #left_toc {
 /* Rail highlight: each nested li carries an ::after positioned at its
    parent ul's border-left. On hover/active it covers the gray rail with
    the accent colour for just that item's height. */
-#left_toc ul li, #mobile_toc_list ul li {
+.left_toc ul li, #mobile_toc_list ul li {
   position: relative;
 }
-#left_toc ul li::after, #mobile_toc_list ul li::after {
+.left_toc ul li::after, #mobile_toc_list ul li::after {
   content: '';
   position: absolute;
   left: calc(-0.75em - 1px);
@@ -685,15 +685,15 @@ header #left_toc {
   background: transparent;
   transition: background-color 0.15s;
 }
-#left_toc ul li:hover::after, #mobile_toc_list ul li:hover::after {
+.left_toc ul li:hover::after, #mobile_toc_list ul li:hover::after {
   background: var(--menu-hover-text);
 }
-#left_toc ul li.toc-active::after, #mobile_toc_list ul li.toc-active::after {
+.left_toc ul li.toc-active::after, #mobile_toc_list ul li.toc-active::after {
   background: var(--link-color);
 }
 
 /* Nested TOC lists: indent with left-rail border */
-#left_toc ul, #mobile_toc_list ul {
+.left_toc ul, #mobile_toc_list ul {
   list-style: none;
   padding-left: 0.75em;
   margin-top: 0;
@@ -706,7 +706,7 @@ header #left_toc {
 }
 
 /* Root list: no indent, no border */
-#left_toc > ul, #mobile_toc_list {
+.left_toc > ul, #mobile_toc_list {
   padding-left: 0;
   margin-left: 0;
   border-left: none;
@@ -715,20 +715,20 @@ header #left_toc {
 
 
 /* Tilpass rullefeltet for mørk modus */
-#left_toc::-webkit-scrollbar, #sitemap ul::-webkit-scrollbar  {
+.left_toc::-webkit-scrollbar, #sitemap ul::-webkit-scrollbar  {
   width: 8px;
 }
 
-#left_toc::-webkit-scrollbar-track, #sitemap ul::-webkit-scrollbar-track {
+.left_toc::-webkit-scrollbar-track, #sitemap ul::-webkit-scrollbar-track {
   background: var(--menu-bg);
 }
 
-#left_toc::-webkit-scrollbar-thumb, #sitemap ul::-webkit-scrollbar-thumb {
+.left_toc::-webkit-scrollbar-thumb, #sitemap ul::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 4px;
 }
 
-#left_toc::-webkit-scrollbar-thumb:hover, #sitemap ul::-webkit-scrollbar-thumb:hover {
+.left_toc::-webkit-scrollbar-thumb:hover, #sitemap ul::-webkit-scrollbar-thumb:hover {
   background: var(--menu-hover-bg);
 }
 
@@ -743,7 +743,7 @@ footer p {
 }
 
 /* TOC list items (all levels) */
-#left_toc li, #mobile_toc_list li {
+.left_toc li, #mobile_toc_list li {
   display: block;
   font-size: 14px;
   font-weight: 400;
@@ -751,7 +751,7 @@ footer p {
 }
 
 /* Top-level items (H2) — slightly bolder; same specificity, later rule wins */
-#left_toc > li, #mobile_toc_list > li {
+.left_toc > li, #mobile_toc_list > li {
   font-weight: 500;
 }
 
@@ -1405,5 +1405,103 @@ div.repolist ul li p {
     flex: 1;
     min-width: 0;
     --pf-input-height: 42px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Desktop (>1270px) column swap — issue #5.
+
+   The base/narrow layout (≤1270px) is unchanged: the page TOC lives inside the
+   <header> (left column / hamburger band) and the sitemap is the right column /
+   hamburger drawer. Only the 3-column desktop view swaps to the issue's
+   hierarchy: sitemap + search (left) → content → page TOC (right).
+
+   To place the page TOC in the right column without disturbing the in-header
+   TOC that the narrow layouts rely on, a separate #toc-desktop element carries
+   the TOC here; the in-header #toc is hidden at this width.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* #toc-desktop exists only in the 3-column view; hidden everywhere else. */
+#toc-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 1271px) {
+  body div.wrapper {
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header  content toc"
+      "sitemap content toc"
+      "footer  content toc";
+  }
+
+  header  { grid-area: header; }
+  section { grid-area: content; }
+  footer  { grid-area: footer; }
+
+  /* Sitemap moves to fill the left column under the branding/search. No right
+     border — the wrapper ::before divider draws the col1/col2 line. */
+  #sitemap {
+    grid-area: sitemap;
+    border-left: none;
+    padding-left: 4px;   /* align with the header's left inset */
+    padding-right: 12px; /* inset from the col1/col2 divider */
+    padding-top: 1rem;
+    min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
+  }
+
+  /* Hide the in-header TOC; the desktop copy takes the right column. */
+  header > #toc {
+    display: none;
+  }
+
+  /* Page TOC — right column. Mirrors the in-header TOC's container styling. */
+  #toc-desktop {
+    grid-area: toc;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border-color);
+    padding-left: 1rem;
+    padding-top: 1.5rem; /* align heading with the content's first h1 */
+    background: var(--menu-bg);
+    width: 100%;
+    max-width: var(--menu-width);
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 0;
+  }
+
+  #toc-desktop > .tocheader {
+    margin: 0 0 8px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: 8px;
+    color: var(--blockquote-text);
+    flex-shrink: 0;
+  }
+
+  #toc-desktop .left_toc {
+    flex: 1 1 0;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    text-align: left;
+    color: var(--menu-text);
+  }
+
+  /* Heading-less pages emit no TOC — collapse the empty right column. */
+  body div.wrapper:has(#toc-desktop:not(:has(li))) {
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    max-width: calc(var(--menu-width) + var(--reading-width));
+    grid-template-areas:
+      "header  content"
+      "sitemap content"
+      "footer  content";
+  }
+  #toc-desktop:not(:has(li)) {
+    display: none;
   }
 }

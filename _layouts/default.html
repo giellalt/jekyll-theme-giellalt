@@ -170,6 +170,13 @@
         {% include_cached sitemap.html %}
       </div>
 
+      <!-- Desktop-only page TOC for the right column (issue #5). The in-header
+           #toc above is used at ≤1270px; this copy is shown only >1270px. -->
+      <div id="toc-desktop" data-pagefind-ignore>
+        <h2 class="tocheader">Page Content</h2>
+        {% include toc.html html=content sanitize=true class="left_toc" id="left_toc_desktop" h_min=2 h_max=6 %}
+      </div>
+
     <footer>
         {% if site.github.is_project_page %}
         {% include footer-maintained.html %}
