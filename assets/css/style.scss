@@ -468,6 +468,11 @@ pagefind-modal-trigger {
   --pf-hover: var(--menu-hover-bg);
 }
 
+header > pagefind-modal-trigger {
+  width: calc(100% - 8px);
+  margin: 2px 6px 6px 2px;
+}
+
 /* ── Pagefind modal theme vars ───────────────────────────────────────── */
 
 pagefind-modal {
