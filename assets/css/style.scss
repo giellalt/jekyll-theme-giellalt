@@ -1071,17 +1071,12 @@ div.repolist ul li p {
     padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
   }
 
-  /* Single-surface look below the 3-column width: the left column shares the
-     content background, so the sidebar reads as part of the page rather than a
-     distinct gray panel. The framed gray-sidebar look is reserved for >1270px. */
-  body { background-color: var(--bg-color); }
-  body div.wrapper::before { display: none; }
-  header, footer { background: var(--bg-color); }
-
-  /* Sitemap fills the left column under the branding. */
+  /* Sitemap fills the left column under the branding. The left nav column keeps
+     its gray (--menu-bg) background and the col1/col2 divider; only the content
+     bleeds to the edge, so the white spans the full content width with no gray
+     gutter on the right. */
   #sitemap {
     grid-area: sitemap;
-    background: var(--bg-color);
     border-left: none;
     padding-left: 4px;   /* align with the header's left inset */
     padding-right: 12px;
