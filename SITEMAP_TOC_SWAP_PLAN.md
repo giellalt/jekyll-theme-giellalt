@@ -34,29 +34,27 @@ narrows, so nothing shuffles around unpredictably.
 **≥1271px — done, unchanged.** The shipped 3-column swap: branding + sitemap
 left, content center, page TOC as the right rail (`#toc-desktop`).
 
-**961–1270px — restructure (the main work).**
+**961–1270px — restructure (the main work). ✅ DONE** (commit `1ecd8e0`)
 
-- Change the grid to "desktop minus the right rail": 2 columns
+- Grid is now "desktop minus the right rail": 2 columns
   `var(--menu-width) minmax(0, var(--reading-width))`, rows `auto 1fr auto`,
-  areas:
-  ```
-  "header  content"
-  "sitemap content"
-  "footer  content"
-  ```
-  This is *exactly* the empty-TOC collapse rule already shipped in the >1271
-  block — factor it out and reuse it at this width.
-- **Sitemap stays in the left column** (under branding). Drop the current
-  `position:fixed` hamburger-drawer treatment for this range; the hamburger
-  button is already hidden ≥961px.
-- **Page TOC:** remove the in-header `#toc` here and instead show the
-  `#mobile-toc` "On this page" disclosure (collapsed by default) at the top of
-  the content column.
-- The current 961–1270 block bleeds the section to the right viewport edge
-  *because the sitemap was hidden there*. With the sitemap back in the left
-  column, revert to the centered 2-column wrapper so it matches the ≥1271 look.
+  areas `header/sitemap/footer` (col 1) + `content` (col 2) — the same shape as
+  the >1271 empty-TOC collapse, one band down.
+- **Sitemap** sits in the left column under the branding, styled to match the
+  >1271 view. The hamburger + drawer-sitemap rules were **retagged from ≤1270 to
+  ≤960**, so the hamburger reverts to its base `display:none` at 961–1270 and
+  ≤960 is unchanged.
+- **Page TOC:** in-header `#toc` hidden; `#mobile-toc` "On this page" disclosure
+  shown (collapsed). Its appearance was extracted into a shared `≤1270px` block;
+  ≤720 now only sets `display` + hamburger clearance.
+- Reverted the old right-edge bleed to a centered 2-column wrapper.
+- **Deferred polish:** the disclosure spans the full reading-width content column
+  here; may want a `max-width` cap. Confirmed working in-browser at this width.
+- **Note — temporary state at 721–960:** still uses the old header-split TOC
+  until the next step; no conflict because `#mobile-toc` is only shown at
+  961–1270 and ≤720 for now (not the full ≤1270 yet).
 
-**721–960px — simplify.**
+**721–960px — simplify. ← NEXT**
 
 - Keep the existing stacked single-column (flex-column) layout.
 - **Branding:** let the header sit full-width at the top. Remove the current
