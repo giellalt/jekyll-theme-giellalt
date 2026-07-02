@@ -1327,12 +1327,21 @@ div.repolist ul li p {
 }
 
 @media screen and (min-width: 1271px) {
+  /* The rail (col 3) bleeds to the right viewport edge so its scrollbar rides
+     the window edge, while the sidebar + content + rail group stays centered:
+     the left margin reproduces margin:auto centering and equals the rail's own
+     right padding. (Mirrors the 961–1270 content bleed, one column over.) */
   body div.wrapper {
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content toc"
       "sitemap content toc"
       "footer  content toc";
+    margin-left: max(0px, calc((100% - (var(--menu-width) * 2 + var(--reading-width))) / 2));
+    margin-right: 0;
+    width: calc(100% - max(0px, calc((100% - (var(--menu-width) * 2 + var(--reading-width))) / 2)));
+    max-width: 100%;
   }
 
   header  { grid-area: header; }
@@ -1350,7 +1359,8 @@ div.repolist ul li p {
     min-height: 0;       /* let the inner <ul> scroll within the 1fr row */
   }
 
-  /* Page TOC — right column. */
+  /* Page TOC — right column. Fills the bled column to the window edge; the list
+     text is held at ~menu-width by the scroll container's right padding below. */
   #toc-desktop {
     grid-area: toc;
     display: flex;
@@ -1360,7 +1370,6 @@ div.repolist ul li p {
     padding-top: 1.5rem; /* align heading with the content's first h1 */
     background: var(--menu-bg);
     width: 100%;
-    max-width: var(--menu-width);
     overflow: hidden;
     box-sizing: border-box;
     min-height: 0;
@@ -1385,16 +1394,24 @@ div.repolist ul li p {
     min-height: 0;
     text-align: left;
     color: var(--menu-text);
+    /* Scroll container reaches the window edge (scrollbar rides it); the list
+       text is inset to ~menu-width via right padding. box-sizing:border-box so
+       width:100% absorbs the padding rather than overflowing the column. */
+    box-sizing: border-box;
+    padding-right: max(0px, calc(100% - var(--menu-width) + 1rem));
   }
 
-  /* Heading-less pages emit no TOC — collapse the empty right column. */
+  /* Heading-less pages emit no TOC — collapse the empty right column back to a
+     normal centered 2-column layout (undo the rail bleed's margin/width). */
   body div.wrapper:has(#toc-desktop:not(:has(li))) {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
-    max-width: calc(var(--menu-width) + var(--reading-width));
     grid-template-areas:
       "header  content"
       "sitemap content"
       "footer  content";
+    margin: 0 auto;
+    width: 100%;
+    max-width: calc(var(--menu-width) + var(--reading-width));
   }
   #toc-desktop:not(:has(li)) {
     display: none;
