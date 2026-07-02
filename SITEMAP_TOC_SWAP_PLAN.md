@@ -91,9 +91,9 @@ Confirmed still holds.
   the browser-default ~40px `padding-inline-start`, pushing entries past the
   rail's right edge into `#toc-desktop`'s `overflow:hidden`. Added `.left_toc` to
   the root-list reset. Verified in-browser: entries sit flush and wrap.
-- **Disclosure width at 961–1270:** it spans the full reading-width content
-  column. Consider a `max-width` cap so it reads as an intentional widget rather
-  than a full-width bar. (Deferred from the 961–1270 step.)
+- **Disclosure width cap — ✅ FIXED** (commit `df8a53a`). Capped `#mobile-toc` to
+  `var(--menu-width)` at 721–1270px so it reads as a left-flush card echoing the
+  rail; ≤720px stays full-width. Verified in-browser at 1120/850/600px.
 - **Optional:** scroll-spy the disclosure when open (see `.left_toc` note above).
 
 ### Verification checklist
