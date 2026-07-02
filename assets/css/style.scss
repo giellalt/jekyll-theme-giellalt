@@ -676,8 +676,10 @@ header h2.tocheader {
   word-wrap: break-word;
 }
 
-/* Root list: no indent, no border */
-.left_toc > ul, #mobile_toc_list {
+/* Root list: no indent, no border. `.left_toc` is the root <ul>; without this
+   its default ~40px padding-inline-start pushes entries past the rail's right
+   edge, where #toc-desktop's overflow:hidden clips them. */
+.left_toc, .left_toc > ul, #mobile_toc_list {
   padding-left: 0;
   margin-left: 0;
   border-left: none;
