@@ -1309,7 +1309,10 @@ div.repolist ul li p {
        _layouts/default.html. */
     margin-top: 5px;
     margin-bottom: 1.5rem;
-    margin-right: 56px;  /* clear the fixed hamburger button */
+    /* Clear the fixed hamburger button (right:20px, width:42px) with the same
+       8px gap the flexbox uses between the toggle and search buttons: hamburger
+       sits 20px from the fixed-position gutter, so 62px minus that 8px gap. */
+    margin-right: 50px;
   }
 
   .mobile-controls-bar .theme-toggle-btn {
