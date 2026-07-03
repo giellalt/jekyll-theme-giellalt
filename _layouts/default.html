@@ -118,17 +118,9 @@
           <li><a href="{{ site.github.repository_url }}">View On <strong>GitHub</strong></a></li>
         </ul>
         {% endif %}
-        <div id="toc">
-          <h2 class="tocheader">Page Content</h2>
-          {% include toc.html html=content sanitize=true class="left_toc" id="left_toc" h_min=2 h_max=6 %}
-        </div>
       </header>
       <section tabindex="0" id="main-content" data-pagefind-body>
         {% if page.title %}<span data-pagefind-meta="title" aria-hidden="true" style="display:none">{{ page.title }}</span>{% endif %}
-        <details id="mobile-toc" data-pagefind-ignore>
-          <summary>On this page</summary>
-          {% include toc.html html=content sanitize=true id="mobile_toc_list" h_min=2 h_max=6 %}
-        </details>
         <div class="mobile-controls-bar" data-pagefind-ignore>
           <button class="theme-toggle-btn" type="button" aria-label="Toggle theme">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -168,6 +160,13 @@
       <div id="sitemap" data-pagefind-ignore>
         <h1>Sitemap</h1>
         {% include_cached sitemap.html %}
+      </div>
+
+      <!-- Page TOC — shown only in the >1270px right column. Below that width
+           there is no in-page TOC. -->
+      <div id="toc-desktop" data-pagefind-ignore>
+        <h2 class="tocheader">On this page</h2>
+        {% include toc.html html=content sanitize=true class="left_toc" id="left_toc_desktop" h_min=2 h_max=6 %}
       </div>
 
     <footer>

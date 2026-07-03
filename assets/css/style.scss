@@ -70,6 +70,7 @@ kbd {
   --reading-width: 72ch;
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
+  --sidebar-inset: 4px;       /* uniform left inset shared by header and sitemap content */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -236,20 +237,19 @@ header {
   background: var(--menu-bg);
   overflow: hidden; /* Hindra at innhald går utanfor ruta */
   min-height: 0; /* Tillat flexbox-krymping */
-  padding-left: 4px; /* Uniform left inset for all sidebar content */
+  padding-left: var(--sidebar-inset);
 }
 
 /* Inset header text from the col1/col2 divider. Padding lives on the
-   text-bearing elements rather than the <header> itself, so structural
-   elements (h2.tocheader's border-top, #left_toc's scrollbar and ::after
-   shadow) reach the column edge. */
+   text-bearing elements rather than the <header> itself so the left inset
+   (header's padding-left: var(--sidebar-inset)) reaches the column edge
+   uniformly. */
 header > h1,
 header > img,
 header > p,
 header > pagefind-modal-trigger,
 header > .header-actions,
-header > .downloads,
-header #left_toc > ul {
+header > .downloads {
   padding-right: 12px;
 }
 
@@ -481,20 +481,6 @@ pagefind-modal {
   --pf-mark: var(--text-color);
 }
 
-/* Hide TOC if empty: */
-header > #toc:not(:has(:nth-child(2))) {
-    display: none;
-}
-
-/* Mobile TOC disclosure — hidden on desktop, shown on mobile via the ≤720px block.
-   :not(:has(ul)) hides it on pages with no headings (toc include emits nothing). */
-#mobile-toc {
-  display: none;
-}
-#mobile-toc:not(:has(ul)) {
-  display: none !important;
-}
-
 /* Mobile controls bar (theme toggle + search) — hidden on desktop, shown on mobile. */
 .mobile-controls-bar {
   display: none;
@@ -610,44 +596,8 @@ header .view-project svg {
   flex-shrink: 0;
 }
 
-header h2.tocheader {
-  margin: 0;
-  font-size: 0.8em;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-top: 1px solid var(--border-color);
-  margin-top: 16px;
-  padding-top: 16px;
-  padding-bottom: 8px;
-  color: var(--blockquote-text);
-  flex-shrink: 0;
-}
-
-header #toc {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0; /* Viktig for at flex-shrink skal fungere */
-}
-
-header #left_toc {
-  flex: 1 1 0; /* Tillat krymping og veksing */
-  text-align: left;
-  color: var(--menu-text);
-  width: 100%; /* Bruk full breidd i header */
-  overflow-y: auto; /* Rullefelt når innhaldet er for langt */
-  overflow-x: hidden; /* Hindra horisontal scroll */
-  padding: 0;
-  margin-bottom: 0;
-  min-height: 0; /* Kritisk for flexbox-krymping */
-  border: none;
-  box-sizing: border-box;
-}
-
-
 /* TOC nav links: block for full-row hover target */
-#left_toc a, #mobile_toc_list a {
+.left_toc a {
   color: var(--menu-text);
   display: block;
   padding: 0.2em 0.5em;
@@ -658,13 +608,13 @@ header #left_toc {
   transition: background-color 0.15s, color 0.15s;
 }
 
-#left_toc a:hover, #sitemap a:hover, #mobile_toc_list a:hover {
+.left_toc a:hover, #sitemap a:hover {
   background-color: var(--menu-hover-bg);
   color: var(--menu-hover-text);
   text-decoration: none;
 }
 
-#left_toc li.toc-active > a {
+.left_toc li.toc-active > a {
   color: var(--link-color);
   font-weight: 600;
 }
@@ -672,10 +622,10 @@ header #left_toc {
 /* Rail highlight: each nested li carries an ::after positioned at its
    parent ul's border-left. On hover/active it covers the gray rail with
    the accent colour for just that item's height. */
-#left_toc ul li, #mobile_toc_list ul li {
+.left_toc ul li {
   position: relative;
 }
-#left_toc ul li::after, #mobile_toc_list ul li::after {
+.left_toc ul li::after {
   content: '';
   position: absolute;
   left: calc(-0.75em - 1px);
@@ -685,15 +635,15 @@ header #left_toc {
   background: transparent;
   transition: background-color 0.15s;
 }
-#left_toc ul li:hover::after, #mobile_toc_list ul li:hover::after {
+.left_toc ul li:hover::after {
   background: var(--menu-hover-text);
 }
-#left_toc ul li.toc-active::after, #mobile_toc_list ul li.toc-active::after {
+.left_toc ul li.toc-active::after {
   background: var(--link-color);
 }
 
 /* Nested TOC lists: indent with left-rail border */
-#left_toc ul, #mobile_toc_list ul {
+.left_toc ul {
   list-style: none;
   padding-left: 0.75em;
   margin-top: 0;
@@ -705,8 +655,10 @@ header #left_toc {
   word-wrap: break-word;
 }
 
-/* Root list: no indent, no border */
-#left_toc > ul, #mobile_toc_list {
+/* Root list: no indent, no border. `.left_toc` is the root <ul>; without this
+   its default ~40px padding-inline-start pushes entries past the rail's right
+   edge, where #toc-desktop's overflow:hidden clips them. */
+.left_toc {
   padding-left: 0;
   margin-left: 0;
   border-left: none;
@@ -715,20 +667,20 @@ header #left_toc {
 
 
 /* Tilpass rullefeltet for mørk modus */
-#left_toc::-webkit-scrollbar, #sitemap ul::-webkit-scrollbar  {
+.left_toc::-webkit-scrollbar, #sitemap ul::-webkit-scrollbar  {
   width: 8px;
 }
 
-#left_toc::-webkit-scrollbar-track, #sitemap ul::-webkit-scrollbar-track {
+.left_toc::-webkit-scrollbar-track, #sitemap ul::-webkit-scrollbar-track {
   background: var(--menu-bg);
 }
 
-#left_toc::-webkit-scrollbar-thumb, #sitemap ul::-webkit-scrollbar-thumb {
+.left_toc::-webkit-scrollbar-thumb, #sitemap ul::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 4px;
 }
 
-#left_toc::-webkit-scrollbar-thumb:hover, #sitemap ul::-webkit-scrollbar-thumb:hover {
+.left_toc::-webkit-scrollbar-thumb:hover, #sitemap ul::-webkit-scrollbar-thumb:hover {
   background: var(--menu-hover-bg);
 }
 
@@ -743,7 +695,7 @@ footer p {
 }
 
 /* TOC list items (all levels) */
-#left_toc li, #mobile_toc_list li {
+.left_toc li {
   display: block;
   font-size: 14px;
   font-weight: 400;
@@ -751,7 +703,7 @@ footer p {
 }
 
 /* Top-level items (H2) — slightly bolder; same specificity, later rule wins */
-#left_toc > li, #mobile_toc_list > li {
+.left_toc > li {
   font-weight: 500;
 }
 
@@ -911,13 +863,16 @@ div.repolist ul li p {
   display: none;
 }
 
-@media screen and (max-width: 1270px) {
+/* Hamburger + sitemap drawer belong to the stacked layout (≤960px). At
+   961–1270px the sitemap stays in the left column (see the dedicated block
+   below), so the hamburger reverts to its base `display: none`. */
+@media screen and (max-width: 960px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
-  
+
   /* Hamburgerknapp */
   .hamburger-menu {
     position: fixed;
@@ -1068,29 +1023,76 @@ div.repolist ul li p {
   .main-container {
     margin-right: 0;
   }
-  
-  header div#toc ul {
-    background: none;
+}
+
+/* Shared helpers for the 961–1270px and >1270px column layouts: both bleed
+   their last column to the viewport edge while keeping the rest of the group
+   centered, and both fall back to the same 2-column shape once there's no TOC
+   rail (961–1270px normally, >1270px when the TOC is empty).
+   Each block sets --reserved-width (the actual per-breakpoint math — the part
+   that previously risked drifting between margin-left's and width's separate
+   copies) as a plain custom property, then the margin-left/width/max-width
+   trio below just reads it back; those three lines are boilerplate that never
+   changes per-breakpoint, so they're left as a short literal repeat rather
+   than a mixin: the Ruby Sass gem this theme's Jekyll build uses tries to
+   evaluate max()/min() as Sass math whenever any part of their arguments
+   came from SCSS string interpolation (as a mixin argument would require),
+   and errors because the calc() result isn't a Sass number. This gem also
+   doesn't support @extend-ing a placeholder from within @media, which rules
+   out that route too. */
+
+@mixin grid-areas-2col {
+  grid-template-areas:
+    "header  content"
+    "sitemap content"
+    "footer  content";
+}
+
+/* Sitemap fills the left column under the branding whenever the sidebar is
+   docked into the grid (961px+ — both the 2-column and 3-column shapes use
+   the same "sitemap" grid-area). The left nav column keeps its gray
+   (--menu-bg) background and the col1/col2 divider; only the content/rail
+   bleeds to the edge. */
+@media screen and (min-width: 961px) {
+  #sitemap {
+    grid-area: sitemap;
+    border-left: none;
+    padding-left: var(--sidebar-inset);
+    padding-right: 12px; /* inset from the col1/col2 divider */
+    padding-top: 1rem;
+    min-height: 0; /* let the inner <ul> scroll within the grid row */
   }
 }
 
-/* At this width the sitemap is hidden. Extend the section to the right viewport
-   edge so the scrollbar sits there and no gray gutter appears. Comes after the
-   ≤1270px block so it overrides the grid/max-width set there. Dynamic
-   padding-right keeps the reading column at --reading-width regardless of how
-   wide the section grows. */
+/* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
+   rail. Sitemap + branding fill the left column, content takes the right. There
+   is no in-page TOC at this width. Same grid as the >1271 empty-TOC collapse
+   rule, one width band down. */
 @media screen and (min-width: 961px) and (max-width: 1270px) {
+  /* Content column bleeds to the right viewport edge so the section's scrollbar
+     rides the window edge (no inset gutter), while the sidebar + reading column
+     stay centered: the left margin reproduces what margin:auto centering would
+     give, and it equals the section's right padding — so the group is centered
+     and the scrollbar is still at the edge. Text is held at --reading-width by
+     the section's dynamic right padding below. */
   body div.wrapper {
-    grid-template-columns: var(--menu-width) 1fr;
-    /* Reproduce the left offset that margin:auto centering gave the sidebar,
-       while letting the wrapper extend to the right viewport edge.
-       margin-left (not padding-left) keeps ::before's left:menu-width correct. */
-    margin-left: max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2));
+    --reserved-width: calc(var(--menu-width) + var(--reading-width));
+    grid-template-columns: var(--menu-width) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    @include grid-areas-2col;
+    margin-left: max(0px, calc((100% - var(--reserved-width)) / 2));
     margin-right: 0;
-    width: calc(100% - max(0px, calc((100% - var(--menu-width) - var(--reading-width)) / 2)));
+    width: calc(100% - max(0px, calc((100% - var(--reserved-width)) / 2)));
     max-width: 100%;
   }
+
+  header  { grid-area: header; }
+  footer  { grid-area: footer; }
+
   section {
+    grid-area: content;
+    /* Extra width past the reading column becomes right padding, so the text
+       stays at --reading-width while the scrollbar sits at the window edge. */
     padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
   }
 }
@@ -1173,67 +1175,16 @@ div.repolist ul li p {
     background: var(--bg-color);
   }
 
-  /* Two-column header layout */
-  header #toc {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: calc(50% - 10px);
-    padding: 12px 0 12px 12px;
-    margin: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border-left: 1px solid var(--border-color);
-  }
-
-  /* Left side content */
-  header > :not(#toc) {
-    width: calc(50% - 10px);
+  /* Branding stacks full-width at the top, not a second header column (there
+     is no in-page TOC at this width). The header children are block-level (or
+     already width:100%), so they fill the width on their own — only
+     inter-item spacing is needed here. */
+  header > * {
     margin-bottom: 10px;
-  }
-
-  /* Specific styling for the left_toc list */
-  header #toc #left_toc {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    right: 0;
-    position: initial;
-  }
-
-  header #toc ul {
-    width: 100%;
-    height: auto;
-    max-height: 100%;
-    overflow-y: auto;
-    margin-top: 0;
-    margin-bottom: 0;
-    list-style: none;
-    box-sizing: border-box;
-    position: static;
-  }
-  /* Make sure TOC header stays compact */
-  header #toc h2.tocheader {
-    margin-top: 0;
-    margin-bottom: 1em;
-    width: 100%;
-    border-top: none
   }
 
   header a small {
     display: inline;
-  }
-
-  header > #toc {
-    border-color: var(--border-color);
-    background: var(--bg-color);
   }
 
   div.highlight {
@@ -1337,46 +1288,6 @@ div.repolist ul li p {
     border-right: none;
   }
 
-  #mobile-toc {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 1.5rem;
-    margin-right: 56px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 10px 0.75rem;
-    background: var(--menu-bg);
-    color: var(--menu-text);
-  }
-
-  #mobile-toc summary {
-    cursor: pointer;
-    font-size: 0.85em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-  }
-
-  #mobile-toc summary::-webkit-details-marker { display: none; }
-
-  #mobile-toc summary::before {
-    content: '▶';
-    font-size: 0.65em;
-    transition: transform 0.15s;
-  }
-
-  #mobile-toc[open] summary::before {
-    transform: rotate(90deg);
-  }
-
-  #mobile-toc #mobile_toc_list {
-    margin: 0.5rem 0 0;
-  }
-
   .mobile-controls-bar {
     display: flex;
     flex-direction: row;
@@ -1405,5 +1316,97 @@ div.repolist ul li p {
     flex: 1;
     min-width: 0;
     --pf-input-height: 42px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Desktop (>1270px) column swap — issue #5.
+
+   The 3-column desktop view uses the issue's hierarchy: sitemap + search (left)
+   → content → page TOC (right). The page TOC is carried by the #toc-desktop
+   element (the right column here); there is no in-page TOC at ≤1270px.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* #toc-desktop exists only in the 3-column view; hidden everywhere else. */
+#toc-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 1271px) {
+  /* The rail (col 3) bleeds to the right viewport edge so its scrollbar rides
+     the window edge, while the sidebar + content + rail group stays centered:
+     the left margin reproduces margin:auto centering and equals the rail's own
+     right padding. (Mirrors the 961–1270 content bleed, one column over.) */
+  body div.wrapper {
+    --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width));
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "header  content toc"
+      "sitemap content toc"
+      "footer  content toc";
+    margin-left: max(0px, calc((100% - var(--reserved-width)) / 2));
+    margin-right: 0;
+    width: calc(100% - max(0px, calc((100% - var(--reserved-width)) / 2)));
+    max-width: 100%;
+  }
+
+  header  { grid-area: header; }
+  section { grid-area: content; }
+  footer  { grid-area: footer; }
+
+  /* Page TOC — right column. Fills the bled column to the window edge; the list
+     text is held at ~menu-width by the scroll container's right padding below. */
+  #toc-desktop {
+    grid-area: toc;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border-color);
+    padding-left: 1rem;
+    padding-top: 1.5rem; /* align heading with the content's first h1 */
+    background: var(--menu-bg);
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 0;
+  }
+
+  #toc-desktop > .tocheader {
+    margin: 0 0 8px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: 8px;
+    color: var(--blockquote-text);
+    flex-shrink: 0;
+  }
+
+  #toc-desktop .left_toc {
+    flex: 1 1 0;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    text-align: left;
+    color: var(--menu-text);
+    /* Scroll container reaches the window edge (scrollbar rides it); the list
+       text is inset to ~menu-width via right padding. box-sizing:border-box so
+       width:100% absorbs the padding rather than overflowing the column. */
+    box-sizing: border-box;
+    padding-right: max(0px, calc(100% - var(--menu-width) + 1rem));
+  }
+
+  /* Heading-less pages emit no TOC — collapse the empty right column back to a
+     normal centered 2-column layout (undo the rail bleed's margin/width). */
+  body div.wrapper:has(#toc-desktop:not(:has(li))) {
+    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    @include grid-areas-2col;
+    margin: 0 auto;
+    width: 100%;
+    max-width: calc(var(--menu-width) + var(--reading-width));
+  }
+  #toc-desktop:not(:has(li)) {
+    display: none;
   }
 }

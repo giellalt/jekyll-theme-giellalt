@@ -1,18 +1,26 @@
-/* Scroll-spy: highlight the #left_toc link for the heading currently
-   at the top of the reading column. */
+/* Scroll-spy: highlight the TOC link for the heading currently at the top of
+   the reading column. Iterates every .left_toc container (currently just the
+   >1270px #toc-desktop rail; the query is left plural so any future copy is
+   picked up automatically). There is no in-page TOC below 1270px. */
 (function () {
-  const toc = document.getElementById('left_toc');
+  const tocs = Array.from(document.querySelectorAll('.left_toc'));
   const section = document.querySelector('section');
-  if (!toc || !section) return;
+  if (!tocs.length || !section) return;
 
   const headings = Array.from(section.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]'));
   if (!headings.length) return;
 
-  const tocLinks = toc.querySelectorAll('a[href^="#"]');
-  if (!tocLinks.length) return;
-
+  // id -> array of {link, container} pairs (one per TOC container) pointing
+  // at that heading.
   const linkMap = new Map();
-  tocLinks.forEach(link => linkMap.set(link.getAttribute('href').slice(1), link));
+  tocs.forEach(toc => {
+    toc.querySelectorAll('a[href^="#"]').forEach(link => {
+      const id = link.getAttribute('href').slice(1);
+      if (!linkMap.has(id)) linkMap.set(id, []);
+      linkMap.get(id).push({ link, container: toc });
+    });
+  });
+  if (!linkMap.size) return;
 
   let activeId = null;
 
@@ -33,23 +41,27 @@
     }
   });
 
+  function toggleEntries(entries, on) {
+    entries.forEach(({ link }) => link.parentElement.classList.toggle('toc-active', on));
+  }
+
   function activate(id) {
     if (id === activeId) return;
-    if (activeId) {
-      const prev = linkMap.get(activeId);
-      if (prev) prev.parentElement.classList.remove('toc-active');
-    }
+    if (activeId) toggleEntries(linkMap.get(activeId) || [], false);
     activeId = id;
     if (!id) return;
-    const curr = linkMap.get(id);
-    if (!curr) return;
-    curr.parentElement.classList.add('toc-active');
-    // Keep active item visible in the TOC scroll container
-    const tocRect = toc.getBoundingClientRect();
-    const itemRect = curr.getBoundingClientRect();
-    if (itemRect.top < tocRect.top || itemRect.bottom > tocRect.bottom) {
-      curr.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
+    const entries = linkMap.get(id);
+    if (!entries) return;
+    toggleEntries(entries, true);
+    // Keep the active item visible within whichever TOC is actually on screen.
+    entries.forEach(({ link, container }) => {
+      if (container.offsetParent === null) return; // skip hidden containers
+      const tocRect = container.getBoundingClientRect();
+      const itemRect = link.getBoundingClientRect();
+      if (itemRect.top < tocRect.top || itemRect.bottom > tocRect.bottom) {
+        link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    });
   }
 
   function update() {
