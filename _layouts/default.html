@@ -88,7 +88,10 @@
   <body>
     <pagefind-config bundle-path="{{ "/pagefind/" | relative_url }}"></pagefind-config>
     <pagefind-modal reset-on-close></pagefind-modal>
-    <div class="wrapper">
+    {% capture toc_html %}{% include toc.html html=content sanitize=true class="left_toc" id="left_toc_desktop" h_min=2 h_max=6 %}{% endcapture %}
+    {% assign has_toc = false %}
+    {% if toc_html contains "<li" %}{% assign has_toc = true %}{% endif %}
+    <div class="wrapper{% unless has_toc %} no-toc{% endunless %}">
       <header data-pagefind-ignore>
         <h1><a href="{{ "/" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
@@ -171,7 +174,7 @@
            there is no in-page TOC. -->
       <div id="toc-desktop" data-pagefind-ignore>
         <h2 class="tocheader">On this page</h2>
-        {% include toc.html html=content sanitize=true class="left_toc" id="left_toc_desktop" h_min=2 h_max=6 %}
+        {{ toc_html }}
       </div>
 
     <footer>

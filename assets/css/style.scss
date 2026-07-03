@@ -1441,16 +1441,18 @@ div.repolist ul li p {
     padding-right: max(0px, calc(100% - var(--menu-width) + 1rem));
   }
 
-  /* Heading-less pages emit no TOC — collapse the empty right column back to a
-     normal centered 2-column layout (undo the rail bleed's margin/width). */
-  body div.wrapper:has(#toc-desktop:not(:has(li))) {
-    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max));
+  /* Heading-less pages: .no-toc (set in the layout — :has() can't nest inside
+     :has(), so this can't be done in pure CSS) drops the rail column so
+     content bleeds to the edge instead of a gray gap. --reserved-width is
+     left at the with-TOC value so the sidebar doesn't shift position. */
+  body div.wrapper.no-toc {
+    grid-template-columns: var(--menu-width) minmax(0, 1fr);
     @include grid-areas-2col;
-    margin: 0 auto;
-    width: 100%;
-    max-width: calc(var(--menu-width) + var(--reading-width-max));
   }
-  #toc-desktop:not(:has(li)) {
+  .no-toc #toc-desktop {
     display: none;
+  }
+  .no-toc section {
+    padding-right: max(var(--gutter), calc(100% - var(--gutter) - clamp(var(--reading-width), calc(100% - var(--gutter) * 2), var(--reading-width-max))));
   }
 }
