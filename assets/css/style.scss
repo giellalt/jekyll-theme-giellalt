@@ -67,7 +67,8 @@ kbd {
 :root {
   color-scheme: light dark;
   --menu-width: 270px;
-  --reading-width: 72ch;
+  --reading-width: 72ch;      /* floor: content column never shrinks narrower than this */
+  --reading-width-max: 800px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
   --sidebar-inset: 4px;       /* uniform left inset shared by header and sitemap content */
@@ -204,11 +205,11 @@ hr {
 /* New grid container */
 body div.wrapper {
   display: grid;
-  grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) var(--menu-width);
+  grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) var(--menu-width);
   grid-template-rows: 1fr auto;
   gap: 0;
   width: 100%;
-  max-width: calc(var(--menu-width) * 2 + var(--reading-width));
+  max-width: calc(var(--menu-width) * 2 + var(--reading-width-max));
   height: calc(100vh - var(--page-padding) * 2);
   margin: 0 auto; /* Center on page — stays centered as window widens */
   position: relative;
@@ -1077,10 +1078,10 @@ div.repolist ul li p {
      rides the window edge (no inset gutter), while the sidebar + reading column
      stay centered: the left margin reproduces what margin:auto centering would
      give, and it equals the section's right padding — so the group is centered
-     and the scrollbar is still at the edge. Text is held at --reading-width by
-     the section's dynamic right padding below. */
+     and the scrollbar is still at the edge. Text grows from --reading-width up
+     to --reading-width-max via the section's dynamic right padding below. */
   body div.wrapper {
-    --reserved-width: calc(var(--menu-width) + var(--reading-width));
+    --reserved-width: calc(var(--menu-width) + var(--reading-width-max));
     grid-template-columns: var(--menu-width) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
     @include grid-areas-2col;
@@ -1095,9 +1096,11 @@ div.repolist ul li p {
 
   section {
     grid-area: content;
-    /* Extra width past the reading column becomes right padding, so the text
-       stays at --reading-width while the scrollbar sits at the window edge. */
-    padding-right: max(var(--gutter), calc(100% - var(--gutter) - var(--reading-width)));
+    /* Text width grows with available space between --reading-width (floor)
+       and --reading-width-max (ceiling); past the ceiling, extra width past
+       the reading column becomes right padding, so the scrollbar still sits
+       at the window edge. */
+    padding-right: max(var(--gutter), calc(100% - var(--gutter) - clamp(var(--reading-width), calc(100% - var(--gutter) * 2), var(--reading-width-max))));
   }
 }
 
@@ -1372,10 +1375,15 @@ div.repolist ul li p {
   /* The rail (col 3) bleeds to the right viewport edge so its scrollbar rides
      the window edge, while the sidebar + content + rail group stays centered:
      the left margin reproduces margin:auto centering and equals the rail's own
-     right padding. (Mirrors the 961–1270 content bleed, one column over.) */
+     right padding. (Mirrors the 961–1270 content bleed, one column over.)
+     Content (col 2) grows from --reading-width up to --reading-width-max
+     before any leftover space is handed to the rail: grid's track-sizing
+     algorithm maximizes minmax() tracks up to their ceiling before it expands
+     fr tracks, so this falls out of the track definition below with no extra
+     rules needed. */
   body div.wrapper {
-    --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width));
-    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width)) 1fr;
+    --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width-max));
+    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content toc"
@@ -1436,11 +1444,11 @@ div.repolist ul li p {
   /* Heading-less pages emit no TOC — collapse the empty right column back to a
      normal centered 2-column layout (undo the rail bleed's margin/width). */
   body div.wrapper:has(#toc-desktop:not(:has(li))) {
-    grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
+    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max));
     @include grid-areas-2col;
     margin: 0 auto;
     width: 100%;
-    max-width: calc(var(--menu-width) + var(--reading-width));
+    max-width: calc(var(--menu-width) + var(--reading-width-max));
   }
   #toc-desktop:not(:has(li)) {
     display: none;
