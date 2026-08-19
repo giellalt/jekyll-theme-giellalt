@@ -890,15 +890,6 @@ div.repolist ul li p {
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
 
-  /* .mobile-controls-bar (search + theme toggle + hamburger) is the single
-     source for these controls at ≤1024px — hide the header's own copies so
-     they don't render twice. The header's branding (title/description) and
-     repo badge stay visible. */
-  header #theme-toggle-btn,
-  header > pagefind-modal-trigger {
-    display: none;
-  }
-
   /* Hamburgerknapp — a normal flex item in .mobile-controls-bar, sized to
      match the theme toggle and search box it shares the row with. */
   .hamburger-menu {
@@ -1209,9 +1200,9 @@ div.repolist ul li p {
     border: none;
   }
 
-  /* Sitemap hidden by default at this width; the hamburger's `.active +`
-     and `.show` rules from the 1280px block (higher specificity) override
-     to show the drawer when the user toggles it. */
+  /* Sitemap hidden by default at this width; #sitemap.show (higher
+     specificity, set/cleared by hamburger-menu.js) overrides to show the
+     drawer when the user toggles it. */
   #sitemap {
     display: none;
   }
