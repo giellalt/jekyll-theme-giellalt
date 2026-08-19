@@ -879,6 +879,15 @@ div.repolist ul li p {
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
 
+  /* .mobile-controls-bar (search + theme toggle + hamburger) is the single
+     source for these controls at ≤960px — hide the header's own copies so
+     they don't render twice. The header's branding (title/description) and
+     repo badge stay visible. */
+  header #theme-toggle-btn,
+  header > pagefind-modal-trigger {
+    display: none;
+  }
+
   /* Hamburgerknapp — a normal flex item in .mobile-controls-bar, sized to
      match the theme toggle and search box it shares the row with. */
   .hamburger-menu {
@@ -1137,21 +1146,12 @@ div.repolist ul li p {
     display: none;
   }
 
-  /* Reset grid positioning for header */
+  /* Branding (title/description/repo badge) is redundant with the page's own
+     content heading at this width and crowds the controls row above it —
+     hidden across the whole stacked layout (≤960px), matching the ≤720px
+     phone behavior this used to be exclusive to. */
   body .wrapper header {
-    grid-column: auto;
-    grid-row: auto;
-    position: relative;
-    min-height: 100px;
-    display: block;
-    width: 100%;
-    height: auto;
-    margin-bottom: 2.5em;
-    overflow: visible;
-    padding-right: 0;
-    border-right: none;
-    /* Match the rest of the page — no gray panel at this width. */
-    background: var(--bg-color);
+    display: none;
   }
 
   /* Reset grid positioning for section */
@@ -1179,18 +1179,6 @@ div.repolist ul li p {
     position: static;
     width: auto;
     background: var(--bg-color);
-  }
-
-  /* Branding stacks full-width at the top, not a second header column (there
-     is no in-page TOC at this width). The header children are block-level (or
-     already width:100%), so they fill the width on their own — only
-     inter-item spacing is needed here. */
-  header > * {
-    margin-bottom: 10px;
-  }
-
-  header a small {
-    display: inline;
   }
 
   div.highlight {
@@ -1282,11 +1270,6 @@ div.repolist ul li p {
 @media print, screen and (max-width: 720px) {
   html body {
     padding: 5px; /* Litt padding rundt heile */
-  }
-
-  /* Hide TOC and header text on phone screens: */
-  body div.wrapper header {
-    display: none;
   }
 
   body .wrapper section {
