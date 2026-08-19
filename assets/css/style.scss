@@ -869,6 +869,12 @@ div.repolist ul li p {
   display: none;
 }
 
+/* Backdrop only ever exists for the ≤1024px drawer; hidden by default like
+   .hamburger-menu above so it isn't a bare block-level div at wider widths. */
+#sitemap-backdrop {
+  display: none;
+}
+
 /* Hamburger + sitemap drawer belong to the stacked layout (≤1024px). At
    1025–1280px the sitemap stays in the left column (see the dedicated block
    below), so the hamburger reverts to its base `display: none`. */
@@ -943,19 +949,35 @@ div.repolist ul li p {
     top: 6px;
   }
   
+  /* Dimmed backdrop behind the drawer — a separate element (not a pseudo-
+     element of #sitemap) so the existing outside-click handler in
+     hamburger-menu.js, which checks `!sitemap.contains(e.target)`, correctly
+     treats a backdrop click as "outside" and closes the drawer. */
+  #sitemap-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 9998; /* one below #sitemap's 9999 */
+  }
+
+  #sitemap-backdrop.show {
+    display: block;
+  }
+
   /* Sitemap med enkel display-basert hover */
   #sitemap {
     position: fixed;
     top: 0; /* Full-height overlay — the hamburger scrolls with the row, so the
                drawer no longer anchors to its position. */
-    right: 0;
+    left: 0;
     bottom: 0; /* Gå heilt ned til botnen */
     width: 280px; /* Redusert breidd for å unngå scroll */
     max-width: 90vw; /* Aldri breiare enn 90% av viewport */
     background: var(--menu-bg);
     border: 1px solid var(--border-color);
-    border-right: none;
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+    border-left: none;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
     z-index: 9999;
     padding: 15px; /* Redusert padding */
     box-sizing: border-box;
