@@ -1128,13 +1128,16 @@ div.repolist ul li p {
     background-color: var(--bg-color);
   }
 
+  /* max-width/margin/padding are set here for form's sake but always
+     overridden below by the "Aggressiv overstyring" rule (max-width:100vw,
+     margin/padding-left/right) now that it applies across the whole ≤960px
+     range instead of just ≤720px — left unset rather than declared-then-
+     always-overridden. */
   body div.wrapper {
     display: block; /* Ikkje grid */
     width: auto;
-    max-width: 860px; /* Fluid up to prod's wrapper width; centered via margin auto */
     height: auto;
-    margin: 0 auto;
-    padding: 0 16px;
+    margin: 0;
     grid-template-columns: none;
     grid-template-rows: none;
     gap: 0;
@@ -1148,8 +1151,7 @@ div.repolist ul li p {
 
   /* Branding (title/description/repo badge) is redundant with the page's own
      content heading at this width and crowds the controls row above it —
-     hidden across the whole stacked layout (≤960px), matching the ≤720px
-     phone behavior this used to be exclusive to. */
+     hidden across the whole stacked layout (≤960px). */
   body .wrapper header {
     display: none;
   }
@@ -1198,10 +1200,6 @@ div.repolist ul li p {
     margin-left: 0;
     margin-right: 0;
     border: none;
-  }
-
-  section table td, section table th {
-	padding: 0.2em 1px ;
   }
 
   footer p {
@@ -1263,23 +1261,19 @@ div.repolist ul li p {
     min-width: 0;
     --pf-input-height: 42px;
   }
-}
 
-/* --- Mobile phone screen widths: --- */
-
-@media print, screen and (max-width: 720px) {
+  /* Below applied the same full-width, hyphenation-friendly treatment only
+     at ≤720px; the ≤960px range fell back to weaker generic rules (fixed
+     860px cap, plain 1px table-cell padding, no code-block scroll tuning).
+     There was no principled reason for that split — merged so the whole
+     stacked layout gets the same fluid, defensive treatment. */
   html body {
     padding: 5px; /* Litt padding rundt heile */
-  }
-
-  body .wrapper section {
-    border: none
   }
 
   /* Aggressiv overstyring av Jekyll-tema og alle containrar */
   html, body, body div.wrapper,
   body .wrapper section, section,
-  body .wrapper header, header,
   .container, .main-content {
     width: auto;
     max-width: 100vw;
@@ -1327,10 +1321,6 @@ div.repolist ul li p {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
-  }
-
-  body .wrapper footer {
-    border-right: none;
   }
 }
 
