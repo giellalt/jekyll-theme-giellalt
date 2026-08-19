@@ -570,7 +570,12 @@ header .header-actions {
   flex-direction: row;
   align-items: center;
   gap: 0.5em;
-  margin: 0 0 1rem;
+  /* 2px left margin matches header > pagefind-modal-trigger's own
+     margin-left below it, added there to keep its focus ring clear of
+     header's overflow:hidden — the github badge has the same default-
+     outline clipping risk and was sitting 2px further left than the
+     search box as a result. */
+  margin: 0 0 1rem 2px;
 }
 
 header .view-project {
