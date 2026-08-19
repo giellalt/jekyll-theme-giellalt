@@ -869,10 +869,10 @@ div.repolist ul li p {
   display: none;
 }
 
-/* Hamburger + sitemap drawer belong to the stacked layout (≤960px). At
-   961–1270px the sitemap stays in the left column (see the dedicated block
+/* Hamburger + sitemap drawer belong to the stacked layout (≤1024px). At
+   1025–1280px the sitemap stays in the left column (see the dedicated block
    below), so the hamburger reverts to its base `display: none`. */
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 1024px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
@@ -880,7 +880,7 @@ div.repolist ul li p {
   }
 
   /* .mobile-controls-bar (search + theme toggle + hamburger) is the single
-     source for these controls at ≤960px — hide the header's own copies so
+     source for these controls at ≤1024px — hide the header's own copies so
      they don't render twice. The header's branding (title/description) and
      repo badge stay visible. */
   header #theme-toggle-btn,
@@ -1038,10 +1038,10 @@ div.repolist ul li p {
   }
 }
 
-/* Shared helpers for the 961–1270px and >1270px column layouts: both bleed
+/* Shared helpers for the 1025–1280px and >1280px column layouts: both bleed
    their last column to the viewport edge while keeping the rest of the group
    centered, and both fall back to the same 2-column shape once there's no TOC
-   rail (961–1270px normally, >1270px when the TOC is empty).
+   rail (1025–1280px normally, >1280px when the TOC is empty).
    Each block sets --reserved-width (the actual per-breakpoint math — the part
    that previously risked drifting between margin-left's and width's separate
    copies) as a plain custom property, then the margin-left/width/max-width
@@ -1062,11 +1062,11 @@ div.repolist ul li p {
 }
 
 /* Sitemap fills the left column under the branding whenever the sidebar is
-   docked into the grid (961px+ — both the 2-column and 3-column shapes use
+   docked into the grid (1025px+ — both the 2-column and 3-column shapes use
    the same "sitemap" grid-area). The left nav column keeps its gray
    (--menu-bg) background and the col1/col2 divider; only the content/rail
    bleeds to the edge. */
-@media screen and (min-width: 961px) {
+@media screen and (min-width: 1025px) {
   #sitemap {
     grid-area: sitemap;
     border-left: none;
@@ -1077,11 +1077,11 @@ div.repolist ul li p {
   }
 }
 
-/* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
+/* Intermediate width (1025–1280px): the 3-column desktop view minus the page-TOC
    rail. Sitemap + branding fill the left column, content takes the right. There
-   is no in-page TOC at this width. Same grid as the >1271 empty-TOC collapse
+   is no in-page TOC at this width. Same grid as the >1281 empty-TOC collapse
    rule, one width band down. */
-@media screen and (min-width: 961px) and (max-width: 1270px) {
+@media screen and (min-width: 1025px) and (max-width: 1280px) {
   /* Content column bleeds to the right viewport edge so the section's scrollbar
      rides the window edge (no inset gutter), while the sidebar + reading column
      stay centered: the left margin reproduces what margin:auto centering would
@@ -1114,7 +1114,7 @@ div.repolist ul li p {
 
 /* --- iPad and other Tablet screen widths: --- */
 
-@media print, screen and (max-width: 960px) {
+@media print, screen and (max-width: 1024px) {
   /* Gå tilbake til gammal flexbox-layout for tablet/mobil */
   body {
     display: flex;
@@ -1130,7 +1130,7 @@ div.repolist ul li p {
 
   /* max-width/margin/padding are set here for form's sake but always
      overridden below by the "Aggressiv overstyring" rule (max-width:100vw,
-     margin/padding-left/right) now that it applies across the whole ≤960px
+     margin/padding-left/right) now that it applies across the whole ≤1024px
      range instead of just ≤720px — left unset rather than declared-then-
      always-overridden. */
   body div.wrapper {
@@ -1151,7 +1151,7 @@ div.repolist ul li p {
 
   /* Branding (title/description/repo badge) is redundant with the page's own
      content heading at this width and crowds the controls row above it —
-     hidden across the whole stacked layout (≤960px). */
+     hidden across the whole stacked layout (≤1024px). */
   body .wrapper header {
     display: none;
   }
@@ -1168,7 +1168,7 @@ div.repolist ul li p {
   }
 
   /* Sitemap hidden by default at this width; the hamburger's `.active +`
-     and `.show` rules from the 1270px block (higher specificity) override
+     and `.show` rules from the 1280px block (higher specificity) override
      to show the drawer when the user toggles it. */
   #sitemap {
     display: none;
@@ -1263,7 +1263,7 @@ div.repolist ul li p {
   }
 
   /* Below applied the same full-width, hyphenation-friendly treatment only
-     at ≤720px; the ≤960px range fell back to weaker generic rules (fixed
+     at ≤720px; the ≤1024px range fell back to weaker generic rules (fixed
      860px cap, plain 1px table-cell padding, no code-block scroll tuning).
      There was no principled reason for that split — merged so the whole
      stacked layout gets the same fluid, defensive treatment. */
@@ -1325,11 +1325,11 @@ div.repolist ul li p {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Desktop (>1270px) column swap — issue #5.
+   Desktop (>1280px) column swap — issue #5.
 
    The 3-column desktop view uses the issue's hierarchy: sitemap + search (left)
    → content → page TOC (right). The page TOC is carried by the #toc-desktop
-   element (the right column here); there is no in-page TOC at ≤1270px.
+   element (the right column here); there is no in-page TOC at ≤1280px.
    ───────────────────────────────────────────────────────────────────────── */
 
 /* #toc-desktop exists only in the 3-column view; hidden everywhere else. */
@@ -1337,11 +1337,11 @@ div.repolist ul li p {
   display: none;
 }
 
-@media screen and (min-width: 1271px) {
+@media screen and (min-width: 1281px) {
   /* The rail (col 3) bleeds to the right viewport edge so its scrollbar rides
      the window edge, while the sidebar + content + rail group stays centered:
      the left margin reproduces margin:auto centering and equals the rail's own
-     right padding. (Mirrors the 961–1270 content bleed, one column over.)
+     right padding. (Mirrors the 1025–1280 content bleed, one column over.)
      Content (col 2) grows from --reading-width up to --reading-width-max
      before any leftover space is handed to the rail: grid's track-sizing
      algorithm maximizes minmax() tracks up to their ceiling before it expands
