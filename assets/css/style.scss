@@ -71,7 +71,7 @@ kbd {
   --reading-width-max: 800px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
-  --sidebar-inset: 4px;       /* uniform left inset shared by header and sitemap content */
+  --sidebar-inset: 1rem;      /* uniform left inset shared by header and sitemap content */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -1093,9 +1093,24 @@ div.repolist ul li p {
     grid-area: sitemap;
     border-left: none;
     padding-left: var(--sidebar-inset);
-    padding-right: 12px; /* inset from the col1/col2 divider */
     padding-top: 1rem;
     min-height: 0; /* let the inner <ul> scroll within the grid row */
+  }
+
+  /* Inset from the col1/col2 divider lives on the scrollable element itself
+     (like #toc-desktop .left_toc's own padding-right below) so the
+     scrollbar rides flush against the divider instead of sitting inset
+     inside an outer wrapper's padding. */
+  #sitemap > ul {
+    padding-right: 12px;
+  }
+
+  /* Footer's base padding-left is 0 (fine at ≤1024px, where the wrapper's
+     own padding already insets it and its text is centered) — at desktop
+     widths it's a direct grid child with no wrapper padding, so it needs
+     the same left inset as header/sitemap. */
+  footer {
+    padding-left: var(--sidebar-inset);
   }
 }
 
