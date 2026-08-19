@@ -68,10 +68,10 @@ kbd {
   color-scheme: light dark;
   --menu-width: 270px;
   --reading-width: 72ch;      /* floor: content column never shrinks narrower than this */
-  --reading-width-max: 800px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
+  --reading-width-max: 1200px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
-  --sidebar-inset: 4px;       /* uniform left inset shared by header and sitemap content */
+  --sidebar-inset: 1rem;      /* uniform left inset shared by header and sitemap content */
 
   /* Standardfargar for ljos modus */
   --bg-color: #fff;
@@ -570,10 +570,15 @@ header .header-actions {
   flex-direction: row;
   align-items: center;
   gap: 0.5em;
-  margin: 0 0 1rem;
+  /* 2px left margin matches header > pagefind-modal-trigger's own
+     margin-left below it, added there to keep its focus ring clear of
+     header's overflow:hidden — the github badge has the same default-
+     outline clipping risk and was sitting 2px further left than the
+     search box as a result. */
+  margin: 0 0 1rem 2px;
 }
 
-header .view-project {
+.view-project {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -593,12 +598,12 @@ header .view-project {
   white-space: nowrap;
 }
 
-header .view-project:hover {
+.view-project:hover {
   background-color: var(--menu-hover-bg);
   text-decoration: none;
 }
 
-header .view-project svg {
+.view-project svg {
   flex-shrink: 0;
 }
 
@@ -869,22 +874,26 @@ div.repolist ul li p {
   display: none;
 }
 
-/* Hamburger + sitemap drawer belong to the stacked layout (≤960px). At
-   961–1270px the sitemap stays in the left column (see the dedicated block
+/* Backdrop only ever exists for the ≤1024px drawer; hidden by default like
+   .hamburger-menu above so it isn't a bare block-level div at wider widths. */
+#sitemap-backdrop {
+  display: none;
+}
+
+/* Hamburger + sitemap drawer belong to the stacked layout (≤1024px). At
+   1025–1280px the sitemap stays in the left column (see the dedicated block
    below), so the hamburger reverts to its base `display: none`. */
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 1024px) {
   /* Endra grid-oppsettet til to kolonnar */
   body div.wrapper {
     grid-template-columns: var(--menu-width) minmax(0, var(--reading-width));
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
 
-  /* Hamburgerknapp */
+  /* Hamburgerknapp — a normal flex item in .mobile-controls-bar, sized to
+     match the theme toggle and search box it shares the row with. */
   .hamburger-menu {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    left: auto; /* Sikra at han er til høgre */
+    flex-shrink: 0;
     width: 42px;  /* match the mobile controls-bar buttons (theme + search) */
     height: 42px;
     padding: 0;
@@ -893,7 +902,6 @@ div.repolist ul li p {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
-    z-index: 1000;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -937,18 +945,35 @@ div.repolist ul li p {
     top: 6px;
   }
   
+  /* Dimmed backdrop behind the drawer — a separate element (not a pseudo-
+     element of #sitemap) so the existing outside-click handler in
+     hamburger-menu.js, which checks `!sitemap.contains(e.target)`, correctly
+     treats a backdrop click as "outside" and closes the drawer. */
+  #sitemap-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 9998; /* one below #sitemap's 9999 */
+  }
+
+  #sitemap-backdrop.show {
+    display: block;
+  }
+
   /* Sitemap med enkel display-basert hover */
   #sitemap {
     position: fixed;
-    top: 50px; /* Heilt inntil hamburgermenyen (10px + 40px) */
-    right: 0;
+    top: 0; /* Full-height overlay — the hamburger scrolls with the row, so the
+               drawer no longer anchors to its position. */
+    left: 0;
     bottom: 0; /* Gå heilt ned til botnen */
     width: 280px; /* Redusert breidd for å unngå scroll */
     max-width: 90vw; /* Aldri breiare enn 90% av viewport */
     background: var(--menu-bg);
     border: 1px solid var(--border-color);
-    border-right: none;
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+    border-left: none;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
     z-index: 9999;
     padding: 15px; /* Redusert padding */
     box-sizing: border-box;
@@ -1004,8 +1029,9 @@ div.repolist ul li p {
 
   /* Click-only toggle. Hover is intentionally not supported — it breaks
      on touch (tap-then-stick), has no keyboard equivalent, and the
-     hamburger pattern is universally click-driven. */
-  .hamburger-menu.active + #sitemap,
+     hamburger pattern is universally click-driven. JS toggles this class
+     directly on #sitemap, so it works regardless of the hamburger's
+     position in the DOM. */
   #sitemap.show {
     display: block;
   }
@@ -1030,10 +1056,10 @@ div.repolist ul li p {
   }
 }
 
-/* Shared helpers for the 961–1270px and >1270px column layouts: both bleed
+/* Shared helpers for the 1025–1280px and >1280px column layouts: both bleed
    their last column to the viewport edge while keeping the rest of the group
    centered, and both fall back to the same 2-column shape once there's no TOC
-   rail (961–1270px normally, >1270px when the TOC is empty).
+   rail (1025–1280px normally, >1280px when the TOC is empty).
    Each block sets --reserved-width (the actual per-breakpoint math — the part
    that previously risked drifting between margin-left's and width's separate
    copies) as a plain custom property, then the margin-left/width/max-width
@@ -1054,26 +1080,41 @@ div.repolist ul li p {
 }
 
 /* Sitemap fills the left column under the branding whenever the sidebar is
-   docked into the grid (961px+ — both the 2-column and 3-column shapes use
+   docked into the grid (1025px+ — both the 2-column and 3-column shapes use
    the same "sitemap" grid-area). The left nav column keeps its gray
    (--menu-bg) background and the col1/col2 divider; only the content/rail
    bleeds to the edge. */
-@media screen and (min-width: 961px) {
+@media screen and (min-width: 1025px) {
   #sitemap {
     grid-area: sitemap;
     border-left: none;
     padding-left: var(--sidebar-inset);
-    padding-right: 12px; /* inset from the col1/col2 divider */
     padding-top: 1rem;
     min-height: 0; /* let the inner <ul> scroll within the grid row */
   }
+
+  /* Inset from the col1/col2 divider lives on the scrollable element itself
+     (like #toc-desktop .left_toc's own padding-right below) so the
+     scrollbar rides flush against the divider instead of sitting inset
+     inside an outer wrapper's padding. */
+  #sitemap > ul {
+    padding-right: 12px;
+  }
+
+  /* Footer's base padding-left is 0 (fine at ≤1024px, where the wrapper's
+     own padding already insets it and its text is centered) — at desktop
+     widths it's a direct grid child with no wrapper padding, so it needs
+     the same left inset as header/sitemap. */
+  footer {
+    padding-left: var(--sidebar-inset);
+  }
 }
 
-/* Intermediate width (961–1270px): the 3-column desktop view minus the page-TOC
+/* Intermediate width (1025–1280px): the 3-column desktop view minus the page-TOC
    rail. Sitemap + branding fill the left column, content takes the right. There
-   is no in-page TOC at this width. Same grid as the >1271 empty-TOC collapse
+   is no in-page TOC at this width. Same grid as the >1281 empty-TOC collapse
    rule, one width band down. */
-@media screen and (min-width: 961px) and (max-width: 1270px) {
+@media screen and (min-width: 1025px) and (max-width: 1280px) {
   /* Content column bleeds to the right viewport edge so the section's scrollbar
      rides the window edge (no inset gutter), while the sidebar + reading column
      stay centered: the left margin reproduces what margin:auto centering would
@@ -1106,7 +1147,7 @@ div.repolist ul li p {
 
 /* --- iPad and other Tablet screen widths: --- */
 
-@media print, screen and (max-width: 960px) {
+@media print, screen and (max-width: 1024px) {
   /* Gå tilbake til gammal flexbox-layout for tablet/mobil */
   body {
     display: flex;
@@ -1120,13 +1161,16 @@ div.repolist ul li p {
     background-color: var(--bg-color);
   }
 
+  /* max-width/margin/padding are set here for form's sake but always
+     overridden below by the "Aggressiv overstyring" rule (max-width:100vw,
+     margin/padding-left/right) now that it applies across the whole ≤1024px
+     range instead of just ≤720px — left unset rather than declared-then-
+     always-overridden. */
   body div.wrapper {
     display: block; /* Ikkje grid */
     width: auto;
-    max-width: 860px; /* Fluid up to prod's wrapper width; centered via margin auto */
     height: auto;
-    margin: 0 auto;
-    padding: 0 16px;
+    margin: 0;
     grid-template-columns: none;
     grid-template-rows: none;
     gap: 0;
@@ -1138,21 +1182,11 @@ div.repolist ul li p {
     display: none;
   }
 
-  /* Reset grid positioning for header */
+  /* Branding (title/description/repo badge) is redundant with the page's own
+     content heading at this width and crowds the controls row above it —
+     hidden across the whole stacked layout (≤1024px). */
   body .wrapper header {
-    grid-column: auto;
-    grid-row: auto;
-    position: relative;
-    min-height: 100px;
-    display: block;
-    width: 100%;
-    height: auto;
-    margin-bottom: 2.5em;
-    overflow: visible;
-    padding-right: 0;
-    border-right: none;
-    /* Match the rest of the page — no gray panel at this width. */
-    background: var(--bg-color);
+    display: none;
   }
 
   /* Reset grid positioning for section */
@@ -1166,9 +1200,9 @@ div.repolist ul li p {
     border: none;
   }
 
-  /* Sitemap hidden by default at this width; the hamburger's `.active +`
-     and `.show` rules from the 1270px block (higher specificity) override
-     to show the drawer when the user toggles it. */
+  /* Sitemap hidden by default at this width; #sitemap.show (higher
+     specificity, set/cleared by hamburger-menu.js) overrides to show the
+     drawer when the user toggles it. */
   #sitemap {
     display: none;
   }
@@ -1180,18 +1214,6 @@ div.repolist ul li p {
     position: static;
     width: auto;
     background: var(--bg-color);
-  }
-
-  /* Branding stacks full-width at the top, not a second header column (there
-     is no in-page TOC at this width). The header children are block-level (or
-     already width:100%), so they fill the width on their own — only
-     inter-item spacing is needed here. */
-  header > * {
-    margin-bottom: 10px;
-  }
-
-  header a small {
-    display: inline;
   }
 
   div.highlight {
@@ -1213,35 +1235,95 @@ div.repolist ul li p {
     border: none;
   }
 
-  section table td, section table th {
-	padding: 0.2em 1px ;
-  }
-
   footer p {
     text-align: center;
   }
-}
 
-/* --- Mobile phone screen widths: --- */
-
-@media print, screen and (max-width: 720px) {
-  html body {
-    padding: 5px; /* Litt padding rundt heile */
+  .mobile-controls-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+    /* <body> has padding:5px at this width (see `html body` below) and <section>
+       establishes a BFC (overflow-y:auto), so this margin doesn't collapse through
+       it — the row lands at 5 (body padding) + margin-top = 10px total. (Not
+       margin-top:10px: that double-counted the body padding and left the row
+       5px too low in every browser.) This is the whole fix for the row's resting
+       position; the separate scroll-on-focus issue that showed up afterward as
+       "too high" in Chrome/Safari is unrelated and fixed where main-content is
+       focused, not here — see mainContent.focus() in _layouts/default.html. */
+    margin-top: 5px;
+    margin-bottom: 1.5rem;
   }
 
-  /* Hide TOC and header text on phone screens: */
-  body div.wrapper header {
+  .mobile-controls-bar .theme-toggle-btn {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--menu-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* Repo badge — same 42px square as the theme toggle/hamburger. header's
+     own copy is hidden at this width (see body .wrapper header below), so
+     this is the only place it renders on mobile; its text label is hidden
+     since there's no room for it next to the other three controls. */
+  .mobile-controls-bar .view-project {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    justify-content: center;
+    padding: 0;
+    align-self: auto;
+  }
+
+  .mobile-controls-bar .view-project span {
     display: none;
   }
 
-  body .wrapper section {
-    border: none
+  /* pagefind's own stylesheet (loaded after ours) sets a bare `pagefind-modal-trigger
+     { display: inline-block }` rule that ties in specificity with our base
+     `display: block` rule, leaving the winner to load order and each engine's
+     handling of an ambiguous auto-sized flex item — Chrome tolerates it, Firefox/
+     Safari don't, and the search box drops below the hamburger. Pin the box
+     explicitly here instead: this selector (0,1,1) outranks every rule it's
+     competing with (all 0,0,1), so display/height are deterministic everywhere.
+     Kept as a plain block (not flex) — pagefind's own inner .pf-trigger-btn is
+     already width:100%/height:var(--pf-input-height), so a block parent is all
+     it needs; making this a *second* flex container nested around their
+     inline-flex button risked its own cross-engine intrinsic-sizing quirks
+     (Firefox's <button>-in-flex sizing in particular), which is what still
+     broke after the first attempt. */
+  .mobile-controls-bar pagefind-modal-trigger {
+    display: block;
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;   /* defensive: clip rather than push the row if inner
+                           content ever exceeds the pinned height */
+    flex: 1;
+    min-width: 0;
+    --pf-input-height: 42px;
+  }
+
+  /* Below applied the same full-width, hyphenation-friendly treatment only
+     at ≤720px; the ≤1024px range fell back to weaker generic rules (fixed
+     860px cap, plain 1px table-cell padding, no code-block scroll tuning).
+     There was no principled reason for that split — merged so the whole
+     stacked layout gets the same fluid, defensive treatment. */
+  html body {
+    padding: 5px; /* Litt padding rundt heile */
   }
 
   /* Aggressiv overstyring av Jekyll-tema og alle containrar */
   html, body, body div.wrapper,
   body .wrapper section, section,
-  body .wrapper header, header,
   .container, .main-content {
     width: auto;
     max-width: 100vw;
@@ -1290,80 +1372,14 @@ div.repolist ul li p {
     overflow-wrap: break-word;
     hyphens: auto;
   }
-
-  body .wrapper footer {
-    border-right: none;
-  }
-
-  .mobile-controls-bar {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 8px;
-    /* Align the row's top with the fixed hamburger (top:10px, viewport-relative).
-       <body> has padding:5px at this width (see `html body` below) and <section>
-       establishes a BFC (overflow-y:auto), so this margin doesn't collapse through
-       it — the row lands at 5 (body padding) + margin-top, so 5px here reaches the
-       same 10px the hamburger sits at. (Not 10px: that double-counted the body
-       padding and left the row 5px too low in every browser.) This is the whole
-       fix for the row's resting position; the separate scroll-on-focus issue that
-       showed up afterward as "too high" in Chrome/Safari is unrelated and fixed
-       where main-content is focused, not here — see mainContent.focus() in
-       _layouts/default.html. */
-    margin-top: 5px;
-    margin-bottom: 1.5rem;
-    /* Clear the fixed hamburger button (right:20px, width:42px) with the same
-       8px gap the flexbox uses between the toggle and search buttons: hamburger
-       sits 20px from the fixed-position gutter, so 62px minus that 8px gap. */
-    margin-right: 50px;
-  }
-
-  .mobile-controls-bar .theme-toggle-btn {
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--menu-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: var(--text-color);
-    cursor: pointer;
-    padding: 0;
-  }
-
-  /* pagefind's own stylesheet (loaded after ours) sets a bare `pagefind-modal-trigger
-     { display: inline-block }` rule that ties in specificity with our base
-     `display: block` rule, leaving the winner to load order and each engine's
-     handling of an ambiguous auto-sized flex item — Chrome tolerates it, Firefox/
-     Safari don't, and the search box drops below the hamburger. Pin the box
-     explicitly here instead: this selector (0,1,1) outranks every rule it's
-     competing with (all 0,0,1), so display/height are deterministic everywhere.
-     Kept as a plain block (not flex) — pagefind's own inner .pf-trigger-btn is
-     already width:100%/height:var(--pf-input-height), so a block parent is all
-     it needs; making this a *second* flex container nested around their
-     inline-flex button risked its own cross-engine intrinsic-sizing quirks
-     (Firefox's <button>-in-flex sizing in particular), which is what still
-     broke after the first attempt. */
-  .mobile-controls-bar pagefind-modal-trigger {
-    display: block;
-    box-sizing: border-box;
-    height: 42px;
-    overflow: hidden;   /* defensive: clip rather than push the row if inner
-                           content ever exceeds the pinned height */
-    flex: 1;
-    min-width: 0;
-    --pf-input-height: 42px;
-  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Desktop (>1270px) column swap — issue #5.
+   Desktop (>1280px) column swap — issue #5.
 
    The 3-column desktop view uses the issue's hierarchy: sitemap + search (left)
    → content → page TOC (right). The page TOC is carried by the #toc-desktop
-   element (the right column here); there is no in-page TOC at ≤1270px.
+   element (the right column here); there is no in-page TOC at ≤1280px.
    ───────────────────────────────────────────────────────────────────────── */
 
 /* #toc-desktop exists only in the 3-column view; hidden everywhere else. */
@@ -1371,19 +1387,22 @@ div.repolist ul li p {
   display: none;
 }
 
-@media screen and (min-width: 1271px) {
+@media screen and (min-width: 1281px) {
   /* The rail (col 3) bleeds to the right viewport edge so its scrollbar rides
      the window edge, while the sidebar + content + rail group stays centered:
      the left margin reproduces margin:auto centering and equals the rail's own
-     right padding. (Mirrors the 961–1270 content bleed, one column over.)
+     right padding. (Mirrors the 1025–1280 content bleed, one column over.)
      Content (col 2) grows from --reading-width up to --reading-width-max
      before any leftover space is handed to the rail: grid's track-sizing
      algorithm maximizes minmax() tracks up to their ceiling before it expands
      fr tracks, so this falls out of the track definition below with no extra
-     rules needed. */
+     rules needed. The rail's own minmax() floor (var(--menu-width), matching
+     --reserved-width's assumption below) stops content from squeezing it down
+     to unreadable widths in the gap between this breakpoint and the viewport
+     width where centering above starts absorbing the extra space instead. */
   body div.wrapper {
     --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width-max));
-    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) 1fr;
+    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) minmax(var(--menu-width), 1fr);
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content toc"

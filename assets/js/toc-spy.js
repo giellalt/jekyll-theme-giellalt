@@ -1,7 +1,7 @@
 /* Scroll-spy: highlight the TOC link for the heading currently at the top of
    the reading column. Iterates every .left_toc container (currently just the
-   >1270px #toc-desktop rail; the query is left plural so any future copy is
-   picked up automatically). There is no in-page TOC below 1270px. */
+   >1280px #toc-desktop rail; the query is left plural so any future copy is
+   picked up automatically). There is no in-page TOC below 1280px. */
 (function () {
   const tocs = Array.from(document.querySelectorAll('.left_toc'));
   const section = document.querySelector('section');

@@ -71,7 +71,7 @@
           // preventScroll: focus() alone can trigger a browser scroll-into-view
           // (thresholds differ per engine — e.g. a few px on mobile Chrome/Safari,
           // none on Firefox), shifting in-flow content relative to fixed elements
-          // like the hamburger button. The section is already in view; suppress
+          // like the sitemap drawer. The section is already in view; suppress
           // the scroll side-effect so layout doesn't shift on load in any browser.
           setTimeout(() => { mainContent.focus({ preventScroll: true }); }, 100);
         }
@@ -130,12 +130,30 @@
       <section tabindex="0" id="main-content" data-pagefind-body>
         {% if page.title %}<span data-pagefind-meta="title" aria-hidden="true" style="display:none">{{ page.title }}</span>{% endif %}
         <div class="mobile-controls-bar" data-pagefind-ignore>
+          <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
+            <span></span>
+          </button>
+
+          <pagefind-modal-trigger></pagefind-modal-trigger>
+
+          {% if site.github.is_project_page %}
+          {% include header-view-project.html %}
+          {% endif %}
+
+          {% if site.github.is_user_page %}
+          <a class="view-project" href="{{ site.github.owner_url }}" aria-label="View GiellaLT on GitHub">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            <span>View GiellaLT on GitHub</span>
+          </a>
+          {% endif %}
+
           <button class="theme-toggle-btn" type="button" aria-label="Toggle theme">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z"/>
             </svg>
           </button>
-          <pagefind-modal-trigger></pagefind-modal-trigger>
         </div>
         {% include breadcrumbs.html %}
         {{ content }}
@@ -161,16 +179,15 @@
         </div>
         {% endif %}
       </section>
-      <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
-        <span></span>
-      </button>
+
+      <div id="sitemap-backdrop" data-pagefind-ignore aria-hidden="true"></div>
 
       <div id="sitemap" data-pagefind-ignore>
         <h1>Sitemap</h1>
         {% include_cached sitemap.html %}
       </div>
 
-      <!-- Page TOC — shown only in the >1270px right column. Below that width
+      <!-- Page TOC — shown only in the >1280px right column. Below that width
            there is no in-page TOC. -->
       <div id="toc-desktop" data-pagefind-ignore>
         <h2 class="tocheader">On this page</h2>

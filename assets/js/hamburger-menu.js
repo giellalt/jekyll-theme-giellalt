@@ -5,11 +5,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   const hamburgerMenu = document.querySelector('.hamburger-menu');
   const sitemap = document.querySelector('#sitemap');
-  
+  const backdrop = document.querySelector('#sitemap-backdrop');
+
   if (hamburgerMenu && sitemap) {
     const setOpen = (open) => {
       hamburgerMenu.classList.toggle('active', open);
       sitemap.classList.toggle('show', open);
+      if (backdrop) backdrop.classList.toggle('show', open);
       hamburgerMenu.setAttribute('aria-expanded', String(open));
     };
 
