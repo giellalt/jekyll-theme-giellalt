@@ -879,12 +879,10 @@ div.repolist ul li p {
     max-width: calc(var(--menu-width) + var(--reading-width));
   }
 
-  /* Hamburgerknapp */
+  /* Hamburgerknapp — a normal flex item in .mobile-controls-bar, sized to
+     match the theme toggle and search box it shares the row with. */
   .hamburger-menu {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    left: auto; /* Sikra at han er til høgre */
+    flex-shrink: 0;
     width: 42px;  /* match the mobile controls-bar buttons (theme + search) */
     height: 42px;
     padding: 0;
@@ -893,7 +891,6 @@ div.repolist ul li p {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
-    z-index: 1000;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -940,7 +937,8 @@ div.repolist ul li p {
   /* Sitemap med enkel display-basert hover */
   #sitemap {
     position: fixed;
-    top: 50px; /* Heilt inntil hamburgermenyen (10px + 40px) */
+    top: 0; /* Full-height overlay — the hamburger scrolls with the row, so the
+               drawer no longer anchors to its position. */
     right: 0;
     bottom: 0; /* Gå heilt ned til botnen */
     width: 280px; /* Redusert breidd for å unngå scroll */
@@ -1004,8 +1002,9 @@ div.repolist ul li p {
 
   /* Click-only toggle. Hover is intentionally not supported — it breaks
      on touch (tap-then-stick), has no keyboard equivalent, and the
-     hamburger pattern is universally click-driven. */
-  .hamburger-menu.active + #sitemap,
+     hamburger pattern is universally click-driven. JS toggles this class
+     directly on #sitemap, so it works regardless of the hamburger's
+     position in the DOM. */
   #sitemap.show {
     display: block;
   }
@@ -1300,22 +1299,16 @@ div.repolist ul li p {
     flex-direction: row;
     align-items: stretch;
     gap: 8px;
-    /* Align the row's top with the fixed hamburger (top:10px, viewport-relative).
-       <body> has padding:5px at this width (see `html body` below) and <section>
+    /* <body> has padding:5px at this width (see `html body` below) and <section>
        establishes a BFC (overflow-y:auto), so this margin doesn't collapse through
-       it — the row lands at 5 (body padding) + margin-top, so 5px here reaches the
-       same 10px the hamburger sits at. (Not 10px: that double-counted the body
-       padding and left the row 5px too low in every browser.) This is the whole
-       fix for the row's resting position; the separate scroll-on-focus issue that
-       showed up afterward as "too high" in Chrome/Safari is unrelated and fixed
-       where main-content is focused, not here — see mainContent.focus() in
-       _layouts/default.html. */
+       it — the row lands at 5 (body padding) + margin-top = 10px total. (Not
+       margin-top:10px: that double-counted the body padding and left the row
+       5px too low in every browser.) This is the whole fix for the row's resting
+       position; the separate scroll-on-focus issue that showed up afterward as
+       "too high" in Chrome/Safari is unrelated and fixed where main-content is
+       focused, not here — see mainContent.focus() in _layouts/default.html. */
     margin-top: 5px;
     margin-bottom: 1.5rem;
-    /* Clear the fixed hamburger button (right:20px, width:42px) with the same
-       8px gap the flexbox uses between the toggle and search buttons: hamburger
-       sits 20px from the fixed-position gutter, so 62px minus that 8px gap. */
-    margin-right: 50px;
   }
 
   .mobile-controls-bar .theme-toggle-btn {

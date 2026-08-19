@@ -71,7 +71,7 @@
           // preventScroll: focus() alone can trigger a browser scroll-into-view
           // (thresholds differ per engine — e.g. a few px on mobile Chrome/Safari,
           // none on Firefox), shifting in-flow content relative to fixed elements
-          // like the hamburger button. The section is already in view; suppress
+          // like the sitemap drawer. The section is already in view; suppress
           // the scroll side-effect so layout doesn't shift on load in any browser.
           setTimeout(() => { mainContent.focus({ preventScroll: true }); }, 100);
         }
@@ -130,12 +130,15 @@
       <section tabindex="0" id="main-content" data-pagefind-body>
         {% if page.title %}<span data-pagefind-meta="title" aria-hidden="true" style="display:none">{{ page.title }}</span>{% endif %}
         <div class="mobile-controls-bar" data-pagefind-ignore>
+          <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
+            <span></span>
+          </button>
+          <pagefind-modal-trigger></pagefind-modal-trigger>
           <button class="theme-toggle-btn" type="button" aria-label="Toggle theme">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z"/>
             </svg>
           </button>
-          <pagefind-modal-trigger></pagefind-modal-trigger>
         </div>
         {% include breadcrumbs.html %}
         {{ content }}
@@ -161,9 +164,6 @@
         </div>
         {% endif %}
       </section>
-      <button type="button" class="hamburger-menu" aria-label="Vis sitemap" aria-expanded="false" aria-controls="sitemap">
-        <span></span>
-      </button>
 
       <div id="sitemap" data-pagefind-ignore>
         <h1>Sitemap</h1>
