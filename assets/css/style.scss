@@ -578,7 +578,7 @@ header .header-actions {
   margin: 0 0 1rem 2px;
 }
 
-header .view-project {
+.view-project {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -598,12 +598,12 @@ header .view-project {
   white-space: nowrap;
 }
 
-header .view-project:hover {
+.view-project:hover {
   background-color: var(--menu-hover-bg);
   text-decoration: none;
 }
 
-header .view-project svg {
+.view-project svg {
   flex-shrink: 0;
 }
 
@@ -1269,6 +1269,23 @@ div.repolist ul li p {
     color: var(--text-color);
     cursor: pointer;
     padding: 0;
+  }
+
+  /* Repo badge — same 42px square as the theme toggle/hamburger. header's
+     own copy is hidden at this width (see body .wrapper header below), so
+     this is the only place it renders on mobile; its text label is hidden
+     since there's no room for it next to the other three controls. */
+  .mobile-controls-bar .view-project {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    justify-content: center;
+    padding: 0;
+    align-self: auto;
+  }
+
+  .mobile-controls-bar .view-project span {
+    display: none;
   }
 
   /* pagefind's own stylesheet (loaded after ours) sets a bare `pagefind-modal-trigger
