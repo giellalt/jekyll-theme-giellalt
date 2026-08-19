@@ -68,7 +68,7 @@ kbd {
   color-scheme: light dark;
   --menu-width: 270px;
   --reading-width: 72ch;      /* floor: content column never shrinks narrower than this */
-  --reading-width-max: 800px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
+  --reading-width-max: 1200px; /* ceiling: content column stops growing here; extra space becomes margin/rail */
   --page-padding: 0px;       /* outer body padding */
   --gutter: 40px;             /* horizontal spacing between section content and adjacent columns */
   --sidebar-inset: 1rem;      /* uniform left inset shared by header and sitemap content */
@@ -1388,10 +1388,13 @@ div.repolist ul li p {
      before any leftover space is handed to the rail: grid's track-sizing
      algorithm maximizes minmax() tracks up to their ceiling before it expands
      fr tracks, so this falls out of the track definition below with no extra
-     rules needed. */
+     rules needed. The rail's own minmax() floor (var(--menu-width), matching
+     --reserved-width's assumption below) stops content from squeezing it down
+     to unreadable widths in the gap between this breakpoint and the viewport
+     width where centering above starts absorbing the extra space instead. */
   body div.wrapper {
     --reserved-width: calc(var(--menu-width) * 2 + var(--reading-width-max));
-    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) 1fr;
+    grid-template-columns: var(--menu-width) minmax(var(--reading-width), var(--reading-width-max)) minmax(var(--menu-width), 1fr);
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "header  content toc"
