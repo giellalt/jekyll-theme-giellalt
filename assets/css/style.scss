@@ -117,6 +117,14 @@ kbd {
   }
 }
 
+@media print {
+  body {
+    padding: 0.4in;
+    font-size: 12pt;
+    color: #444;
+  }
+}
+
 div.twocolumn {
   column-count: 2;
   column-gap: 2.5em;
@@ -192,14 +200,6 @@ hr {
   background: var(--hr-border);
   height: 1px;
   margin: 0 0 20px;
-}
-
-@media print {
-  body {
-    padding: 0.4in;
-    font-size: 12pt;
-    color: #444;
-  }
 }
 
 /* New grid container */
