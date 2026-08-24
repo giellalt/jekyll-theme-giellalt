@@ -5,27 +5,31 @@
 {% assign directories = "" | split: "" %}
 {% assign allitems = "" | split: "" %}
 {% assign temp_dir_items = "" | split: "" %}
+{% assign home_item = nil %}
 
 {% comment %}Hent og sorter sider{% endcomment %}
 {% for page in site.pages %}
     {% assign url_parts = page.url | split: '/' %}
     {% assign filenamelastchar = page.url | slice: -1,1 %}
     {% assign filename = url_parts.last %}
-    {% unless filename contains 'google' or page.url contains '.xml' or page.url contains '.css' or page.url contains 'assets/' or page.url contains '.json' or filename == '' or filename contains '404' or filename == 'index.html' or filename == 'index.md' or page.url == '/' %}
+    {% if page.url == '/' %}
+        {% comment %}Front page: handled separately, always first and not sorted in with the rest{% endcomment %}
+        {% capture title %}{% if page.title and page.title != '' %}{{ page.title }}{% else %}Home{% endif %}{% endcapture %}
+        {% assign title = title | strip %}
+        {% assign home_item = "" | split: "" %}
+        {% assign home_item = home_item | push: page.url %}
+        {% assign home_item = home_item | push: title %}
+    {% elsif filename contains 'google' or page.url contains '.xml' or page.url contains '.css' or page.url contains 'assets/' or page.url contains '.json' or filename == '' or filename contains '404' or filename == 'index.html' or filename == 'index.md' %}
+        {% comment %}Skip{% endcomment %}
+    {% else %}
         {% capture title %}{% if page.title and page.title != '' %}{{ page.title }}{% else %}{{ page.url | remove: '.html' | remove: '.md' | remove_last: '/' | split: '/' | last | capitalize }}{% endif %}{% endcapture %}
         {% assign title = title | strip %}
         {% assign item = "" | split: "" %}
         {% assign item = item | push: page.url %}
         {% assign item = item | push: title %}
-        
+
         {% assign url_parts_size = url_parts | size %}
         {% if url_parts_size < 3 %}
-
-            {% comment %}Spesialtilfelle: rotkatalogen:{% endcomment %}
-            {% if page.url == '/' %}
-                {% assign root_items = root_items | push: item %}
-            {% endif %}
-
             {% comment %}Ikkje ta med slike som sluttar på /, det er katalogar, og dei blir behandla for seg{% endcomment %}
             {% if filenamelastchar != '/' %}
                 {% assign root_items = root_items | push: item %}
@@ -40,7 +44,7 @@
             {% endif %}
         {% endif %}
         {% assign allitems = allitems | push: item %}
-    {% endunless %}
+    {% endif %}
 {% endfor %}
 
 {% comment %}Sorter dir_items etter tittel{% endcomment %}
@@ -59,6 +63,13 @@
 {% endfor %}
 
 <ul class="sitemap">
+{% comment %}Front page - always first{% endcomment %}
+{% if home_item %}
+    <li>
+        <a href="{{ site.baseurl }}/">{{ home_item[1] }}</a>
+    </li>
+{% endif %}
+
 {% comment %}Rotfiler - sortert etter tittel{% endcomment %}
 {% assign temp_items = "" | split: "" %}
 {% for item in root_items %}
