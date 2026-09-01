@@ -25,7 +25,7 @@
     });
   }
 
-  // The test output already uses `backticked` spans and `a => b` arrows.
+  // lines() wraps token spans in `backticks`; turn those into <code>.
   function code(s) {
     return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   }
@@ -137,35 +137,47 @@
     root.appendChild(section);
   }
 
-  // gtlemmatest / gtspelltest -J failure records → bullet lines.
-  function lines(f) {
+  // A gtlemmatest / gtspelltest -J failure record → a list of items, each
+  // { text } and optionally { sub: [text, ...] } for a nested list.
+  function items(f) {
     if (f.suggestions !== undefined) {           // speller test
       return f.suggestions.length
-        ? f.suggestions.map(function (x) { return "`" + x + "`"; })
-        : ["not accepted, no suggestions"];
+        ? f.suggestions.map(function (x) { return { text: "`" + x + "`" }; })
+        : [{ text: "not accepted, no suggestions" }];
     }
     var out = [];                                // lemma test
     (f.no_generation || []).forEach(function (x) {
-      out.push("`" + x + "` does not generate!");
+      out.push({ text: "`" + x + "` does not generate!" });
     });
     (f.wrong_generation || []).forEach(function (w) {
-      out.push("`" + w.expected + "` => `" + w.got + "`");
+      out.push({ text: "`" + w.expected + "` => `" + w.got + "`" });
     });
     if ((f.analyses || []).length) {
-      out.push("`" + f.lemma + "` has following analyses:");
-      f.analyses.forEach(function (a) { out.push("  `" + a + "`"); });
+      out.push({
+        text: "`" + f.lemma + "` has following analyses:",
+        sub: f.analyses.map(function (a) { return "`" + a + "`"; }),
+      });
     } else {
-      out.push("`" + f.lemma + "` has no analyses either");
+      out.push({ text: "`" + f.lemma + "` has no analyses either" });
     }
     return out;
   }
 
+  function itemHtml(it) {
+    var sub = it.sub && it.sub.length
+      ? "<ul>" + it.sub.map(function (s) {
+        return "<li>" + code(s) + "</li>";
+      }).join("") + "</ul>"
+      : "";
+    return "<li>" + code(it.text) + sub + "</li>";
+  }
+
   function renderFailures(failures, s) {
     var html = (failures || []).map(function (f) {
-      var ls = lines(f);
+      var its = items(f);
       return "<details><summary><strong>" + esc(f.lemma) + "</strong> — " +
-        ls.length + " issue(s)</summary><ul>" +
-        ls.map(function (d) { return "<li>" + code(d) + "</li>"; }).join("") +
+        its.length + " issue(s)</summary><ul>" +
+        its.map(itemHtml).join("") +
         "</ul></details>";
     }).join("");
     if (s.truncated) {
