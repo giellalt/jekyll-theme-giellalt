@@ -1,13 +1,15 @@
 /*
  * Renders the automatic lemma-test results for a language repo.
  *
- * The data is a per-build artifact on the repo's rolling `docs-latest` GitHub
- * Release — not committed, not baked into the Jekyll build. The host page
- * points `#testlogs[data-src]` at the manifest (`testlogs.json`); each suite's
- * full failure list lives in a sibling `testlogs-<id>.json` and is fetched only
- * when that suite is opened, so no single request is large even when a build
- * is badly broken.
+ * The data is a per-build artifact on the repo's rolling `docs-data` branch,
+ * read via `raw.githubusercontent.com` (the one GitHub host that sends CORS
+ * headers) — not committed to `main`, not baked into the Jekyll build. The
+ * host page points `#testlogs[data-src]` at the manifest (`testlogs.json`);
+ * each suite's full failure list lives in a sibling `testlogs-<id>.json` and
+ * is fetched only when that suite is opened, so no single request is large
+ * even when a build is badly broken.
  *
+ *   data-src           https://raw.githubusercontent.com/<owner>/<repo>/docs-data/testlogs.json
  *   testlogs.json      { generated, commit, build_url,
  *                        suites: [ { id, title, kind, lexc, lemmas,
  *                                    success_pct, failures, truncated } ] }
@@ -35,7 +37,9 @@
   }
 
   function repoNwo() {
-    var m = manifestUrl.match(/github\.com\/([^/]+\/[^/]+)\/releases\//);
+    var m = manifestUrl.match(
+      /raw\.githubusercontent\.com\/([^/]+\/[^/]+)\//
+    ) || manifestUrl.match(/github\.com\/([^/]+\/[^/]+)\//);
     return m ? m[1] : null;
   }
 
