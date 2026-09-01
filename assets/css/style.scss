@@ -356,6 +356,35 @@ section table tr:nth-child(even) {
 }
 
 
+/* Automatic test logs (assets/js/testlogs.js) */
+.testlogs-note {
+  color: var(--blockquote-text);
+  font-size: 0.9em;
+}
+
+.testlogs-summary td.num,
+.testlogs-summary th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.testlogs-summary tr.fail td:first-child {
+  border-left: 3px solid var(--blockquote-border);
+}
+
+#testlogs details {
+  margin: 0.2em 0;
+}
+
+#testlogs details summary {
+  cursor: pointer;
+}
+
+#testlogs details ul {
+  margin: 0.3em 0 0.8em;
+}
+
+
 /* Lenkjer */
 a {
   color: var(--link-color);
