@@ -382,6 +382,20 @@ section table tr:nth-child(even) {
   cursor: pointer;
 }
 
+button.testlogs-toggle-all {
+  font: inherit;
+  padding: 0.3em 0.8em;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--menu-bg);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+button.testlogs-toggle-all:hover {
+  background: var(--menu-hover-bg);
+}
+
 #testlogs section {
   margin: 0.4em 0;
 }

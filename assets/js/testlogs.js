@@ -21,6 +21,14 @@
   if (!root || !root.dataset.src) return;
   var manifestUrl = root.dataset.src;
 
+  // "Expand all" state — every suite and every failure open, so the whole
+  // page is real DOM text that browser find-in-page can reach.
+  var expanded = false;
+
+  function each(list, fn) {
+    Array.prototype.forEach.call(list, fn);
+  }
+
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
@@ -63,6 +71,7 @@
   function render(data) {
     var nwo = repoNwo();
     var suites = data.suites || [];
+    var failing = suites.filter(function (s) { return s.failures; });
 
     var bits = [];
     if (data.generated) {
@@ -99,9 +108,34 @@
       '<table class="testlogs-summary"><thead><tr>' +
       '<th>Test</th><th class="num">Lemmas</th>' +
       '<th class="num">Success</th><th class="num">Failures</th>' +
-      "</tr></thead><tbody>" + rows + "</tbody></table>";
+      "</tr></thead><tbody>" + rows + "</tbody></table>" +
+      (failing.length
+        ? '<p><button type="button" class="testlogs-toggle-all">' +
+          "Expand all</button></p>"
+        : "");
 
-    suites.filter(function (s) { return s.failures; }).forEach(addSuite);
+    var btn = root.querySelector(".testlogs-toggle-all");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        expanded = !expanded;
+        btn.textContent = expanded ? "Collapse all" : "Expand all";
+        applyExpansion();
+      });
+    }
+
+    failing.forEach(addSuite);
+  }
+
+  // Open (or close) every suite and every already-loaded failure. Opening a
+  // suite fires its `toggle` handler, which lazy-fetches the failure list; the
+  // handler re-applies `expanded` once that HTML is in.
+  function applyExpansion() {
+    each(root.querySelectorAll("section > details"), function (d) {
+      d.open = expanded;
+    });
+    each(root.querySelectorAll(".testlogs-failures details"), function (d) {
+      d.open = expanded;
+    });
   }
 
   function addSuite(s) {
@@ -130,7 +164,14 @@
           if (!r.ok) throw new Error(r.status);
           return r.json();
         })
-        .then(function (d) { body.innerHTML = renderFailures(d.failures, s); })
+        .then(function (d) {
+          body.innerHTML = renderFailures(d.failures, s);
+          if (expanded) {
+            each(body.querySelectorAll("details"), function (x) {
+              x.open = true;
+            });
+          }
+        })
         .catch(function () {
           body.innerHTML =
             '<p class="testlogs-note">Could not load these failures.</p>';
