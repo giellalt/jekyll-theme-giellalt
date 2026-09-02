@@ -362,26 +362,45 @@ section table tr:nth-child(even) {
   font-size: 0.9em;
 }
 
+.testlogs-summary th,
+.testlogs-summary td {
+  padding: 0.35em 1em;
+}
+
+.testlogs-summary th:first-child,
+.testlogs-summary td:first-child {
+  padding-left: 0.2em;
+}
+
 .testlogs-summary td.num,
 .testlogs-summary th.num {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-.testlogs-summary tr.fail td:first-child {
-  border-left: 3px solid var(--blockquote-border);
-}
-
-#testlogs details {
-  margin: 0.2em 0;
-}
-
-#testlogs details summary {
+#testlogs summary {
   cursor: pointer;
 }
 
-#testlogs details ul {
-  margin: 0.3em 0 0.8em;
+#testlogs section {
+  margin: 0.4em 0;
+}
+
+#testlogs section > details > summary {
+  padding: 0.15em 0;
+}
+
+#testlogs .testlogs-failures {
+  padding-left: 1.5em;
+}
+
+#testlogs .testlogs-failures > details {
+  margin: 0.15em 0;
+}
+
+#testlogs .testlogs-failures ul {
+  margin: 0.3em 0 0.7em;
+  padding-left: 1.5em;
 }
 
 

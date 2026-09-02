@@ -117,6 +117,7 @@
     details.appendChild(summary);
 
     var body = document.createElement("div");
+    body.className = "testlogs-failures";
     body.innerHTML = '<p class="testlogs-note">Loading…</p>';
     details.appendChild(body);
 
