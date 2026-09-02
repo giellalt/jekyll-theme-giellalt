@@ -43,6 +43,34 @@ The theme ships replacements for all of them via `remote_theme`'s asset overlay.
 | `keyboard` | `keyboard-*` | `default` + iframe resize handler for embedded keyboard previews |
 | `minimal` | `dict-*`, `speech-*` | Stripped-down — no TOC sidebar, no Mermaid, no Prism (for list/table-heavy sites) |
 
+## Automatic test logs
+
+`lang-*` repos publish their per-build lemma/speller test results to a rolling
+`generated/docs-data` branch (not `main`). The theme renders them client-side:
+
+- `assets/js/testlogs.js` — fetches the manifest and each suite's failures on
+  demand from `raw.githubusercontent.com`, and renders a summary table plus
+  collapsible per-suite failure lists.
+- `_includes/testlogs.html` — the mount point. It emits the
+  `<div id="testlogs" data-src="…">` (with the `generated/docs-data` URL built
+  from `site.github.repository_nwo`) and loads the script.
+
+A consumer opts in with a page that includes it:
+
+```liquid
+---
+layout: default
+title: Automatic test logs
+---
+<h1>Log files for automatic testing</h1>
+<p>…intro prose…</p>
+{% include testlogs.html %}
+```
+
+`template-lang-und` ships this as `docs/testlogs/index.html`, so every `lang-*`
+repo gets it on sync. The data URL scheme and script tag live in the theme —
+changing either is a theme-only change.
+
 ## Local dev (theme itself)
 
 ```bash

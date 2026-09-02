@@ -4,10 +4,11 @@
  * The data is a per-build artifact on the repo's rolling `generated/docs-data`
  * branch, read via `raw.githubusercontent.com` (the one GitHub host that sends
  * CORS headers) — not committed to `main`, not baked into the Jekyll build.
- * The host page points `#testlogs[data-src]` at the manifest (`testlogs.json`);
- * each suite's full failure list lives in a sibling `testlogs-<id>.json` and
- * is fetched only when that suite is opened, so no single request is large
- * even when a build is badly broken.
+ * A host page mounts this by including `_includes/testlogs.html`, which emits
+ * `#testlogs[data-src]` pointing at the manifest (`testlogs.json`) and loads
+ * this script. Each suite's full failure list lives in a sibling
+ * `testlogs-<id>.json` and is fetched only when that suite is opened, so no
+ * single request is large even when a build is badly broken.
  *
  *   data-src           https://raw.githubusercontent.com/<owner>/<repo>/generated/docs-data/testlogs.json
  *   testlogs.json      { generated, commit, build_url,
@@ -74,10 +75,10 @@
     var failing = suites.filter(function (s) { return s.failures; });
 
     var bits = [];
-    if (data.generated) {
+    var gen = data.generated && new Date(data.generated);
+    if (gen && !isNaN(gen.getTime())) {
       bits.push("generated " +
-        esc(new Date(data.generated).toISOString().slice(0, 16)
-          .replace("T", " ")) + " UTC");
+        esc(gen.toISOString().slice(0, 16).replace("T", " ")) + " UTC");
     }
     if (data.commit && nwo) {
       bits.push('<a href="https://github.com/' + nwo + "/commit/" +
@@ -96,7 +97,7 @@
       var name = n
         ? '<a href="#suite-' + esc(s.id) + '">' + esc(s.title) + "</a>"
         : esc(s.title);
-      return '<tr class="' + (n ? "fail" : "pass") + '">' +
+      return "<tr>" +
         "<td>" + name + "</td>" +
         '<td class="num">' + Number(s.lemmas || 0).toLocaleString() + "</td>" +
         '<td class="num">' + Number(s.success_pct || 0).toFixed(2) + " %</td>" +
