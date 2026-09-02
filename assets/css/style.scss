@@ -356,6 +356,68 @@ section table tr:nth-child(even) {
 }
 
 
+/* Automatic test logs (assets/js/testlogs.js) */
+.testlogs-note {
+  color: var(--blockquote-text);
+  font-size: 0.9em;
+}
+
+.testlogs-summary th,
+.testlogs-summary td {
+  padding: 0.35em 1em;
+}
+
+.testlogs-summary th:first-child,
+.testlogs-summary td:first-child {
+  padding-left: 0.2em;
+}
+
+.testlogs-summary td.num,
+.testlogs-summary th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#testlogs summary {
+  cursor: pointer;
+}
+
+button.testlogs-toggle-all {
+  font: inherit;
+  padding: 0.3em 0.8em;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--menu-bg);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+button.testlogs-toggle-all:hover {
+  background: var(--menu-hover-bg);
+}
+
+#testlogs section {
+  margin: 0.4em 0;
+}
+
+#testlogs section > details > summary {
+  padding: 0.15em 0;
+}
+
+#testlogs .testlogs-failures {
+  padding-left: 1.5em;
+}
+
+#testlogs .testlogs-failures > details {
+  margin: 0.15em 0;
+}
+
+#testlogs .testlogs-failures ul {
+  margin: 0.3em 0 0.7em;
+  padding-left: 1.5em;
+}
+
+
 /* Lenkjer */
 a {
   color: var(--link-color);
