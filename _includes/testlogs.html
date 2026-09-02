@@ -1,9 +1,9 @@
-<!--
+{% comment %}
   Mount point for the automatic lemma-test results (assets/js/testlogs.js).
-  Drop `{% include testlogs.html %}` into a page and the script fills this in
-  from the repo's rolling `generated/docs-data` branch. The data URL scheme
-  and the script tag live here so a change to either is a theme-only change.
--->
+  Include this in a page and the script fills the div in from the repo's
+  rolling generated/docs-data branch. The data URL scheme and the script tag
+  live here so a change to either is a theme-only change.
+{% endcomment %}
 <div id="testlogs"
      data-src="https://raw.githubusercontent.com/{{ site.github.repository_nwo }}/generated/docs-data/testlogs.json">
   <p class="testlogs-note">Loading latest test results…</p>
