@@ -41,6 +41,15 @@
     return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
   }
 
+  // Success rate for the summary table. A suite with failures must never read
+  // as "100.00 %" just because it rounds up (one failure in ~90k lemmas is
+  // 99.9989 %), so floor to 2 decimals whenever there are failures.
+  function pct(value, failures) {
+    var v = Number(value || 0);
+    if (failures > 0) v = Math.floor(v * 100) / 100;
+    return v.toFixed(2) + " %";
+  }
+
   function suiteUrl(id) {
     return manifestUrl.replace(/testlogs\.json(\?.*)?$/, "testlogs-" + id + ".json");
   }
@@ -100,7 +109,7 @@
       return "<tr>" +
         "<td>" + name + "</td>" +
         '<td class="num">' + Number(s.lemmas || 0).toLocaleString() + "</td>" +
-        '<td class="num">' + Number(s.success_pct || 0).toFixed(2) + " %</td>" +
+        '<td class="num">' + pct(s.success_pct, n) + "</td>" +
         '<td class="num">' + (n ? n.toLocaleString() + (s.truncated ? "+" : "") : "—") +
         "</td></tr>";
     }).join("");
