@@ -101,6 +101,17 @@
       ? '<p class="testlogs-note">' + bits.join(" · ") + "</p>"
       : "";
 
+    // A valid manifest with no suites = the repo runs no lemma/speller tests
+    // (analyser-only, apertium-ext, …), or the latest build produced none.
+    // Say so instead of rendering an empty table.
+    if (!suites.length) {
+      root.innerHTML = provenance +
+        '<p class="testlogs-note">This language has no automatic lemma or ' +
+        "speller tests, so there is nothing to report. If you expected " +
+        "results, check the build log above.</p>";
+      return;
+    }
+
     var rows = suites.map(function (s) {
       var n = s.failures || 0;
       var name = n
