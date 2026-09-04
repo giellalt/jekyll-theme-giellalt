@@ -1,0 +1,51 @@
+---
+# TEMPORARY — for side-by-side perf comparison against the Dioxus/WASM
+# viewer only. Serves the old Svelte bundle (assets/typosreport-old/) against
+# the same real generated/docs-data, at the same host, so the framework is
+# the only variable. Delete this layout + assets/typosreport-old/ once the
+# comparison is done — this is not meant to stay.
+---
+<!doctype html>
+<html>
+<head>
+	<meta charset='utf8'>
+	<meta name='viewport' content='width=device-width'>
+
+	<title>{{ page.title | default: "Accuracy test" }} (old/Svelte)</title>
+
+	<link rel='icon' type='image/png' href="{{ '/assets/favicon.png' | relative_url }}">
+	<link rel='stylesheet' href="{{ '/assets/typosreport/global.css' | relative_url }}">
+	<link rel='stylesheet' href="{{ '/assets/typosreport-old/bundle.css' | relative_url }}">
+
+	<script>
+		(function() {
+			try {
+				const savedTheme = localStorage.getItem('theme');
+				const allowedThemes = ['light', 'dark', 'auto'];
+				const validTheme = allowedThemes.includes(savedTheme) ? savedTheme : 'auto';
+				let themeToApply;
+				if (validTheme === 'auto') {
+					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					themeToApply = prefersDark ? 'dark' : 'light';
+				} else {
+					themeToApply = validTheme;
+				}
+				document.documentElement.setAttribute('data-theme', themeToApply);
+			} catch (e) {
+				document.documentElement.setAttribute('data-theme', 'light');
+			}
+		})();
+	</script>
+
+	<script>
+		window.__DOCS_DATA_BASE__ =
+			"https://raw.githubusercontent.com/{{ site.github.repository_nwo }}/generated/docs-data/";
+	</script>
+
+	<script defer src="{{ '/assets/typosreport-old/bundle.js' | relative_url }}"></script>
+</head>
+
+<body>
+{{ content }}
+</body>
+</html>
