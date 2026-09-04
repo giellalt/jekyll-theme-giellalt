@@ -71,6 +71,36 @@ title: Automatic test logs
 repo gets it on sync. The data URL scheme and script tag live in the theme —
 changing either is a theme-only change.
 
+## Accuracy / typos report
+
+`lang-*` repos publish a spellchecker accuracy report (`report.json`) to the
+same rolling `generated/docs-data` branch as the test logs above. The theme
+serves a viewer for it — a Rust/Dioxus app built to WebAssembly with
+[Trunk](https://trunkrs.dev/) (source: `support/accuracy-viewer` in
+[divvun/divvunspell](https://github.com/divvun/divvunspell)), not Node:
+
+- `assets/typosreport/` — the built output (`accuracy-viewer.js`,
+  `accuracy-viewer_bg.wasm`, `styles.css`, `global.css`, `snippets/`),
+  committed here like `assets/js/testlogs.js` — a build artifact, not source.
+  Rebuild and copy these in from `divvunspell` by hand when the viewer
+  changes (`trunk build --release` there, see its README); this repo has no
+  Rust toolchain of its own.
+- `_layouts/typosreport.html` — the standalone page skeleton. Sets
+  `window.__DOCS_DATA_BASE__` (the `generated/docs-data` URL built from
+  `site.github.repository_nwo`) before bootstrapping the wasm module.
+
+A consumer opts in with just front matter:
+
+```liquid
+---
+layout: typosreport
+title: Accuracy Report
+---
+```
+
+`template-lang-und` ships this as `docs/typosreport/index.html`, so every
+`lang-*` repo gets it on sync.
+
 ## Local dev (theme itself)
 
 ```bash
