@@ -1,9 +1,10 @@
 ---
 # Standalone full-page layout for the accuracy / typos-report viewer
-# (assets/typosreport/bundle.js — a Svelte app that mounts to document.body).
-# A repo page opts in with just `layout: typosreport` front matter; the viewer
-# code and this skeleton live here so a change to either is a theme-only change.
-# Not wrapped in the site layout — the app owns the whole page.
+# (assets/typosreport/ — a Rust/Dioxus app built to WebAssembly with Trunk,
+# mounting to #main below). A repo page opts in with just `layout: typosreport`
+# front matter; the viewer code and this skeleton live here so a change to
+# either is a theme-only change. Not wrapped in the site layout — the app owns
+# the whole page.
 ---
 <!doctype html>
 <html>
@@ -15,7 +16,7 @@
 
 	<link rel='icon' type='image/png' href="{{ '/assets/favicon.png' | relative_url }}">
 	<link rel='stylesheet' href="{{ '/assets/typosreport/global.css' | relative_url }}">
-	<link rel='stylesheet' href="{{ '/assets/typosreport/bundle.css' | relative_url }}">
+	<link rel='stylesheet' href="{{ '/assets/typosreport/styles.css' | relative_url }}">
 
 	<script>
 		// Apply theme immediately before page renders to avoid flash
@@ -48,11 +49,19 @@
 		window.__DOCS_DATA_BASE__ =
 			"https://raw.githubusercontent.com/{{ site.github.repository_nwo }}/generated/docs-data/";
 	</script>
-
-	<script defer src="{{ '/assets/typosreport/bundle.js' | relative_url }}"></script>
 </head>
 
 <body>
+<div id="main"></div>
 {{ content }}
+
+<script type="module">
+	// Standard wasm-bindgen web-target bootstrap, as emitted by `trunk build`
+	// for support/accuracy-viewer (divvun/divvunspell). accuracy-viewer.js
+	// resolves its own snippets/* imports relative to itself, so nothing else
+	// here needs the repo's public-url prefix.
+	import init from "{{ '/assets/typosreport/accuracy-viewer.js' | relative_url }}";
+	await init({ module_or_path: "{{ '/assets/typosreport/accuracy-viewer_bg.wasm' | relative_url }}" });
+</script>
 </body>
 </html>
