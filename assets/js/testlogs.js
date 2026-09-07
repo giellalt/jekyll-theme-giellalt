@@ -65,6 +65,25 @@
     root.innerHTML = '<p class="testlogs-note">' + esc(msg) + "</p>";
   }
 
+  // The empty-state note for a repo with no published test results — either no
+  // manifest at all, or a manifest with no suites. Automatic lemma/speller
+  // tests are opt-in per repo via the `check:` section of `.build-config.yml`,
+  // and a build has to run after that section changes before anything shows up
+  // here, so point the reader straight at the file. `/blob/HEAD/` resolves to
+  // the repo's default branch, so we needn't know `main` from `master`.
+  function buildConfigNote(nwo, lead) {
+    var file = nwo
+      ? '<a href="https://github.com/' + esc(nwo) +
+        '/blob/HEAD/.build-config.yml"><code>.build-config.yml</code></a>'
+      : "<code>.build-config.yml</code>";
+    return '<p class="testlogs-note">' + esc(lead) + " Automatic lemma and " +
+      "speller tests are enabled in the <code>check:</code> section of " +
+      file + "; edit that section and run a build for results to appear here. " +
+      'See <a href="https://giellalt.github.io/infra/infraremake/' +
+      'AddingMorphologicalTestData.html">Adding morphological test data</a> ' +
+      "for adding the test data itself.</p>";
+  }
+
   fetch(manifestUrl, { cache: "no-cache" })
     .then(function (r) {
       if (r.status === 404) throw "missing";
@@ -73,9 +92,12 @@
     })
     .then(render)
     .catch(function (e) {
-      note(e === "missing"
-        ? "No test results have been published yet, or the latest build has not finished."
-        : "Could not load the latest test results.");
+      if (e === "missing") {
+        root.innerHTML = buildConfigNote(repoNwo(),
+          "No test results have been published for this repository yet.");
+        return;
+      }
+      note("Could not load the latest test results.");
     });
 
   function render(data) {
@@ -101,14 +123,13 @@
       ? '<p class="testlogs-note">' + bits.join(" · ") + "</p>"
       : "";
 
-    // A valid manifest with no suites = the repo runs no lemma/speller tests
-    // (analyser-only, apertium-ext, …), or the latest build produced none.
-    // Say so instead of rendering an empty table.
+    // A valid manifest with no suites = the repo's last build ran no
+    // lemma/speller tests, usually because the `check:` section of
+    // `.build-config.yml` has them off (or was just changed and CI hasn't
+    // re-run). Point at that file instead of rendering an empty table.
     if (!suites.length) {
       root.innerHTML = provenance +
-        '<p class="testlogs-note">This language has no automatic lemma or ' +
-        "speller tests, so there is nothing to report. If you expected " +
-        "results, check the build log above.</p>";
+        buildConfigNote(nwo, "This build ran no lemma or speller tests.");
       return;
     }
 
