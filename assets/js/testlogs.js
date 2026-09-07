@@ -2,15 +2,19 @@
  * Renders the automatic lemma-test results for a language repo.
  *
  * The data is a per-build artifact on the repo's rolling `generated/docs-data`
- * branch, read via `raw.githubusercontent.com` (the one GitHub host that sends
- * CORS headers) — not committed to `main`, not baked into the Jekyll build.
- * A host page mounts this by including `_includes/testlogs.html`, which emits
- * `#testlogs[data-src]` pointing at the manifest (`testlogs.json`) and loads
- * this script. Each suite's full failure list lives in a sibling
- * `testlogs-<id>.json` and is fetched only when that suite is opened, so no
- * single request is large even when a build is badly broken.
+ * branch — not committed to `main`, not baked into the Jekyll build. A public
+ * repo reads it via `raw.githubusercontent.com` (the one GitHub host that sends
+ * CORS headers); a private repo can't (auth required, no CORS header), so its
+ * docs workflow copies the branch into the site and `data-src` is a same-origin
+ * path. Either way a host page mounts this by including `_includes/testlogs.html`,
+ * which emits `#testlogs[data-src]` (the manifest, `testlogs.json`) plus
+ * `#testlogs[data-nwo]` (owner/repo, for building github.com links — a
+ * same-origin `data-src` has none to scrape). Each suite's full failure list
+ * lives in a sibling `testlogs-<id>.json` and is fetched only when that suite
+ * is opened, so no single request is large even when a build is badly broken.
  *
- *   data-src           https://raw.githubusercontent.com/<owner>/<repo>/generated/docs-data/testlogs.json
+ *   data-src           <base>/testlogs.json   (<base> = raw.githubusercontent.com/<owner>/<repo>/generated/docs-data, or a same-origin path for a private repo)
+ *   data-nwo           <owner>/<repo>
  *   testlogs.json      { generated, commit, build_url,
  *                        suites: [ { id, title, kind, lexc, lemmas, tested,
  *                                    success_pct, failures, truncated } ] }
@@ -55,6 +59,10 @@
   }
 
   function repoNwo() {
+    // A private repo's data-src is a same-origin path with no owner/repo in it,
+    // so testlogs.html also emits data-nwo; prefer that. Fall back to scraping
+    // the URL for a public repo (raw.githubusercontent.com/<owner>/<repo>/…).
+    if (root.dataset.nwo) return root.dataset.nwo;
     var m = manifestUrl.match(
       /raw\.githubusercontent\.com\/([^/]+\/[^/]+)\//
     ) || manifestUrl.match(/github\.com\/([^/]+\/[^/]+)\//);

@@ -1,0 +1,49 @@
+{%- comment -%}
+  The GiellaLT badge row for a lang repo's docs front page. Include it from a
+  page (the template's docs/index-header.md does) and it renders maturity,
+  lemma count, speller-suggestion quality, license, issues and DocCI.
+
+  Data + pre-rendered SVGs live on the repo's `generated/docs-data` branch,
+  force-pushed by divvun-actions on every main build.
+
+  Fetch base:
+    public repo  — raw.githubusercontent.com: CDN-fronted, CORS-enabled, and
+                   updated the moment a build pushes the branch.
+    private repo — raw.githubusercontent.com needs auth and sends no CORS
+                   header, and shields.io can't read the repo at all. The docs
+                   workflow (giellalt/.github docs.yml) copies the branch into
+                   this site instead, and we load it same-origin from the
+                   access-controlled Pages site the viewer is already signed in
+                   to. Freshness is per docs-build, which is why
+                   docs-publish.ts re-triggers that workflow after each push.
+
+  license / issues / DocCI:
+    public repo  — shields.io renders these three live from the GitHub API.
+    private repo — those API calls are unauthenticated and 404, so
+                   docs-publish.ts renders the same three to SVGs on the branch
+                   and we point at those.
+
+  `private` and `repo_nwo` come from _data/ci.yml (written by the docs
+  workflow) with a fall-back to jekyll-github-metadata for local builds.
+{%- endcomment -%}
+{%- assign priv = site.data.ci.private | default: site.github.private, allow_false: true -%}
+{%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
+{%- if priv -%}
+  {%- assign base = '/generated/docs-data' | relative_url -%}
+{%- else -%}
+  {%- assign base = 'https://raw.githubusercontent.com/' | append: nwo | append: '/generated/docs-data' -%}
+{%- endif -%}
+<div class="badges">
+<a href="https://giellalt.github.io/MaturityClassification.html"><img src="{{ base }}/fst-maturity.svg" alt="Maturity"></a> <br>
+<img src="{{ base }}/fst-lemmacount.svg" alt="Lemma count"> <br>
+<a href="typosreport/"><img src="{{ base }}/speller-suggestions.svg" alt="Speller suggestion quality"></a> <br>
+{% if priv -%}
+<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="{{ base }}/license.svg" alt="License"></a> <br>
+<a href="https://github.com/{{ nwo }}/issues"><img src="{{ base }}/issues.svg" alt="Issues"></a> <br>
+<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="{{ base }}/docci.svg" alt="DocCI"></a>
+{%- else -%}
+<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="https://img.shields.io/github/license/{{ nwo }}" alt="License"></a> <br>
+<a href="https://github.com/{{ nwo }}/issues"><img src="https://img.shields.io/github/issues/{{ nwo }}" alt="Issues"></a> <br>
+<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/{{ nwo }}/docs.yml?label=DocCI" alt="DocCI"></a>
+{%- endif %}
+</div>

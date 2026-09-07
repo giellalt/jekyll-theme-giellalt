@@ -43,11 +43,21 @@
 	</script>
 
 	<script>
-		// Report data lives on the repo's generated/docs-data branch, served
-		// from raw.githubusercontent (CORS-enabled). Falls back to same-origin
-		// relative fetch when unset (repo not yet migrated).
+		// Report data lives on the repo's generated/docs-data branch.
+		//
+		// Public repo:  read it live from raw.githubusercontent.com (CORS-enabled).
+		// Private repo: raw.githubusercontent.com needs auth and sends no CORS
+		//               header, so the docs workflow copies the branch into this
+		//               site and we fetch it same-origin from the
+		//               access-controlled Pages site. `private` / `repo_nwo` come
+		//               from _data/ci.yml (written by the docs workflow), falling
+		//               back to jekyll-github-metadata for local builds.
+		{%- assign priv = site.data.ci.private | default: site.github.private, allow_false: true -%}
+		{%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
 		window.__DOCS_DATA_BASE__ =
-			"https://raw.githubusercontent.com/{{ site.github.repository_nwo }}/generated/docs-data/";
+			{%- if priv %} "{{ '/generated/docs-data/' | relative_url }}";
+			{%- else %} "https://raw.githubusercontent.com/{{ nwo }}/generated/docs-data/";
+			{%- endif %}
 	</script>
 </head>
 
