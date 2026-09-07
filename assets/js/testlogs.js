@@ -72,9 +72,12 @@
   // here, so point the reader straight at the file. `/blob/HEAD/` resolves to
   // the repo's default branch, so we needn't know `main` from `master`.
   function buildConfigNote(nwo, lead) {
+    // `<a>` goes *inside* `<code>` — the theme styles `code a` (a linked file
+    // name) but not `a > code`, which would render as a plain, dead-looking
+    // code chip.
     var file = nwo
-      ? '<a href="https://github.com/' + esc(nwo) +
-        '/blob/HEAD/.build-config.yml"><code>.build-config.yml</code></a>'
+      ? '<code><a href="https://github.com/' + esc(nwo) +
+        '/blob/HEAD/.build-config.yml">.build-config.yml</a></code>'
       : "<code>.build-config.yml</code>";
     return '<p class="testlogs-note">' + esc(lead) + " Automatic lemma and " +
       "speller tests are enabled in the <code>check:</code> section of " +
@@ -112,9 +115,9 @@
         esc(gen.toISOString().slice(0, 16).replace("T", " ")) + " UTC");
     }
     if (data.commit && nwo) {
-      bits.push('<a href="https://github.com/' + nwo + "/commit/" +
-        esc(data.commit) + '"><code>' +
-        esc(String(data.commit).slice(0, 8)) + "</code></a>");
+      bits.push('<code><a href="https://github.com/' + nwo + "/commit/" +
+        esc(data.commit) + '">' +
+        esc(String(data.commit).slice(0, 8)) + "</a></code>");
     }
     if (data.build_url) {
       bits.push('<a href="' + esc(data.build_url) + '">build log</a>');
