@@ -12,7 +12,7 @@
  *
  *   data-src           https://raw.githubusercontent.com/<owner>/<repo>/generated/docs-data/testlogs.json
  *   testlogs.json      { generated, commit, build_url,
- *                        suites: [ { id, title, kind, lexc, lemmas,
+ *                        suites: [ { id, title, kind, lexc, lemmas, tested,
  *                                    success_pct, failures, truncated } ] }
  *   testlogs-<id>.json { id, kind, failures: [ ... ] }  — the gtlemmatest /
  *                        gtspelltest -J failure records, unchanged.
@@ -117,10 +117,20 @@
       var name = n
         ? '<a href="#suite-' + esc(s.id) + '">' + esc(s.title) + "</a>"
         : esc(s.title);
+      // A truncated run stopped before testing every lemma, so its success
+      // rate is over the tested subset, not the whole lexicon. Show
+      // "tested / total" and flag the percentage as partial rather than
+      // letting it read as a finished measurement.
+      var total = Number(s.lemmas || 0).toLocaleString();
+      var lemmaCell = s.truncated && s.tested != null
+        ? Number(s.tested).toLocaleString() + " / " + total
+        : total;
+      var successCell = pct(s.success_pct, n) +
+        (s.truncated ? ' <span class="testlogs-note">(partial)</span>' : "");
       return "<tr>" +
         "<td>" + name + "</td>" +
-        '<td class="num">' + Number(s.lemmas || 0).toLocaleString() + "</td>" +
-        '<td class="num">' + pct(s.success_pct, n) + "</td>" +
+        '<td class="num">' + lemmaCell + "</td>" +
+        '<td class="num">' + successCell + "</td>" +
         '<td class="num">' + (n ? n.toLocaleString() + (s.truncated ? "+" : "") : "—") +
         "</td></tr>";
     }).join("");
