@@ -1,33 +1,16 @@
 {%- comment -%}
-  The GiellaLT badge row for a lang repo's docs front page. Include it from a
-  page (the template's docs/index-header.md does) and it renders maturity,
-  lemma count, speller-suggestion quality, license, issues, DocCI, the Core CI
-  status and — when the caller passes `glottolog_id` — a Glottolog link:
+  The GiellaLT badge row for a lang repo's docs front page. The template's
+  docs/index-header.md includes it; pass `glottolog_id` for the Glottolog link:
 
       {% include language-badges.html glottolog_id="como1259" %}
 
-  Data + pre-rendered SVGs live on the repo's `generated/docs-data` branch,
-  force-pushed by divvun-actions on every main build.
+  Data + pre-rendered SVGs are on the repo's generated/docs-data branch
+  (force-pushed by divvun-actions each build); _includes/docs-data-base.html
+  resolves where to read them from.
 
-  Fetch base:
-    public repo  — raw.githubusercontent.com: CDN-fronted, CORS-enabled, and
-                   updated the moment a build pushes the branch.
-    private repo — raw.githubusercontent.com needs auth and sends no CORS
-                   header, and shields.io can't read the repo at all. The docs
-                   workflow (giellalt/.github docs.yml) copies the branch into
-                   this site instead, and we load it same-origin from the
-                   access-controlled Pages site the viewer is already signed in
-                   to. Freshness is per docs-build, which is why
-                   docs-publish.ts re-triggers that workflow after each push.
-
-  license / issues / DocCI:
-    public repo  — shields.io renders these three live from the GitHub API.
-    private repo — those API calls are unauthenticated and 404, so
-                   docs-publish.ts renders the same three to SVGs on the branch
-                   and we point at those.
-
-  `private` and `repo_nwo` come from _data/ci.yml, written by the docs workflow
-  on every CI build; a local `jekyll serve` has none and is treated as public.
+  license / issues / DocCI are live shields.io badges for a public repo; a
+  private repo can't be read that way, so divvun-actions renders those three to
+  SVGs on the branch too and a private build points at them instead.
 {%- endcomment -%}
 {%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
 {%- assign priv = site.data.ci.private -%}
