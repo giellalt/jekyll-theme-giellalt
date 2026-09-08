@@ -1,0 +1,24 @@
+{%- comment -%}
+  Outputs the URL prefix (no trailing slash) that the docs pages read the
+  repo's generated/docs-data branch from. Capture it in the caller:
+
+      {%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
+
+  Public repo:  raw.githubusercontent.com — CORS-enabled, served live, updated
+                the moment a build pushes the branch.
+  Private repo: that host needs auth and sends no CORS header, and shields.io
+                can't read the repo at all, so giellalt/.github's docs.yml
+                copies the branch into the built site and we read it same-origin
+                from the access-controlled Pages site. Freshness is per
+                docs-build; divvun-actions' docs-publish re-triggers that
+                workflow after each push.
+
+  _data/ci.yml (`private`, `repo_nwo`) is written by that workflow on every CI
+  build. A local `jekyll serve` has no ci.yml and falls back to the public
+  path — correct, since there's no embedded copy or private Pages host locally.
+{%- endcomment -%}
+{%- if site.data.ci.private -%}
+{{- '/generated/docs-data' | relative_url -}}
+{%- else -%}
+https://raw.githubusercontent.com/{{ site.data.ci.repo_nwo | default: site.github.repository_nwo }}/generated/docs-data
+{%- endif -%}

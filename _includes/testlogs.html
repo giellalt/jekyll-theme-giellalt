@@ -4,24 +4,15 @@
   rolling generated/docs-data branch. The data URL scheme and the script tag
   live here so a change to either is a theme-only change.
 
-  Public repo:  read generated/docs-data live from raw.githubusercontent.com —
-                the one GitHub host that sends CORS headers.
-  Private repo: raw.githubusercontent.com needs auth and sends no CORS header,
-                so the docs workflow copies the branch into this site and we
-                fetch it same-origin from the access-controlled Pages site.
-                `private` / `repo_nwo` come from _data/ci.yml, written by that
-                workflow on every CI build; a local `jekyll serve` has none and
-                is treated as public.
+  Where that branch is read from — raw.githubusercontent.com for a public repo,
+  a same-origin embedded copy for a private one — is resolved by
+  _includes/docs-data-base.html. `data-nwo` is emitted separately because a
+  same-origin data-src has no owner/repo for testlogs.js to scrape.
 {% endcomment %}
-{%- assign priv = site.data.ci.private -%}
+{%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
 {%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
-{%- if priv -%}
-  {%- assign base = '/generated/docs-data' | relative_url -%}
-{%- else -%}
-  {%- assign base = 'https://raw.githubusercontent.com/' | append: nwo | append: '/generated/docs-data' -%}
-{%- endif -%}
 <div id="testlogs"
-     data-src="{{ base }}/testlogs.json"
+     data-src="{{ docs_data_base }}/testlogs.json"
      data-nwo="{{ nwo }}">
   <p class="testlogs-note">Loading latest test results…</p>
 </div>

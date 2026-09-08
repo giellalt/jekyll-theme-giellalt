@@ -43,26 +43,14 @@
 	</script>
 
 	{%- comment -%}
-	  Report data lives on the repo's generated/docs-data branch.
-
-	  Public repo:  read it live from raw.githubusercontent.com (CORS-enabled).
-	  Private repo: raw.githubusercontent.com needs auth and sends no CORS
-	                header, so the docs workflow copies the branch into this
-	                site and we fetch it same-origin from the access-controlled
-	                Pages site.
-
-	  `private` / `repo_nwo` come from _data/ci.yml, written by the docs workflow
-	  on every CI build; a local `jekyll serve` has none and is treated as public.
+	  The accuracy viewer reads window.__DOCS_DATA_BASE__ + "<file>". Where that
+	  base points — raw.githubusercontent.com for a public repo, a same-origin
+	  embedded copy for a private one — is resolved by
+	  _includes/docs-data-base.html.
 	{%- endcomment -%}
-	{%- assign priv = site.data.ci.private -%}
-	{%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
-	{%- if priv -%}
-	  {%- assign docs_data_base = '/generated/docs-data/' | relative_url -%}
-	{%- else -%}
-	  {%- assign docs_data_base = 'https://raw.githubusercontent.com/' | append: nwo | append: '/generated/docs-data/' -%}
-	{%- endif -%}
+	{%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
 	<script>
-		window.__DOCS_DATA_BASE__ = "{{ docs_data_base }}";
+		window.__DOCS_DATA_BASE__ = "{{ docs_data_base }}/";
 	</script>
 </head>
 

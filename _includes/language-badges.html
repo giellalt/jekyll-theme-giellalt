@@ -29,27 +29,23 @@
   `private` and `repo_nwo` come from _data/ci.yml, written by the docs workflow
   on every CI build; a local `jekyll serve` has none and is treated as public.
 {%- endcomment -%}
+{%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
 {%- assign priv = site.data.ci.private -%}
 {%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
-{%- if priv -%}
-  {%- assign base = '/generated/docs-data' | relative_url -%}
-{%- else -%}
-  {%- assign base = 'https://raw.githubusercontent.com/' | append: nwo | append: '/generated/docs-data' -%}
-{%- endif -%}
+{%- assign repo_name = nwo | split: '/' | last -%}
 <div class="badges">
-<a href="https://giellalt.github.io/MaturityClassification.html"><img src="{{ base }}/fst-maturity.svg" alt="Maturity"></a> <br>
-<img src="{{ base }}/fst-lemmacount.svg" alt="Lemma count"> <br>
-<a href="typosreport/"><img src="{{ base }}/speller-suggestions.svg" alt="Speller suggestion quality"></a> <br>
-{% if priv -%}
-<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="{{ base }}/license.svg" alt="License"></a> <br>
-<a href="https://github.com/{{ nwo }}/issues"><img src="{{ base }}/issues.svg" alt="Issues"></a> <br>
-<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="{{ base }}/docci.svg" alt="DocCI"></a>
+<a href="https://giellalt.github.io/MaturityClassification.html"><img src="{{ docs_data_base }}/fst-maturity.svg" alt="Maturity"></a> <br>
+<img src="{{ docs_data_base }}/fst-lemmacount.svg" alt="Lemma count"> <br>
+<a href="typosreport/"><img src="{{ docs_data_base }}/speller-suggestions.svg" alt="Speller suggestion quality"></a> <br>
+{%- if priv -%}
+<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="{{ docs_data_base }}/license.svg" alt="License"></a> <br>
+<a href="https://github.com/{{ nwo }}/issues"><img src="{{ docs_data_base }}/issues.svg" alt="Issues"></a> <br>
+<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="{{ docs_data_base }}/docci.svg" alt="DocCI"></a>
 {%- else -%}
 <a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="https://img.shields.io/github/license/{{ nwo }}" alt="License"></a> <br>
 <a href="https://github.com/{{ nwo }}/issues"><img src="https://img.shields.io/github/issues/{{ nwo }}" alt="Issues"></a> <br>
 <a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/{{ nwo }}/docs.yml?label=DocCI" alt="DocCI"></a>
 {%- endif %} <br>
-{%- assign repo_name = nwo | split: '/' | last %}
 <a href="https://builds.giellalt.org/pipelines/{{ repo_name }}/builds/latest"><img src="https://builds.giellalt.org/api/badge/{{ repo_name }}?label=CI" alt="Build Status"></a>
 {%- if include.glottolog_id %} <br>
 <a href="https://glottolog.org/resource/languoid/id/{{ include.glottolog_id }}"><img src="https://img.shields.io/badge/Glottolog-green" alt="Glottolog"></a>
