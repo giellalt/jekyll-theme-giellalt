@@ -9,11 +9,11 @@
   Private repo: raw.githubusercontent.com needs auth and sends no CORS header,
                 so the docs workflow copies the branch into this site and we
                 fetch it same-origin from the access-controlled Pages site.
-                `private` / `repo_nwo` come from _data/ci.yml (written by the
-                docs workflow), falling back to jekyll-github-metadata locally.
+                `private` / `repo_nwo` come from _data/ci.yml, written by that
+                workflow on every CI build; a local `jekyll serve` has none and
+                is treated as public.
 {% endcomment %}
-{%- comment -%} bare `default` (this Liquid has no allow_false): a public repo's ci.yml sets private:false, which falls through to site.github.private -- also false, so the result is still right. {%- endcomment -%}
-{%- assign priv = site.data.ci.private | default: site.github.private -%}
+{%- assign priv = site.data.ci.private -%}
 {%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
 {%- if priv -%}
   {%- assign base = '/generated/docs-data' | relative_url -%}
