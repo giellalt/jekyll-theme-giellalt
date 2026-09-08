@@ -1,7 +1,10 @@
 {%- comment -%}
   The GiellaLT badge row for a lang repo's docs front page. Include it from a
   page (the template's docs/index-header.md does) and it renders maturity,
-  lemma count, speller-suggestion quality, license, issues and DocCI.
+  lemma count, speller-suggestion quality, license, issues, DocCI, the Core CI
+  status and — when the caller passes `glottolog_id` — a Glottolog link:
+
+      {% include language-badges.html glottolog_id="como1259" %}
 
   Data + pre-rendered SVGs live on the repo's `generated/docs-data` branch,
   force-pushed by divvun-actions on every main build.
@@ -46,5 +49,10 @@
 <a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="https://img.shields.io/github/license/{{ nwo }}" alt="License"></a> <br>
 <a href="https://github.com/{{ nwo }}/issues"><img src="https://img.shields.io/github/issues/{{ nwo }}" alt="Issues"></a> <br>
 <a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/{{ nwo }}/docs.yml?label=DocCI" alt="DocCI"></a>
+{%- endif %} <br>
+{%- assign repo_name = nwo | split: '/' | last %}
+<a href="https://builds.giellalt.org/pipelines/{{ repo_name }}/builds/latest"><img src="https://builds.giellalt.org/api/badge/{{ repo_name }}?label=CI" alt="Build Status"></a>
+{%- if include.glottolog_id %} <br>
+<a href="https://glottolog.org/resource/languoid/id/{{ include.glottolog_id }}"><img src="https://img.shields.io/badge/Glottolog-green" alt="Glottolog"></a>
 {%- endif %}
 </div>
