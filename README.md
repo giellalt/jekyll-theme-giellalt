@@ -43,17 +43,45 @@ The theme ships replacements for all of them via `remote_theme`'s asset overlay.
 | `keyboard` | `keyboard-*` | `default` + iframe resize handler for embedded keyboard previews |
 | `minimal` | `dict-*`, `speech-*` | Stripped-down — no TOC sidebar, no Mermaid, no Prism (for list/table-heavy sites) |
 
+## Reading `generated/docs-data` (badges, test logs, accuracy report)
+
+`lang-*` repos publish per-build data — badge JSON + SVGs, lemma/speller test
+logs, the spellchecker accuracy report — to a rolling `generated/docs-data`
+branch (force-pushed by [divvun-actions](https://github.com/divvun/divvun-actions),
+never on `main`). The docs pages read it at view time:
+
+- **Public repo** — live from `raw.githubusercontent.com` (the one GitHub host
+  that sends CORS headers).
+- **Private repo** — that host needs auth and sends no CORS header, and
+  shields.io can't read the repo at all. `giellalt/.github`'s `docs.yml` instead
+  copies the branch into the built site and the theme reads it same-origin from
+  the access-controlled Pages site.
+
+`_includes/docs-data-base.html` resolves which applies and outputs the URL
+prefix; `_includes/language-badges.html`, `_includes/testlogs.html` and
+`_layouts/typosreport.html` all `{% capture %}` it. The choice keys on
+`_data/ci.yml`, which `giellalt/.github`'s `docs.yml` writes on every CI build:
+
+```yaml
+private: true               # gh api repos/<nwo> --jq .private
+repo_nwo: giellalt/lang-xxx
+```
+
+A docs build that doesn't write this file is treated as public — correct for a
+local `jekyll serve`, where there's no embedded copy or private Pages host
+either.
+
 ## Automatic test logs
 
-`lang-*` repos publish their per-build lemma/speller test results to a rolling
+`lang-*` repos publish their per-build lemma/speller test results to the rolling
 `generated/docs-data` branch (not `main`). The theme renders them client-side:
 
 - `assets/js/testlogs.js` — fetches the manifest and each suite's failures on
-  demand from `raw.githubusercontent.com`, and renders a summary table plus
-  collapsible per-suite failure lists.
+  demand, and renders a summary table plus collapsible per-suite failure lists.
 - `_includes/testlogs.html` — the mount point. It emits the
-  `<div id="testlogs" data-src="…">` (with the `generated/docs-data` URL built
-  from `site.github.repository_nwo`) and loads the script.
+  `<div id="testlogs" data-src="…" data-nwo="…">` (data URL from
+  `docs-data-base.html`; `data-nwo` so the script can build `github.com` links
+  even when `data-src` is a same-origin path) and loads the script.
 
 A consumer opts in with a page that includes it:
 
@@ -73,9 +101,9 @@ changing either is a theme-only change.
 
 ## Accuracy / typos report
 
-`lang-*` repos publish a spellchecker accuracy report (`report.json`) to the
-same rolling `generated/docs-data` branch as the test logs above. The theme
-serves a viewer for it — a Rust/Dioxus app built to WebAssembly with
+`lang-*` repos publish a spellchecker accuracy report (`speller-accuracy.json`)
+to the same rolling `generated/docs-data` branch as the test logs above. The
+theme serves a viewer for it — a Rust/Dioxus app built to WebAssembly with
 [Trunk](https://trunkrs.dev/) (source: `support/accuracy-viewer` in
 [divvun/divvunspell](https://github.com/divvun/divvunspell)), not Node:
 
@@ -86,8 +114,8 @@ serves a viewer for it — a Rust/Dioxus app built to WebAssembly with
   changes (`trunk build --release` there, see its README); this repo has no
   Rust toolchain of its own.
 - `_layouts/typosreport.html` — the standalone page skeleton. Sets
-  `window.__DOCS_DATA_BASE__` (the `generated/docs-data` URL built from
-  `site.github.repository_nwo`) before bootstrapping the wasm module.
+  `window.__DOCS_DATA_BASE__` (from `docs-data-base.html`) before bootstrapping
+  the wasm module.
 
 A consumer opts in with just front matter:
 

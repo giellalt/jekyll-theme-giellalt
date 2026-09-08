@@ -1,0 +1,36 @@
+{%- comment -%}
+  The GiellaLT badge row for a lang repo's docs front page. The template's
+  docs/index-header.md includes it; pass `glottolog_id` for the Glottolog link:
+
+      {% include language-badges.html glottolog_id="como1259" %}
+
+  Data + pre-rendered SVGs are on the repo's generated/docs-data branch
+  (force-pushed by divvun-actions each build); _includes/docs-data-base.html
+  resolves where to read them from.
+
+  license / issues / DocCI are live shields.io badges for a public repo; a
+  private repo can't be read that way, so divvun-actions renders those three to
+  SVGs on the branch too and a private build points at them instead.
+{%- endcomment -%}
+{%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
+{%- assign priv = site.data.ci.private -%}
+{%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
+{%- assign repo_name = nwo | split: '/' | last -%}
+<div class="badges">
+<a href="https://giellalt.github.io/MaturityClassification.html"><img src="{{ docs_data_base }}/fst-maturity.svg" alt="Maturity"></a> <br>
+<img src="{{ docs_data_base }}/fst-lemmacount.svg" alt="Lemma count"> <br>
+<a href="typosreport/"><img src="{{ docs_data_base }}/speller-suggestions.svg" alt="Speller suggestion quality"></a> <br>
+{%- if priv -%}
+<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="{{ docs_data_base }}/license.svg" alt="License"></a> <br>
+<a href="https://github.com/{{ nwo }}/issues"><img src="{{ docs_data_base }}/issues.svg" alt="Issues"></a> <br>
+<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="{{ docs_data_base }}/docci.svg" alt="DocCI"></a>
+{%- else -%}
+<a href="https://github.com/{{ nwo }}/blob/main/LICENSE"><img src="https://img.shields.io/github/license/{{ nwo }}" alt="License"></a> <br>
+<a href="https://github.com/{{ nwo }}/issues"><img src="https://img.shields.io/github/issues/{{ nwo }}" alt="Issues"></a> <br>
+<a href="https://github.com/{{ nwo }}/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/{{ nwo }}/docs.yml?label=DocCI" alt="DocCI"></a>
+{%- endif %} <br>
+<a href="https://builds.giellalt.org/pipelines/{{ repo_name }}/builds/latest"><img src="https://builds.giellalt.org/api/badge/{{ repo_name }}?label=CI" alt="Build Status"></a>
+{%- if include.glottolog_id %} <br>
+<a href="https://glottolog.org/resource/languoid/id/{{ include.glottolog_id }}"><img src="https://img.shields.io/badge/Glottolog-green" alt="Glottolog"></a>
+{%- endif %}
+</div>

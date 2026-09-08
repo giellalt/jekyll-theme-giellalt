@@ -3,9 +3,17 @@
   Include this in a page and the script fills the div in from the repo's
   rolling generated/docs-data branch. The data URL scheme and the script tag
   live here so a change to either is a theme-only change.
+
+  Where that branch is read from — raw.githubusercontent.com for a public repo,
+  a same-origin embedded copy for a private one — is resolved by
+  _includes/docs-data-base.html. `data-nwo` is emitted separately because a
+  same-origin data-src has no owner/repo for testlogs.js to scrape.
 {% endcomment %}
+{%- capture docs_data_base -%}{%- include docs-data-base.html -%}{%- endcapture -%}
+{%- assign nwo = site.data.ci.repo_nwo | default: site.github.repository_nwo -%}
 <div id="testlogs"
-     data-src="https://raw.githubusercontent.com/{{ site.github.repository_nwo }}/generated/docs-data/testlogs.json">
+     data-src="{{ docs_data_base }}/testlogs.json"
+     data-nwo="{{ nwo }}">
   <p class="testlogs-note">Loading latest test results…</p>
 </div>
 <script src="{{ '/assets/js/testlogs.js' | relative_url }}" defer></script>
