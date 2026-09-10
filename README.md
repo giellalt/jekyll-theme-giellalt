@@ -30,7 +30,7 @@ Delete the following from the consumer's `docs/` once you migrate:
 - `_layouts/default.html`
 - `_includes/sitemap.html`
 - `_includes/toc.html`
-- `assets/css/style.scss`
+- `assets/css/style.scss` (and any `assets/css/style.css` — the theme ships its own)
 - `assets/js/theme-toggle.js` (and any other JS that was copy-pasted)
 
 The theme ships replacements for all of them via `remote_theme`'s asset overlay.

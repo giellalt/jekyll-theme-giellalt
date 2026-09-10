@@ -1,38 +1,10 @@
 ---
+# This file is plain CSS. It keeps the .scss extension and this (empty) front
+# matter only so Jekyll's Sass converter minifies it on build
+# (sass: style: compressed). There are no Sass variables, @mixin/@include or
+# nested rules, so the compiled output does not depend on the Sass
+# implementation — edit it as plain CSS.
 ---
-
-/* Dark palette — defined once, applied under both selectors below. */
-@mixin dark-palette {
-  --bg-color: #0d1117;
-  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
-  --text-color: #e6edf3;
-  --bold-color: #e6edf3;
-  --mermaid-bg: #0d1117;
-  --link-color: #58a6ff;
-  --link-hover-color: #79b8ff;
-  --border-color: #30363d;
-  --heading-color: #e6edf3;
-  --code-bg: #161b22;
-  --code-text: #e6edf3;
-  --code-border: #30363d;
-  --code-link-color: #96d0ff;
-  --menu-bg: #161b22;
-  --menu-text: #e6edf3;
-  --menu-hover-bg: rgba(56, 139, 253, 0.15);
-  --menu-hover-text: #58a6ff;
-  --gradient-shadow: rgba(0,0,0,0.2);
-  --search-bg: #0d1117;
-  --table-header-bg: #161b22;
-  --table-row-odd: #161b22;
-  --table-row-even: #0d1117;
-  --table-border: #30363d;
-  --blockquote-border: #3b434b;
-  --blockquote-text: #8b949e;
-  --hr-border: #30363d;
-  --kbd-bg: #161b22;
-  --kbd-border: #30363d;
-  --kbd-color: #e6edf3;
-}
 
 html, body {
   min-height: 100%;
@@ -105,15 +77,72 @@ kbd {
   --kbd-color: #444d56;
 }
 
-/* Dark theme applies when the user explicitly opts in via [data-theme='dark'],
+/* Dark palette — defined once, applied under both selectors below.
+   Dark theme applies when the user explicitly opts in via [data-theme='dark'],
    OR when the OS prefers dark and no explicit light override is set. */
 :root[data-theme='dark'] {
-  @include dark-palette;
+  --bg-color: #0d1117;
+  --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
+  --text-color: #e6edf3;
+  --bold-color: #e6edf3;
+  --mermaid-bg: #0d1117;
+  --link-color: #58a6ff;
+  --link-hover-color: #79b8ff;
+  --border-color: #30363d;
+  --heading-color: #e6edf3;
+  --code-bg: #161b22;
+  --code-text: #e6edf3;
+  --code-border: #30363d;
+  --code-link-color: #96d0ff;
+  --menu-bg: #161b22;
+  --menu-text: #e6edf3;
+  --menu-hover-bg: rgba(56, 139, 253, 0.15);
+  --menu-hover-text: #58a6ff;
+  --gradient-shadow: rgba(0,0,0,0.2);
+  --search-bg: #0d1117;
+  --table-header-bg: #161b22;
+  --table-row-odd: #161b22;
+  --table-row-even: #0d1117;
+  --table-border: #30363d;
+  --blockquote-border: #3b434b;
+  --blockquote-text: #8b949e;
+  --hr-border: #30363d;
+  --kbd-bg: #161b22;
+  --kbd-border: #30363d;
+  --kbd-color: #e6edf3;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    @include dark-palette;
+    --bg-color: #0d1117;
+    --active-sitem-bg-color: rgba(222, 222, 222, 0.3);
+    --text-color: #e6edf3;
+    --bold-color: #e6edf3;
+    --mermaid-bg: #0d1117;
+    --link-color: #58a6ff;
+    --link-hover-color: #79b8ff;
+    --border-color: #30363d;
+    --heading-color: #e6edf3;
+    --code-bg: #161b22;
+    --code-text: #e6edf3;
+    --code-border: #30363d;
+    --code-link-color: #96d0ff;
+    --menu-bg: #161b22;
+    --menu-text: #e6edf3;
+    --menu-hover-bg: rgba(56, 139, 253, 0.15);
+    --menu-hover-text: #58a6ff;
+    --gradient-shadow: rgba(0,0,0,0.2);
+    --search-bg: #0d1117;
+    --table-header-bg: #161b22;
+    --table-row-odd: #161b22;
+    --table-row-even: #0d1117;
+    --table-border: #30363d;
+    --blockquote-border: #3b434b;
+    --blockquote-text: #8b949e;
+    --hr-border: #30363d;
+    --kbd-bg: #161b22;
+    --kbd-border: #30363d;
+    --kbd-color: #e6edf3;
   }
 }
 
@@ -561,46 +590,46 @@ pagefind-modal {
   color: var(--text-secondary, #6e7781);
   margin-top: 1.5rem;
   margin-bottom: 1.25em;
+}
 
-  ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-  }
+.breadcrumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
 
-  li {
-    display: flex;
-    align-items: center;
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
 
-    &::before {
-      display: none;
-    }
+.breadcrumbs li::before {
+  display: none;
+}
 
-    &:not(:first-child)::before {
-      display: inline;
-      content: '/';
-      margin: 0 0.4em;
-      color: var(--text-secondary, #6e7781);
-      opacity: 0.5;
-    }
-  }
+.breadcrumbs li:not(:first-child)::before {
+  display: inline;
+  content: '/';
+  margin: 0 0.4em;
+  color: var(--text-secondary, #6e7781);
+  opacity: 0.5;
+}
 
-  a {
-    color: var(--text-secondary, #6e7781);
-    text-decoration: none;
+.breadcrumbs a {
+  color: var(--text-secondary, #6e7781);
+  text-decoration: none;
+}
 
-    &:hover {
-      color: var(--link-color);
-      text-decoration: underline;
-    }
-  }
+.breadcrumbs a:hover {
+  color: var(--link-color);
+  text-decoration: underline;
+}
 
-  li[aria-current="page"] {
-    color: var(--text-color);
-  }
+.breadcrumbs li[aria-current="page"] {
+  color: var(--text-color);
 }
 
 .page-meta {
@@ -981,7 +1010,7 @@ div.repolist ul li p {
     outline: 2px solid var(--link-color);
     outline-offset: 2px;
   }
-  
+
   /* Hamburgerlinjene */
   .hamburger-menu span {
     width: 20px;
@@ -990,7 +1019,7 @@ div.repolist ul li p {
     position: relative;
     display: block;
   }
-  
+
   .hamburger-menu span::before,
   .hamburger-menu span::after {
     content: '';
@@ -1000,15 +1029,15 @@ div.repolist ul li p {
     background: var(--text-color);
     left: 0;
   }
-  
+
   .hamburger-menu span::before {
     top: -6px;
   }
-  
+
   .hamburger-menu span::after {
     top: 6px;
   }
-  
+
   /* Dimmed backdrop behind the drawer — a separate element (not a pseudo-
      element of #sitemap) so the existing outside-click handler in
      hamburger-menu.js, which checks `!sitemap.contains(e.target)`, correctly
@@ -1099,7 +1128,7 @@ div.repolist ul li p {
   #sitemap.show {
     display: block;
   }
-  
+
   /* Juster sitemap-innhald for denne visinga */
   #sitemap > ul {
     position: static;
@@ -1124,24 +1153,10 @@ div.repolist ul li p {
    their last column to the viewport edge while keeping the rest of the group
    centered, and both fall back to the same 2-column shape once there's no TOC
    rail (1025–1280px normally, >1280px when the TOC is empty).
-   Each block sets --reserved-width (the actual per-breakpoint math — the part
-   that previously risked drifting between margin-left's and width's separate
-   copies) as a plain custom property, then the margin-left/width/max-width
-   trio below just reads it back; those three lines are boilerplate that never
-   changes per-breakpoint, so they're left as a short literal repeat rather
-   than a mixin: the Ruby Sass gem this theme's Jekyll build uses tries to
-   evaluate max()/min() as Sass math whenever any part of their arguments
-   came from SCSS string interpolation (as a mixin argument would require),
-   and errors because the calc() result isn't a Sass number. This gem also
-   doesn't support @extend-ing a placeholder from within @media, which rules
-   out that route too. */
-
-@mixin grid-areas-2col {
-  grid-template-areas:
-    "header  content"
-    "sitemap content"
-    "footer  content";
-}
+   Each block sets --reserved-width (the actual per-breakpoint math) as a plain
+   custom property, then the margin-left/width/max-width trio below reads it
+   back; those three lines are boilerplate that never changes per-breakpoint,
+   left as a short literal repeat. */
 
 /* Sitemap fills the left column under the branding whenever the sidebar is
    docked into the grid (1025px+ — both the 2-column and 3-column shapes use
@@ -1189,7 +1204,10 @@ div.repolist ul li p {
     --reserved-width: calc(var(--menu-width) + var(--reading-width-max));
     grid-template-columns: var(--menu-width) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
-    @include grid-areas-2col;
+    grid-template-areas:
+      "header  content"
+      "sitemap content"
+      "footer  content";
     margin-left: max(0px, calc((100% - var(--reserved-width)) / 2));
     margin-right: 0;
     width: calc(100% - max(0px, calc((100% - var(--reserved-width)) / 2)));
@@ -1283,7 +1301,7 @@ div.repolist ul li p {
   div.highlight {
     background-color: transparent;
   }
-  
+
   pre.highlight {
     background-color: var(--code-bg);
   }
@@ -1530,7 +1548,10 @@ div.repolist ul li p {
      left at the with-TOC value so the sidebar doesn't shift position. */
   body div.wrapper.no-toc {
     grid-template-columns: var(--menu-width) minmax(0, 1fr);
-    @include grid-areas-2col;
+    grid-template-areas:
+      "header  content"
+      "sitemap content"
+      "footer  content";
   }
   .no-toc #toc-desktop {
     display: none;
