@@ -3,25 +3,12 @@ description: Shared Jekyll theme for GiellaLT documentation sites.
 
 theme: jekyll-theme-giellalt
 
-# `theme:` alone doesn't activate the gem's own plugin requires (that only
-# happens via Bundler's :jekyll_plugins group, which the plain `gemspec`
-# directive in this repo's own Gemfile doesn't place it in). Listing it here
-# makes Jekyll require it directly for this self-preview build; a consumer
-# repo instead puts it in `group :jekyll_plugins` in its Gemfile and needs no
-# `plugins:` entry at all — see README.md.
 plugins:
   - jekyll-theme-giellalt
 
-# jekyll-optional-front-matter (activated above) otherwise turns this repo's
-# own README/LICENSE into site pages — and jekyll-readme-index would make
-# the README the homepage. Neither is wanted for self-preview; the README's
-# Liquid-syntax code examples aren't wrapped in {% raw %} either, so letting
-# it through fails the build outright.
 exclude:
   - README.md
   - LICENSE
-  - Gemfile
-  - Gemfile.lock
   - jekyll-theme-giellalt.gemspec
   - lib
   - vendor
