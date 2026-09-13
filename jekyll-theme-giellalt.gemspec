@@ -16,11 +16,6 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  # Every gem below is a dependency the theme's layouts/includes need to
-  # render (site.github, SEO tags, emoji, …) plus the Jekyll/Ruby version
-  # pins the shared CI build used to declare separately. Centralizing them
-  # here means a consumer repo declares nothing beyond this gem itself — see
-  # README.md "Consumer repo setup".
   spec.add_runtime_dependency "jekyll", "~> 4.3"
   spec.add_runtime_dependency "jekyll-sass-converter", "~> 3.0" # Dart Sass; Jekyll 4 drops the old Ruby Sass
   spec.add_runtime_dependency "kramdown-parser-gfm"
