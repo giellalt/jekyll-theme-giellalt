@@ -4,10 +4,10 @@ Shared Jekyll theme for [GiellaLT](https://giellalt.github.io/) documentation si
 
 ## Consumer repo setup
 
-This is a gem-based theme (`theme:`, not `remote_theme:`) — the gemspec
-declares every plugin the theme's layouts/includes need (site.github, SEO
-tags, emoji, minification, …) plus the Jekyll/Ruby version pins, so a
-consumer repo declares nothing beyond the gem itself.
+`jekyll-theme-giellalt` is a gem-based Jekyll theme: the gemspec declares
+every plugin its layouts/includes need (site.github, SEO tags, emoji,
+minification, …) plus the Jekyll/Ruby version pins, so a consumer repo
+declares nothing beyond the gem itself.
 
 `docs/Gemfile`:
 
@@ -37,17 +37,9 @@ defaults:
 ```
 
 No `plugins:` entry needed — only add one for something genuinely specific to
-that site. Don't set `remote_theme:` as well; `theme:` replaces it.
-
-Delete the following from the consumer's `docs/` once you migrate:
-
-- `_layouts/default.html`
-- `_includes/sitemap.html`
-- `_includes/toc.html`
-- `assets/css/style.scss`
-- `assets/js/theme-toggle.js` (and any other JS that was copy-pasted)
-
-The theme ships replacements for all of them via the gem's asset overlay.
+that site. Layouts, includes, and assets (CSS, JS, favicon) all come from the
+theme; a consumer repo only needs its own content and, where it wants to
+diverge, an override (see "Overriding in a consumer repo" below).
 
 ## Layouts
 
