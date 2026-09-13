@@ -4,18 +4,31 @@ Shared Jekyll theme for [GiellaLT](https://giellalt.github.io/) documentation si
 
 ## Consumer repo setup
 
-In the consumer repo's `docs/_config.yml`:
+`jekyll-theme-giellalt` is a gem-based Jekyll theme: the gemspec declares
+every plugin its layouts/includes need (site.github, SEO tags, emoji,
+minification, …) plus the Jekyll/Ruby version pins, so a consumer repo
+declares nothing beyond the gem itself.
+
+`docs/Gemfile`:
+
+```ruby
+source "https://rubygems.org"
+
+group :jekyll_plugins do
+  gem "jekyll-theme-giellalt", github: "giellalt/jekyll-theme-giellalt", branch: "main"
+end
+```
+
+The `group :jekyll_plugins` block matters — that's what makes Jekyll's
+`Bundler.require(:jekyll_plugins)` require this gem (and, transitively, every
+plugin it requires in turn) without a `plugins:` list in `_config.yml`.
+
+`docs/_config.yml`:
 
 ```yaml
-remote_theme: giellalt/jekyll-theme-giellalt
+theme: jekyll-theme-giellalt
 title: My Docs
 description: ...
-
-plugins:
-  - jekyll-remote-theme
-  - jekyll-seo-tag
-  - jemoji
-  - jekyll-include-cache
 
 defaults:
   - scope: { path: "" }
@@ -23,17 +36,10 @@ defaults:
       layout: default   # or "keyboard" or "minimal"
 ```
 
-Do **not** also set `theme:` — `remote_theme` replaces it.
-
-Delete the following from the consumer's `docs/` once you migrate:
-
-- `_layouts/default.html`
-- `_includes/sitemap.html`
-- `_includes/toc.html`
-- `assets/css/style.scss`
-- `assets/js/theme-toggle.js` (and any other JS that was copy-pasted)
-
-The theme ships replacements for all of them via `remote_theme`'s asset overlay.
+No `plugins:` entry needed — only add one for something genuinely specific to
+that site. Layouts, includes, and assets (CSS, JS, favicon) all come from the
+theme; a consumer repo only needs its own content and, where it wants to
+diverge, an override (see "Overriding in a consumer repo" below).
 
 ## Layouts
 
@@ -139,14 +145,20 @@ bundle exec jekyll serve
 ## Local testing against a consumer repo
 
 1. Push this repo to a branch on GitHub (doesn't have to be `main`).
-2. In the consumer repo's `docs/_config.yml`, set `remote_theme: giellalt/jekyll-theme-giellalt@your-branch`.
+2. In the consumer repo's `docs/Gemfile`, change the `branch:` on the
+   `jekyll-theme-giellalt` line to your branch.
 3. In the consumer repo: `cd docs && bundle install && bundle exec jekyll serve`.
 
-`jekyll-remote-theme` fetches and caches the branch the same way it does in the GitHub Pages build, so what you see locally matches production.
+Bundler clones the theme repo at that branch as a git-sourced gem, so what
+you see locally matches what CI will build.
 
 ## Publishing updates
 
-Push to `main`. Consumer sites pick up the new theme on their next GitHub Pages build. Tag `vN.N.N` and pin via `remote_theme: giellalt/jekyll-theme-giellalt@vN.N.N` if you want to stop rolling updates.
+Push to `main`. Consumer sites float on it (`branch: "main"` in their
+Gemfile) and pick it up on their next build — CI and local dev alike, since
+`bundle install`/`bundle update` both re-resolve the git ref. Bump the
+`VERSION` in `lib/jekyll-theme-giellalt/version.rb` for anything worth being
+able to point back to, even though nothing currently pins to it.
 
 ## Overriding in a consumer repo
 

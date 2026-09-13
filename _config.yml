@@ -1,8 +1,14 @@
 title: jekyll-theme-giellalt
 description: Shared Jekyll theme for GiellaLT documentation sites.
 
+theme: jekyll-theme-giellalt
+
 plugins:
-  - jekyll-seo-tag
-  - jekyll-github-metadata
-  - jekyll-include-cache
-  - jemoji
+  - jekyll-theme-giellalt
+
+exclude:
+  - README.md
+  - LICENSE
+  - jekyll-theme-giellalt.gemspec
+  - lib
+  - vendor
