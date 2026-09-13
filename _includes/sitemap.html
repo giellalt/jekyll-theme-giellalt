@@ -19,7 +19,7 @@
         {%- assign home_item = "" | split: "" -%}
         {%- assign home_item = home_item | push: page.url -%}
         {%- assign home_item = home_item | push: title -%}
-    {%- elsif filename contains 'google' or page.url contains '.xml' or page.url contains '.css' or page.url contains 'assets/' or page.url contains '.json' or filename == '' or filename contains '404' or filename == 'index.html' or filename == 'index.md' -%}
+    {%- elsif filename contains 'google' or page.url contains '.xml' or page.url contains '.css' or page.url contains 'assets/' or page.url contains '.json' or filename == '' or filename contains '404' or filename == 'index.html' or filename == 'index.md' or filename == 'robots.txt' -%}
         {%- comment -%}Skip{%- endcomment -%}
     {%- else -%}
         {%- capture title -%}{%- if page.title and page.title != '' -%}{{ page.title }}{%- else -%}{{ page.url | remove: '.html' | remove: '.md' | remove_last: '/' | split: '/' | last | capitalize }}{%- endif -%}{%- endcapture -%}
