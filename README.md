@@ -107,8 +107,11 @@ changing either is a theme-only change.
 
 ## Accuracy / typos report
 
-`lang-*` repos publish a spellchecker accuracy report (`speller-accuracy.json`)
-to the same rolling `generated/docs-data` branch as the test logs above. The
+`lang-*` repos publish a spellchecker accuracy report (`speller-accuracy.json.gz`,
+minified and gzipped since the largest ones pass GitHub's 100 MB file limit as
+plain JSON; the viewer inflates it, and falls back to a plain
+`speller-accuracy.json`) to the same rolling `generated/docs-data` branch as the
+test logs above. The
 theme serves a viewer for it — a Rust/Dioxus app built to WebAssembly with
 [Trunk](https://trunkrs.dev/) (source: `support/accuracy-viewer` in
 [divvun/divvunspell](https://github.com/divvun/divvunspell)), not Node:
